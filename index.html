@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Documentation officielle du moteur de jeu JSGE - Un moteur léger en JavaScript pour créer des jeux 2D.">
+    <title>JSGE - Documentation</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" />
+</head>
+<body>
+    <!-- Barre de navigation latérale -->
+    <nav class="sidebar">
+        <div class="logo">
+            <h1>JSGE</h1>
+            <p>Moteur de jeu léger en JavaScript</p>
+        </div>
+        <ul class="nav-list">
+            <li><a href="/index.html" class="nav-link active">🏠 Accueil</a></li>
+            <li class="nav-section">🎮 Rendu</li>
+            <li><a href="/pages/camera.html" class="nav-link">Camera</a></li>
+            <li><a href="/pages/sprite.html" class="nav-link">Sprite</a></li>
+            <li><a href="/pages/animation.html" class="nav-link">Animation</a></li>
+            <li class="nav-section">🎭 Entités</li>
+            <li><a href="/pages/entity.html" class="nav-link">Entity</a></li>
+            <li><a href="/pages/element.html" class="nav-link">Element</a></li>
+            <li class="nav-section">⚡ UI</li>
+            <li><a href="/pages/gadget.html" class="nav-link">Gadget</a></li>
+            <li><a href="/pages/button.html" class="nav-link">Button</a></li>
+            <li><a href="/pages/text.html" class="nav-link">Text</a></li>
+            <li class="nav-section">🔄 Transitions</li>
+            <li><a href="/pages/transition.html" class="nav-link">Transition</a></li>
+            <li><a href="/pages/bezier.html" class="nav-link">Bezier</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p><small>v1.0.0</small></p>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <!-- En-tête de page -->
+            <header class="page-header">
+                <h1 id="page-title">Bienvenue dans la documentation JSGE</h1>
+                <p id="page-description">Un moteur de jeu 2D léger et performant développé en JavaScript pur.</p>
+            </header>
+
+            <!-- Contenu de la documentation -->
+            <article class="doc-content">
+                <section class="section">
+                    <h2>📖 À propos de JSGE</h2>
+                    <div class="about-grid">
+                        <div class="about-card">
+                            <h3>⚡ Rapide</h3>
+                            <p>JSGE est optimisé pour des performances maximales, utilisant requestAnimationFrame pour un rendu fluide à 60 FPS.</p>
+                        </div>
+                        <div class="about-card">
+                            <h3>🎨 Flexible</h3>
+                            <p>Conçu pour être facilement extensible, avec un système de classes modulaire et bien organisé.</p>
+                        </div>
+                        <div class="about-card">
+                            <h3>📱 Léger</h3>
+                            <p>Aucune dépendance externe, juste du JavaScript natif. Parfait pour les jeux web légers.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🚀 Installation et utilisation</h2>
+                    <div class="code-block">
+                        <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Mon Jeu JSGE&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;canvas id="gameCanvas" width="800" height="600"&gt;&lt;/canvas&gt;
+    &lt;script src="jsge.js" type="module"&gt;&lt;/script&gt;
+    &lt;script src="monJeu.js" type="module"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+                    <p>Ou importez les classes individuellement depuis le dossier <code>classes/</code>.</p>
+                </section>
+
+                <section class="section">
+                    <h2>📚 Guide de démarrage</h2>
+                    <div class="quick-start">
+                        <h3>1️⃣ Créer un canvas</h3>
+                        <p>Commencez par ajouter un élément canvas à votre HTML :</p>
+                        <div class="code-block">
+                            <pre><code class="language-html">&lt;canvas id="gameCanvas" width="800" height="600"&gt;&lt;/canvas&gt;</code></pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        </div>
+
+                        <h3>2️⃣ Initialiser une caméra</h3>
+                        <p>La caméra est le cœur du rendu dans JSGE :</p>
+                        <div class="code-block">
+                            <pre><code class="language-javascript">import { Camera } from "./classes/camera.js";
+
+const canvas = document.querySelector("#gameCanvas");
+const mainCam = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600},
+    backgroundColor: "#222"
+});</code></pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        </div>
+
+                        <h3>3️⃣ Charger un sprite</h3>
+                        <p>Chargez vos images pour créer des sprites :</p>
+                        <div class="code-block">
+                            <pre><code class="language-javascript">import { Sprite } from "./classes/sprites.js";
+
+// Charger un sprite depuis une image
+const playerSprite = await Sprite.load("./assets/player.png", true);
+
+// Ou créer un sprite vide
+const emptySprite = Sprite.create(32, 32, false);</code></pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        </div>
+
+                        <h3>4️⃣ Créer une entité</h3>
+                        <p>Les entités sont les objets de votre jeu :</p>
+                        <div class="code-block">
+                            <pre><code class="language-javascript">import { Entity } from "./classes/entity.js";
+
+const player = Entity.create({
+    sprite: playerSprite,
+    position: {x: 100, y: 100},
+    scale: 1,
+    physic: true,
+    gravity: 0.5
+});</code></pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        </div>
+
+                        <h3>5️⃣ Boucle de jeu</h3>
+                        <p>Mettez à jour et dessinez vos entités :</p>
+                        <div class="code-block">
+                            <pre><code class="language-javascript">function gameLoop() {
+    // Effacer la caméra
+    mainCam.clear();
+    
+    // Mettre à jour l'entité
+    player.update();
+    
+    // Dessiner l'entité
+    player.drawEntity(mainCam);
+    
+    requestAnimationFrame(gameLoop);
+}
+gameLoop();</code></pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🏗️ Architecture du moteur</h2>
+                    <div class="architecture-diagram">
+                        <div class="arch-box core">
+                            <strong>Noyau</strong>
+                            <div class="arch-items">
+                                <span>Camera</span>
+                                <span>Sprite</span>
+                                <span>Animation</span>
+                            </div>
+                        </div>
+                        <div class="arch-arrow">→</div>
+                        <div class="arch-box entities">
+                            <strong>Entités</strong>
+                            <div class="arch-items">
+                                <span>Entity</span>
+                                <span>Element</span>
+                            </div>
+                        </div>
+                        <div class="arch-arrow">→</div>
+                        <div class="arch-box ui">
+                            <strong>Interface</strong>
+                            <div class="arch-items">
+                                <span>Gadget</span>
+                                <span>Button</span>
+                                <span>Text</span>
+                            </div>
+                        </div>
+                        <div class="arch-arrow">→</div>
+                        <div class="arch-box effects">
+                            <strong>Effets</strong>
+                            <div class="arch-items">
+                                <span>Transition</span>
+                                <span>Bezier</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; margin-top: 20px; color: #666;">
+                        Flux de rendu : Camera → Entités/UI → Effets
+                    </p>
+                </section>
+
+                <section class="section">
+                    <h2>📖 Documentation par catégorie</h2>
+                    <div class="categories-grid">
+                        <div class="category-card">
+                            <div class="category-icon">🎮</div>
+                            <h3>Rendu</h3>
+                            <p>Gestion de l'affichage avec Camera, Sprite et Animation.</p>
+                            <a href="/pages/camera.html" class="category-link">Voir la documentation →</a>
+                        </div>
+                        <div class="category-card">
+                            <div class="category-icon">🎭</div>
+                            <h3>Entités</h3>
+                            <p>Création et gestion des objets du jeu avec Entity et Element.</p>
+                            <a href="/pages/entity.html" class="category-link">Voir la documentation →</a>
+                        </div>
+                        <div class="category-card">
+                            <div class="category-icon">⚡</div>
+                            <h3>Interface Utilisateur</h3>
+                            <p>Création d'interfaces avec Gadget, Button et Text.</p>
+                            <a href="/pages/gadget.html" class="category-link">Voir la documentation →</a>
+                        </div>
+                        <div class="category-card">
+                            <div class="category-icon">🔄</div>
+                            <h3>Transitions & Animations</h3>
+                            <p>Effets fluides avec Transition et courbes Bezier.</p>
+                            <a href="/pages/transition.html" class="category-link">Voir la documentation →</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>📝 Exemple complet</h2>
+                    <p>Un exemple complet montrant l'utilisation de plusieurs fonctionnalités de JSGE :</p>
+                    <div class="example-block">
+                        <div class="example-demo">
+                            <canvas id="full-demo" width="800" height="400"></canvas>
+                            <p style="text-align: center; margin-top: 10px; color: #666;">
+                                Déplacez le personnage avec les flèches. Passez la souris sur le bouton.
+                            </p>
+                        </div>
+                        <div class="code-block">
+                            <pre><code class="language-javascript">import { Camera } from "./classes/camera.js";
+import { Sprite } from "./classes/sprites.js";
+import { Entity } from "./classes/entity.js";
+import { Button } from "./classes/button.js";
+
+// Initialisation
+const canvas = document.querySelector("#gameCanvas");
+const ctx = canvas.getContext("2d");
+const mainCam = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600},
+    backgroundColor: "#222"
+});
+
+// Charger un sprite
+const playerSprite = await Sprite.load("./assets/player.png", true);
+
+// Créer une entité joueur
+const player = Entity.create({
+    sprite: playerSprite,
+    position: {x: 400, y: 300},
+    physic: true
+});
+
+// Créer un bouton
+const button = Button.create("Cliquez ici", {
+    width: 200,
+    height: 50
+});
+button.position = {x: 300, y: 500};
+
+// Gestion des entrées clavier
+document.addEventListener("keydown", (e) => {
+    const speed = 5;
+    switch(e.key) {
+        case 'ArrowUp': player.velocity.y = -speed; break;
+        case 'ArrowDown': player.velocity.y = speed; break;
+        case 'ArrowLeft': player.velocity.x = -speed; break;
+        case 'ArrowRight': player.velocity.x = speed; break;
+    }
+});
+
+// Boucle de jeu
+function gameLoop() {
+    mainCam.clear();
+    
+    player.update();
+    player.drawEntity(mainCam);
+    
+    button.draw(mainCam);
+    
+    requestAnimationFrame(gameLoop);
+}
+gameLoop();</code></pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🤝 Contribuer</h2>
+                    <p>JSGE est un projet open source. Vous pouvez contribuer de plusieurs manières :</p>
+                    <ul class="contrib-list">
+                        <li>🐛 <strong>Signaler des bugs</strong> : Ouvrez une issue sur GitHub avec une description détaillée.</li>
+                        <li>📝 <strong>Améliorer la documentation</strong> : Aidez à rendre cette documentation encore plus claire.</li>
+                        <li>💻 <strong>Soumettre des PR</strong> : Proposez des améliorations ou de nouvelles fonctionnalités.</li>
+                        <li>🎨 <strong>Créer des exemples</strong> : Partagez vos créations utilisant JSGE.</li>
+                    </ul>
+                    <div class="contrib-links">
+                        <a href="https://github.com/AubryBoulet/JSGE" class="contrib-btn" target="_blank">
+                            📦 Voir sur GitHub
+                        </a>
+                    </div>
+                </section>
+            </article>
+        </div>
+    </main>
+    <script src="/js/doc.js"></script>
+</body>
+</html>

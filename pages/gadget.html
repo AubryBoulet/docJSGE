@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Documentation de la classe Gadget de JSGE - Base pour les éléments d'interface utilisateur interactifs.">
+    <title>Gadget - JSGE Documentation</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" />
+</head>
+<body>
+    <!-- Barre de navigation latérale -->
+    <nav class="sidebar">
+        <div class="logo">
+            <h1>JSGE</h1>
+            <p>Moteur de jeu léger en JavaScript</p>
+        </div>
+        <ul class="nav-list">
+            <li><a href="../index.html" class="nav-link">🏠 Accueil</a></li>
+            <li class="nav-section">🎮 Rendu</li>
+            <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
+            <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
+            <li><a href="../pages/animation.html" class="nav-link">Animation</a></li>
+            <li class="nav-section">🎭 Entités</li>
+            <li><a href="../pages/entity.html" class="nav-link">Entity</a></li>
+            <li><a href="../pages/element.html" class="nav-link">Element</a></li>
+            <li class="nav-section">⚡ UI</li>
+            <li><a href="../pages/gadget.html" class="nav-link active">Gadget</a></li>
+            <li><a href="../pages/button.html" class="nav-link">Button</a></li>
+            <li><a href="../pages/text.html" class="nav-link">Text</a></li>
+            <li class="nav-section">🔄 Transitions</li>
+            <li><a href="../pages/transition.html" class="nav-link">Transition</a></li>
+            <li><a href="../pages/bezier.html" class="nav-link">Bezier</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p><small>v1.0.0</small></p>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <!-- En-tête de page -->
+            <header class="page-header">
+                <h1 id="page-title">Gadget</h1>
+                <p id="page-description">Classe de base pour créer des éléments d'interface utilisateur interactifs.</p>
+            </header>
+
+            <!-- Contenu de la documentation -->
+            <article class="doc-content">
+                <section class="section">
+                    <h2>📌 Description</h2>
+                    <p>
+                        La classe <code>Gadget</code> est la classe de base pour tous les éléments d'interface utilisateur
+                        dans JSGE. Elle fournit des fonctionnalités communes comme la gestion des événements souris,
+                        le rendu, et les propriétés de base. Les classes <code>Button</code> et <code>Text</code> héritent
+                        de <code>Gadget</code>.
+                    </p>
+                    <p>
+                        Gadget gère automatiquement les interactions avec la souris (survol, clic, etc.) et fournit
+                        un système de rendu optimisé avec un cache canvas pour de meilleures performances.
+                    </p>
+                    <div class="info-box">
+                        <strong>⚠️ Important:</strong> Gadget est conçu pour être étendu. Vous ne devriez pas l'instancier directement, mais plutôt utiliser ses sous-classes comme <code>Button</code>.
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🚀 Utilisation de base</h2>
+
+                    <h3>Créer un gadget personnalisé</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Gadget } from "../classes/gadget.js";
+import { Camera } from "../classes/camera.js";
+
+// Créer une sous-classe de Gadget
+class CustomGadget extends Gadget {
+    constructor({position, dimension, value}) {
+        super({position, dimension, value});
+        // Personnalisation supplémentaire
+        this.customProperty = "ma valeur";
+    }
+    
+    // Méthode personnalisée
+    customMethod() {
+        console.log("Méthode personnalisée appelée");
+    }
+}
+
+// Utiliser le gadget personnalisé
+const myGadget = new CustomGadget({
+    position: {x: 100, y: 100},
+    dimension: {width: 200, height: 50},
+    value: "Mon Gadget"
+});
+
+// Dessiner le gadget
+myGadget.draw(mainCam);</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+
+                    <h3>Utiliser les événements souris</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Gadget } from "../classes/gadget.js";
+
+// Créer un gadget avec des gestionnaires d'événements
+const myGadget = new Gadget({
+    position: {x: 100, y: 100},
+    dimension: {width: 200, height: 50},
+    value: "Interactif"
+});
+
+// Définir les gestionnaires d'événements
+myGadget.onMouseEnter = () => {
+    console.log("Souris entrée dans le gadget");
+};
+
+myGadget.onMouseLeave = () => {
+    console.log("Souris sortie du gadget");
+};
+
+myGadget.onClick = () => {
+    console.log("Gadget cliqué !");
+};
+
+// Ces gestionnaires seront appelés automatiquement
+// lors des interactions avec la souris</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🔧 Constructeur</h2>
+                    <p>La classe <code>Gadget</code> accepte les paramètres suivants :</p>
+                    <div class="constructor-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Paramètre</th>
+                                    <th>Type</th>
+                                    <th>Défaut</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>position</code></td>
+                                    <td><code>{x: number, y: number}</code></td>
+                                    <td><code>{x: 0, y: 0}</code></td>
+                                    <td>Position du gadget dans la scène.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>dimension</code></td>
+                                    <td><code>{width: number, height: number}</code></td>
+                                    <td><code>{width: 0, height: 0}</code></td>
+                                    <td>Dimensions du gadget.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>value</code></td>
+                                    <td><code>string</code></td>
+                                    <td><code>""</code></td>
+                                    <td>Valeur textuelle du gadget (peut contenir des tags d'effets spéciaux).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>📜 Propriétés</h2>
+                    <div class="properties-grid">
+                        <div class="property-card">
+                            <h3><code>position</code></h3>
+                            <p><strong>Type:</strong> <code>{x: number, y: number, offsetX: number, offsetY: number}</code></p>
+                            <p><strong>Description:</strong> Position du gadget avec décalages optionnels.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>dimension</code></h3>
+                            <p><strong>Type:</strong> <code>{width: number, height: number}</code></p>
+                            <p><strong>Description:</strong> Dimensions du gadget.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>value</code></h3>
+                            <p><strong>Type:</strong> <code>string</code></p>
+                            <p><strong>Description:</strong> Valeur textuelle du gadget.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>onMouseEnter</code></h3>
+                            <p><strong>Type:</strong> <code>function</code></p>
+                            <p><strong>Description:</strong> Fonction appelée lorsque la souris entre dans le gadget.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>onMouseLeave</code></h3>
+                            <p><strong>Type:</strong> <code>function</code></p>
+                            <p><strong>Description:</strong> Fonction appelée lorsque la souris sort du gadget.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>onClick</code></h3>
+                            <p><strong>Type:</strong> <code>function</code></p>
+                            <p><strong>Description:</strong> Fonction appelée lorsque le gadget est cliqué.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>backgroundColor</code></h3>
+                            <p><strong>Type:</strong> <code>string</code></p>
+                            <p><strong>Description:</strong> Couleur d'arrière-plan du gadget.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>color</code></h3>
+                            <p><strong>Type:</strong> <code>string</code></p>
+                            <p><strong>Description:</strong> Couleur du texte du gadget.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>font</code></h3>
+                            <p><strong>Type:</strong> <code>string</code></p>
+                            <p><strong>Description:</strong> Police du texte du gadget.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>⚙️ Méthodes</h2>
+                    <div class="methods-list">
+                        <div class="method-card">
+                            <h3><code>draw(camera)</code></h3>
+                            <p><strong>Paramètres:</strong></p>
+                            <ul>
+                                <li><code>camera: Camera</code> - La caméra dans laquelle dessiner le gadget.</li>
+                            </ul>
+                            <p><strong>Description:</strong> Dessine le gadget dans la caméra spécifiée. Utilise un cache canvas pour de meilleures performances.</p>
+                            <p><strong>Retourne:</strong> <code>void</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>addTextGradient(name, gradient)</code></h3>
+                            <p><strong>Paramètres:</strong></p>
+                            <ul>
+                                <li><code>name: string</code> - Nom du dégradé.</li>
+                                <li><code>gradient: CanvasGradient</code> - L'objet dégradé à ajouter.</li>
+                            </ul>
+                            <p><strong>Description:</strong> Ajoute un dégradé pour le texte du gadget.</p>
+                            <p><strong>Retourne:</strong> <code>void</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>updateText()</code></h3>
+                            <p><strong>Description:</strong> Force la mise à jour du texte du gadget. Utile lorsque vous ajoutez ou modifiez des dégradés après la création du gadget.</p>
+                            <p><strong>Retourne:</strong> <code>void</code></p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🎯 Exemples</h2>
+
+                    <h3>Exemple 1: Créer un gadget personnalisé avec effets</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Gadget } from "../classes/gadget.js";
+import { Camera } from "../classes/camera.js";
+
+// Créer un gadget avec du texte contenant des effets
+const myGadget = new Gadget({
+    position: {x: 100, y: 100},
+    dimension: {width: 200, height: 50},
+    value: "${wave(2,5,5)} Texte ${blink(0,20)} clignotant"
+});
+
+// Personnaliser l'apparence
+myGadget.backgroundColor = "#3498db";
+myGadget.color = "#fff";
+myGadget.font = "16px Arial";
+
+// Ajouter un dégradé
+const gradient = myGadget._cachCanvas.getContext('2d').createLinearGradient(0, 0, 200, 0);
+gradient.addColorStop(0, "#f1c40f");
+gradient.addColorStop(1, "#e74c3c");
+myGadget.addTextGradient("myGradient", gradient);
+myGadget.updateText();
+
+// Définir les événements
+myGadget.onMouseEnter = () => {
+    myGadget.backgroundColor = "#2980b9";
+};
+
+myGadget.onMouseLeave = () => {
+    myGadget.backgroundColor = "#3498db";
+};
+
+myGadget.onClick = () => {
+    console.log("Gadget cliqué !");
+};
+
+// Dessiner le gadget
+function gameLoop() {
+    mainCam.clear();
+    myGadget.draw(mainCam);
+    requestAnimationFrame(gameLoop);
+}
+gameLoop();</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+
+                    <h3>Exemple 2: Gadget avec bordure et ombre</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Gadget } from "../classes/gadget.js";
+
+// Créer un gadget
+const styledGadget = new Gadget({
+    position: {x: 150, y: 150},
+    dimension: {width: 250, height: 60},
+    value: "Gadget stylisé"
+});
+
+// Personnaliser le style
+styledGadget.backgroundColor = "#2c3e50";
+styledGadget.color = "#ecf0f1";
+styledGadget.font = "bold 18px Arial";
+
+// Ajouter une bordure (via drawInfos)
+styledGadget._drawInfos.border = {
+    color: "#3498db",
+    width: 2
+};
+
+// Ajouter une ombre (via drawInfos)
+styledGadget._drawInfos.boxShadow = [
+    [0, 0, "#000", 10, 0, 5]  // [x, y, couleur, flou, étalement, opacity]
+];
+
+// Ajouter un rayon de bordure
+styledGadget._drawInfos.borderRadius = [10, 10, 10, 10]; // [top-left, top-right, bottom-right, bottom-left]
+
+// Dessiner le gadget
+styledGadget.draw(mainCam);</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+
+                    <h3>Exemple 3: Gestion des événements souris globaux</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Gadget } from "../classes/gadget.js";
+
+// Gadget gère automatiquement les événements souris globaux
+// Vous pouvez accéder à la position de la souris via :
+console.log("Position souris:", Gadget.mousePosition);
+
+// Et à l'état des événements via :
+console.log("Événement souris actif:", Gadget.mouseEvent);
+
+// Créer plusieurs gadgets
+const gadgets = [];
+for (let i = 0; i < 5; i++) {
+    const gadget = new Gadget({
+        position: {x: 100 + i * 120, y: 100},
+        dimension: {width: 100, height: 50},
+        value: `Gadget ${i + 1}`
+    });
+    
+    gadget.onClick = () => {
+        console.log(`Gadget ${i + 1} cliqué !`);
+    };
+    
+    gadgets.push(gadget);
+}
+
+// Tous les gadgets recevront les événements souris
+// et appelleront leurs gestionnaires respectifs</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>💡 Conseils et bonnes pratiques</h2>
+                    <ul class="tips-list">
+                        <li>🔹 <strong>Étendez Gadget</strong> pour créer vos propres types de widgets (boutons, cases à cocher, etc.).</li>
+                        <li>🔹 Utilisez les <strong>tags d'effets</strong> dans la propriété <code>value</code> pour créer des textes animés (ex: <code>${wave(...)}</code>, <code>${blink(...)}</code>).</li>
+                        <li>🔹 Appelez <strong><code>updateText()</code></strong> après avoir modifié les dégradés ou les effets de texte.</li>
+                        <li>🔹 Utilisez <code>addTextGradient()</code> pour créer des textes avec des dégradés de couleur.</li>
+                        <li>🔹 Personnalisez l'apparence via les propriétés <code>_drawInfos</code> pour les bordures, ombres, et rayons.</li>
+                        <li>🔹 Gadget gère automatiquement les événements souris pour tous les gadgets créés.</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>🔗 Voir aussi</h2>
+                    <p>La classe Gadget est la base de :</p>
+                    <ul class="tips-list">
+                        <li>🔹 <a href="../pages/button.html">Button</a> - Boutons cliquables avec gestion des événements</li>
+                        <li>🔹 <a href="../pages/text.html">Text</a> - Texte avec effets spéciaux</li>
+                    </ul>
+                    <p>Gadget utilise :</p>
+                    <ul class="tips-list">
+                        <li>🔹 <a href="../pages/camera.html">Camera</a> - Pour afficher les gadgets à l'écran</li>
+                    </ul>
+                </section>
+            </article>
+        </div>
+    </main>
+    <script src="../js/doc.js"></script>
+</body>
+</html>

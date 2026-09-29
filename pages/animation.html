@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Documentation de la classe Animation de JSGE - Gestion des animations de sprites et sprite sheets.">
+    <title>Animation - JSGE Documentation</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" />
+</head>
+<body>
+    <!-- Barre de navigation latérale -->
+    <nav class="sidebar">
+        <div class="logo">
+            <h1>JSGE</h1>
+            <p>Moteur de jeu léger en JavaScript</p>
+        </div>
+        <ul class="nav-list">
+            <li><a href="../index.html" class="nav-link">🏠 Accueil</a></li>
+            <li class="nav-section">🎮 Rendu</li>
+            <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
+            <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
+            <li><a href="../pages/animation.html" class="nav-link active">Animation</a></li>
+            <li class="nav-section">🎭 Entités</li>
+            <li><a href="../pages/entity.html" class="nav-link">Entity</a></li>
+            <li><a href="../pages/element.html" class="nav-link">Element</a></li>
+            <li class="nav-section">⚡ UI</li>
+            <li><a href="../pages/gadget.html" class="nav-link">Gadget</a></li>
+            <li><a href="../pages/button.html" class="nav-link">Button</a></li>
+            <li><a href="../pages/text.html" class="nav-link">Text</a></li>
+            <li class="nav-section">🔄 Transitions</li>
+            <li><a href="../pages/transition.html" class="nav-link">Transition</a></li>
+            <li><a href="../pages/bezier.html" class="nav-link">Bezier</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p><small>v1.0.0</small></p>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <!-- En-tête de page -->
+            <header class="page-header">
+                <h1 id="page-title">Animation</h1>
+                <p id="page-description">Classe pour gérer les animations de sprites et sprite sheets.</p>
+            </header>
+
+            <!-- Contenu de la documentation -->
+            <article class="doc-content">
+                <section class="section">
+                    <h2>📌 Description</h2>
+                    <p>
+                        La classe <code>Animation</code> permet de gérer les animations de sprites, en particulier
+                        pour les sprite sheets. Elle offre des fonctionnalités pour définir des frames d'animation,
+                        contrôler la vitesse de lecture, et gérer les hitboxes pour chaque frame.
+                    </p>
+                    <p>
+                        Chaque sprite animé (<code>animate: true</code>) a automatiquement une instance de <code>Animation</code>
+                        associée, accessible via la propriété <code>animations</code>.
+                    </p>
+                    <div class="info-box">
+                        <strong>⚠️ Important:</strong> Pour utiliser les animations, votre sprite doit être marqué comme animé (<code>animate: true</code>) lors de son chargement.
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🚀 Utilisation de base</h2>
+
+                    <h3>Créer et utiliser une animation</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Sprite } from "../classes/sprites.js";
+
+// Charger un sprite animé
+const playerSprite = await Sprite.load("./assets/player_sheet.png", true);
+
+// Configurer les paramètres du sprite sheet
+playerSprite.animations.column = 10;  // Nombre de colonnes
+playerSprite.animations.row = 5;     // Nombre de lignes
+playerSprite.animations.frameRate = 10; // Vitesse de l'animation
+
+// Créer une animation
+playerSprite.animations.createAnimationFrames(
+    0,    // Frame de début
+    4,    // Frame de fin
+    "idle", // Nom de l'animation
+    10     // Frame rate (optionnel)
+);</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+
+                    <h3>Lire une animation sur une entité</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Entity } from "../classes/entity.js";
+
+const player = Entity.create({
+    sprite: playerSprite,
+    position: {x: 100, y: 100}
+});
+
+// Définir l'animation actuelle
+player.currentAnimation = "idle";
+
+// L'animation se jouera automatiquement lors de l'appel à update()
+function gameLoop() {
+    player.update();
+    player.drawEntity(mainCam);
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🔧 Constructeur</h2>
+                    <p>La classe <code>Animation</code> est généralement instanciée automatiquement par la classe <code>Sprite</code>.</p>
+                    <div class="constructor-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Paramètre</th>
+                                    <th>Type</th>
+                                    <th>Défaut</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>image</code></td>
+                                    <td><code>HTMLImageElement</code></td>
+                                    <td>-</td>
+                                    <td>L'image source du sprite sheet.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>row</code></td>
+                                    <td><code>number</code></td>
+                                    <td><code>1</code></td>
+                                    <td>Nombre de lignes dans le sprite sheet.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>column</code></td>
+                                    <td><code>number</code></td>
+                                    <td><code>1</code></td>
+                                    <td>Nombre de colonnes dans le sprite sheet.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>frameRate</code></td>
+                                    <td><code>number</code></td>
+                                    <td><code>1</code></td>
+                                    <td>Vitesse de base des animations (frames par seconde).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>📜 Propriétés</h2>
+                    <div class="properties-grid">
+                        <div class="property-card">
+                            <h3><code>image</code></h3>
+                            <p><strong>Type:</strong> <code>HTMLImageElement</code></p>
+                            <p><strong>Description:</strong> L'image source du sprite sheet.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>row</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> Nombre de lignes dans le sprite sheet.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>column</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> Nombre de colonnes dans le sprite sheet.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>frameRate</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> Vitesse de base des animations (frames par seconde).</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>frameWidth</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> Largeur d'un frame (calculée automatiquement).</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>frameHeight</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> Hauteur d'un frame (calculée automatiquement).</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>⚙️ Méthodes</h2>
+                    <div class="methods-list">
+                        <div class="method-card">
+                            <h3><code>initSpritSheet()</code></h3>
+                            <p><strong>Description:</strong> Initialise les dimensions des frames du sprite sheet. Appelé automatiquement lors du chargement.</p>
+                            <p><strong>Retourne:</strong> <code>void</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>createAnimationFrames(startFrame, endFrame, animationName, frameRate, frameWidth, frameHeight)</code></h3>
+                            <p><strong>Paramètres:</strong></p>
+                            <ul>
+                                <li><code>startFrame: number</code> - Numéro du premier frame.</li>
+                                <li><code>endFrame: number</code> - Numéro du dernier frame.</li>
+                                <li><code>animationName: string</code> - Nom de l'animation.</li>
+                                <li><code>frameRate: number</code> - Vitesse de l'animation (optionnel).</li>
+                                <li><code>frameWidth: number</code> - Largeur des frames (optionnel).</li>
+                                <li><code>frameHeight: number</code> - Hauteur des frames (optionnel).</li>
+                            </ul>
+                            <p><strong>Description:</strong> Crée une nouvelle animation à partir d'une série de frames.</p>
+                            <p><strong>Retourne:</strong> <code>void</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>setAnimationFrameHitBox(animationName, startWidth, endWidth, startHeight, endHeight)</code></h3>
+                            <p><strong>Paramètres:</strong></p>
+                            <ul>
+                                <li><code>animationName: string</code> - Nom de l'animation.</li>
+                                <li><code>startWidth: number</code> - Position X de départ de la hitbox.</li>
+                                <li><code>endWidth: number</code> - Position X de fin de la hitbox.</li>
+                                <li><code>startHeight: number</code> - Position Y de départ de la hitbox.</li>
+                                <li><code>endHeight: number</code> - Position Y de fin de la hitbox.</li>
+                            </ul>
+                            <p><strong>Description:</strong> Définit une hitbox pour une animation spécifique.</p>
+                            <p><strong>Retourne:</strong> <code>void</code></p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🎯 Exemples</h2>
+
+                    <h3>Exemple 1: Animation simple</h3>
+                    <div class="example-block">
+                        <div class="example-demo">
+                            <canvas id="animation-demo" width="600" height="400"></canvas>
+                            <p style="text-align: center; margin-top: 10px; color: #666;">
+                                Animation d'un sprite sheet avec 4 frames.
+                            </p>
+                        </div>
+                        <div class="code-block">
+                            <pre><code class="language-javascript">import { Sprite } from "../classes/sprites.js";
+import { Entity } from "../classes/entity.js";
+
+// Charger un sprite animé
+const playerSprite = await Sprite.load("./assets/player_sheet.png", true);
+
+// Configurer le sprite sheet (4 colonnes, 1 ligne)
+playerSprite.animations.column = 4;
+playerSprite.animations.row = 1;
+playerSprite.animations.frameRate = 10;
+
+// Créer une animation "walk" avec les frames 0 à 3
+playerSprite.animations.createAnimationFrames(0, 3, "walk", 10);
+
+// Créer une entité avec le sprite
+const player = Entity.create({
+    sprite: playerSprite,
+    position: {x: 100, y: 100}
+});
+
+// Définir l'animation actuelle
+player.currentAnimation = "walk";
+
+function gameLoop() {
+    player.update();
+    player.drawEntity(mainCam);
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        </div>
+                    </div>
+
+                    <h3>Exemple 2: Plusieurs animations</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Sprite } from "../classes/sprites.js";
+
+// Charger un sprite sheet avec plusieurs animations
+const characterSprite = await Sprite.load("./assets/character_sheet.png", true);
+
+// Configurer le sprite sheet (10 colonnes, 5 lignes)
+characterSprite.animations.column = 10;
+characterSprite.animations.row = 5;
+characterSprite.animations.frameRate = 12;
+
+// Créer différentes animations
+// Idle: frames 0-3
+characterSprite.animations.createAnimationFrames(0, 3, "idle", 12);
+
+// Walk: frames 10-17
+characterSprite.animations.createAnimationFrames(10, 17, "walk", 12);
+
+// Attack: frames 20-25
+characterSprite.animations.createAnimationFrames(20, 25, "attack", 15);
+
+// Jump: frames 30-35
+characterSprite.animations.createAnimationFrames(30, 35, "jump", 10);
+
+// Définir les hitboxes pour chaque animation
+characterSprite.animations.setAnimationFrameHitBox("idle", 15, 49, 10, 54);
+characterSprite.animations.setAnimationFrameHitBox("walk", 15, 49, 10, 54);
+characterSprite.animations.setAnimationFrameHitBox("attack", 10, 55, 5, 58);
+characterSprite.animations.setAnimationFrameHitBox("jump", 12, 52, 8, 56);
+
+// Utiliser dans une entité
+const character = Entity.create({
+    sprite: characterSprite,
+    position: {x: 200, y: 200}
+});
+
+// Changer d'animation selon l'état
+function updateCharacter() {
+    if (isWalking) {
+        character.currentAnimation = "walk";
+    } else if (isAttacking) {
+        character.currentAnimation = "attack";
+    } else if (isJumping) {
+        character.currentAnimation = "jump";
+    } else {
+        character.currentAnimation = "idle";
+    }
+}</code></pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        </div>
+
+                    <h3>Exemple 3: Animation avec frames personnalisés</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Sprite } from "../classes/sprites.js";
+
+// Sprite sheet avec des frames de tailles différentes
+const customSprite = await Sprite.load("./assets/custom_sheet.png", true);
+
+// Configurer le sprite sheet
+customSprite.animations.column = 20;
+customSprite.animations.row = 10;
+
+// Créer une animation avec des dimensions de frame personnalisées
+customSprite.animations.createAnimationFrames(
+    0,      // Frame de début
+    5,      // Frame de fin
+    "custom", // Nom de l'animation
+    8,      // Frame rate
+    64,     // Largeur des frames
+    128     // Hauteur des frames
+);
+
+// Créer une entité
+const entity = Entity.create({
+    sprite: customSprite,
+    position: {x: 100, y: 100},
+    scale: 2  // Agrandir le sprite
+});
+
+entity.currentAnimation = "custom";</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>💡 Conseils et bonnes pratiques</h2>
+                    <ul class="tips-list">
+                        <li>🔹 <strong>Organisez vos sprite sheets</strong> avec des frames de même taille pour faciliter la configuration.</li>
+                        <li>🔹 Utilisez des noms d'animations <strong>clairs et descriptifs</strong> (ex: "walk_right", "attack_1", "jump_start").</li>
+                        <li>🔹 Définissez toujours les <strong>hitboxes</strong> pour vos animations si vous utilisez la détection de collisions.</li>
+                        <li>🔹 Pour des animations fluides, ajustez le <code>frameRate</code> en fonction de la vitesse souhaitée.</li>
+                        <li>🔹 Vous pouvez <strong>changer d'animation à tout moment</strong> en modifiant la propriété <code>currentAnimation</code> de l'entité.</li>
+                        <li>🔹 Pour des effets spéciaux, créez des animations séparées et basculez entre elles selon l'état du jeu.</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>🔗 Voir aussi</h2>
+                    <p>La classe Animation travaille en étroite collaboration avec :</p>
+                    <ul class="tips-list">
+                        <li>🔹 <a href="../pages/sprite.html">Sprite</a> - Pour charger les images et sprite sheets</li>
+                        <li>🔹 <a href="../pages/entity.html">Entity</a> - Pour utiliser les animations dans le jeu</li>
+                        <li>🔹 <a href="../pages/camera.html">Camera</a> - Pour afficher les animations à l'écran</li>
+                    </ul>
+                </section>
+            </article>
+        </div>
+    </main>
+    <script src="../js/doc.js"></script>
+</body>
+</html>

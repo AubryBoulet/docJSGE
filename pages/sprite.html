@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Documentation de la classe Sprite de JSGE - Gestion des images et sprites pour le rendu 2D.">
+    <title>Sprite - JSGE Documentation</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" />
+</head>
+<body>
+    <!-- Barre de navigation latérale -->
+    <nav class="sidebar">
+        <div class="logo">
+            <h1>JSGE</h1>
+            <p>Moteur de jeu léger en JavaScript</p>
+        </div>
+        <ul class="nav-list">
+            <li><a href="../index.html" class="nav-link">🏠 Accueil</a></li>
+            <li class="nav-section">🎮 Rendu</li>
+            <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
+            <li><a href="../pages/sprite.html" class="nav-link active">Sprite</a></li>
+            <li><a href="../pages/animation.html" class="nav-link">Animation</a></li>
+            <li class="nav-section">🎭 Entités</li>
+            <li><a href="../pages/entity.html" class="nav-link">Entity</a></li>
+            <li><a href="../pages/element.html" class="nav-link">Element</a></li>
+            <li class="nav-section">⚡ UI</li>
+            <li><a href="../pages/gadget.html" class="nav-link">Gadget</a></li>
+            <li><a href="../pages/button.html" class="nav-link">Button</a></li>
+            <li><a href="../pages/text.html" class="nav-link">Text</a></li>
+            <li class="nav-section">🔄 Transitions</li>
+            <li><a href="../pages/transition.html" class="nav-link">Transition</a></li>
+            <li><a href="../pages/bezier.html" class="nav-link">Bezier</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p><small>v1.0.0</small></p>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <!-- En-tête de page -->
+            <header class="page-header">
+                <h1 id="page-title">Sprite</h1>
+                <p id="page-description">Classe pour charger, créer et gérer des images et sprites pour le rendu 2D.</p>
+            </header>
+
+            <!-- Contenu de la documentation -->
+            <article class="doc-content">
+                <section class="section">
+                    <h2>📌 Description</h2>
+                    <p>
+                        La classe <code>Sprite</code> permet de charger des images depuis des fichiers ou de créer
+                        des sprites dynamiquement. Elle gère également les animations via la classe <code>Animation</code>.
+                        Chaque sprite peut être animé ou statique, et peut être utilisé avec des entités pour
+                        l'affichage dans une caméra.
+                    </p>
+                    <div class="info-box">
+                        <strong>⚠️ Important:</strong> Les sprites chargés depuis des images sont asynchrones. Utilisez <code>await</code> ou <code>.then()</code> pour attendre le chargement.
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🚀 Utilisation de base</h2>
+
+                    <h3>Charger un sprite depuis une image</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Sprite } from "../classes/sprites.js";
+
+// Méthode asynchrone pour charger une image
+const playerSprite = await Sprite.load("./assets/player.png", true);
+
+// Le sprite est maintenant prêt à être utilisé
+console.log("Sprite chargé:", playerSprite);</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+
+                    <h3>Créer un sprite vide</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Sprite } from "../classes/sprites.js";
+
+// Créer un sprite vide de 50x50 pixels
+const emptySprite = Sprite.create(50, 50, false);
+
+// Dessiner sur le sprite
+const ctx = emptySprite.ctx;
+ctx.fillStyle = "red";
+ctx.fillRect(0, 0, 50, 50);</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🔧 Constructeur</h2>
+                    <p>La classe <code>Sprite</code> peut être instanciée directement, mais il est recommandé d'utiliser les méthodes statiques :</p>
+                    <div class="constructor-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Méthode</th>
+                                    <th>Paramètres</th>
+                                    <th>Retourne</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>Sprite.load(imageSrc, animate)</code></td>
+                                    <td>
+                                        <code>imageSrc: string</code> - Chemin vers l'image<br>
+                                        <code>animate: boolean</code> - Si vrai, le sprite est animé
+                                    </td>
+                                    <td><code>Promise&lt;Sprite&gt;</code></td>
+                                    <td>Charge une image et retourne une promesse avec le sprite.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Sprite.create(width, height, animate)</code></td>
+                                    <td>
+                                        <code>width: number</code> - Largeur du sprite<br>
+                                        <code>height: number</code> - Hauteur du sprite<br>
+                                        <code>animate: boolean</code> - Si vrai, le sprite est animé
+                                    </td>
+                                    <td><code>Sprite</code></td>
+                                    <td>Crée un sprite vide avec les dimensions spécifiées.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>📜 Propriétés</h2>
+                    <div class="properties-grid">
+                        <div class="property-card">
+                            <h3><code>image</code></h3>
+                            <p><strong>Type:</strong> <code>HTMLImageElement | HTMLCanvasElement</code></p>
+                            <p><strong>Description:</strong> L'image ou le canvas sous-jacent du sprite.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>ctx</code></h3>
+                            <p><strong>Type:</strong> <code>CanvasRenderingContext2D | null</code></p>
+                            <p><strong>Description:</strong> Le contexte 2D si le sprite a été créé avec Sprite.create().</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>width</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> Largeur du sprite.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>height</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> Hauteur du sprite.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>animate</code></h3>
+                            <p><strong>Type:</strong> <code>boolean</code></p>
+                            <p><strong>Description:</strong> Indique si le sprite est animé.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>animations</code></h3>
+                            <p><strong>Type:</strong> <code>Animation</code></p>
+                            <p><strong>Description:</strong> L'objet Animation associé au sprite pour gérer les animations.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>scale</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> Échelle du sprite (par défaut 1).</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>⚙️ Méthodes</h2>
+                    <div class="methods-list">
+                        <div class="method-card">
+                            <h3><code>initSpriteSheet()</code></h3>
+                            <p><strong>Description:</strong> Initialise les dimensions du sprite sheet. Appelé automatiquement lors du chargement.</p>
+                            <p><strong>Retourne:</strong> <code>void</code></p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🎯 Exemples</h2>
+
+                    <h3>Exemple 1: Charger et afficher un sprite</h3>
+                    <div class="example-block">
+                        <div class="example-demo">
+                            <canvas id="sprite-demo" width="600" height="400"></canvas>
+                            <p style="text-align: center; margin-top: 10px; color: #666;">
+                                Flèches: Déplacer | + / -: Zoom | R: Rotation | S: Réinitialiser
+                            </p>
+                        </div>
+                        <div class="code-block">
+                            <pre><code class="language-javascript">import { Sprite } from "../classes/sprites.js";
+import { Entity } from "../classes/entity.js";
+import { Camera } from "../classes/camera.js";
+
+// Charger un sprite
+const playerSprite = await Sprite.load("./assets/player.png", true);
+
+// Créer une entité avec le sprite
+const player = Entity.create({
+    sprite: playerSprite,
+    position: {x: 100, y: 100}
+});
+
+// Créer une caméra
+const canvas = document.querySelector("#gameCanvas");
+const mainCam = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600}
+});
+
+function gameLoop() {
+    mainCam.clear();
+    player.drawEntity(mainCam);
+    requestAnimationFrame(gameLoop);
+}
+gameLoop();</code></pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        </div>
+                    </div>
+
+                    <h3>Exemple 2: Créer un sprite dynamiquement</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Sprite } from "../classes/sprites.js";
+
+// Créer un sprite vide de 100x100 pixels
+const customSprite = Sprite.create(100, 100, false);
+
+// Dessiner un cercle sur le sprite
+const ctx = customSprite.ctx;
+ctx.fillStyle = "#3498db";
+ctx.beginPath();
+ctx.arc(50, 50, 40, 0, Math.PI * 2);
+ctx.fill();
+
+// Dessiner un texte
+ctx.fillStyle = "#fff";
+ctx.font = "20px Arial";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+ctx.fillText("JSGE", 50, 50);
+
+// Utiliser le sprite avec une entité
+const entity = Entity.create({
+    sprite: customSprite,
+    position: {x: 200, y: 200}
+});</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+
+                    <h3>Exemple 3: Charger plusieurs sprites</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Sprite } from "../classes/sprites.js";
+
+// Charger plusieurs sprites en parallèle
+const spritePromises = [
+    Sprite.load("./assets/player.png", true),
+    Sprite.load("./assets/enemy.png", true),
+    Sprite.load("./assets/background.png", false)
+];
+
+// Attendre que tous les sprites soient chargés
+Promise.all(spritePromises)
+    .then(([playerSprite, enemySprite, bgSprite]) => {
+        // Tous les sprites sont prêts
+        const player = Entity.create({ sprite: playerSprite });
+        const enemy = Entity.create({ sprite: enemySprite });
+        
+        // Utiliser les sprites...
+    })
+    .catch(error => {
+        console.error("Erreur de chargement:", error);
+    });</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>💡 Conseils et bonnes pratiques</h2>
+                    <ul class="tips-list">
+                        <li>🔹 <strong>Toujours attendre</strong> que les sprites soient chargés avant de les utiliser avec <code>await</code> ou <code>.then()</code>.</li>
+                        <li>🔹 Utilisez <code>Sprite.create()</code> pour créer des sprites dynamiques (barres de vie, icônes, etc.).</li>
+                        <li>🔹 Pour de meilleures performances, <strong>préchargez tous vos sprites</strong> avant de commencer le jeu.</li>
+                        <li>🔹 Les sprites animés (<code>animate: true</code>) sont optimisés pour les animations avec la classe <code>Animation</code>.</li>
+                        <li>🔹 Vous pouvez modifier directement le contexte (<code>ctx</code>) d'un sprite créé avec <code>Sprite.create()</code> pour dessiner dessus.</li>
+                        <li>🔹 Pour les jeux avec beaucoup de sprites, envisagez de les regrouper dans des sprite sheets pour réduire le nombre de requêtes HTTP.</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>🔗 Voir aussi</h2>
+                    <p>La classe Sprite travaille en étroite collaboration avec :</p>
+                    <ul class="tips-list">
+                        <li>🔹 <a href="../pages/animation.html">Animation</a> - Pour gérer les animations de sprite sheets</li>
+                        <li>🔹 <a href="../pages/entity.html">Entity</a> - Pour utiliser les sprites dans le jeu</li>
+                        <li>🔹 <a href="../pages/camera.html">Camera</a> - Pour afficher les sprites à l'écran</li>
+                    </ul>
+                </section>
+            </article>
+        </div>
+    </main>
+    <script src="../js/doc.js"></script>
+</body>
+</html>

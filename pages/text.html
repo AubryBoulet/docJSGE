@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Documentation de la classe Text de JSGE - Gestion du texte avec effets spéciaux.">
+    <title>Text - JSGE Documentation</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" />
+</head>
+<body>
+    <!-- Barre de navigation latérale -->
+    <nav class="sidebar">
+        <div class="logo">
+            <h1>JSGE</h1>
+            <p>Moteur de jeu léger en JavaScript</p>
+        </div>
+        <ul class="nav-list">
+            <li><a href="../index.html" class="nav-link">🏠 Accueil</a></li>
+            <li class="nav-section">🎮 Rendu</li>
+            <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
+            <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
+            <li><a href="../pages/animation.html" class="nav-link">Animation</a></li>
+            <li class="nav-section">🎭 Entités</li>
+            <li><a href="../pages/entity.html" class="nav-link">Entity</a></li>
+            <li><a href="../pages/element.html" class="nav-link">Element</a></li>
+            <li class="nav-section">⚡ UI</li>
+            <li><a href="../pages/gadget.html" class="nav-link">Gadget</a></li>
+            <li><a href="../pages/button.html" class="nav-link">Button</a></li>
+            <li><a href="../pages/text.html" class="nav-link active">Text</a></li>
+            <li class="nav-section">🔄 Transitions</li>
+            <li><a href="../pages/transition.html" class="nav-link">Transition</a></li>
+            <li><a href="../pages/bezier.html" class="nav-link">Bezier</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p><small>v1.0.0</small></p>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <!-- En-tête de page -->
+            <header class="page-header">
+                <h1 id="page-title">Text</h1>
+                <p id="page-description">Classe pour créer et afficher du texte avec effets spéciaux et animations.</p>
+            </header>
+
+            <!-- Contenu de la documentation -->
+            <article class="doc-content">
+                <section class="section">
+                    <h2>📌 Description</h2>
+                    <p>
+                        La classe <code>Text</code> permet de créer et d'afficher du texte avec divers effets spéciaux
+                        comme les ondes, les tremblements, les clignotements, et les dégradés. Elle est utilisée en
+                        interne par <code>Gadget</code> et <code>Button</code>, mais peut aussi être utilisée
+                        indépendamment pour afficher du texte à l'écran.
+                    </p>
+                    <p>
+                        Text gère automatiquement le rendu du texte avec les effets appliqués, et peut être
+                        mis à jour dynamiquement.
+                    </p>
+                </section>
+
+                <section class="section">
+                    <h2>🚀 Utilisation de base</h2>
+
+                    <h3>Créer un texte simple</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Text } from "../classes/text.js";
+
+// Créer un objet Text
+const myText = new Text(
+    "Bonjour JSGE!",    // Texte à afficher
+    200,                // Largeur du canvas
+    50                 // Hauteur du canvas
+);
+
+// Accéder au canvas et au contexte
+const canvas = myText._canvas;
+const ctx = myText._ctx;
+
+// Dessiner le texte manuellement
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+myText._updateCanvas(); // Met à jour le rendu du texte</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+
+                    <h3>Créer un texte avec effets</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Text } from "../classes/text.js";
+
+// Créer un texte avec des effets
+const animatedText = new Text(
+    "${wave(2,5,5)} Texte ${blink(0,20)} animé",
+    300,
+    60
+);
+
+// Le texte sera automatiquement animé lors des mises à jour
+// Pour forcer une mise à jour :
+animatedText._update();</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🔧 Constructeur</h2>
+                    <p>La classe <code>Text</code> accepte les paramètres suivants :</p>
+                    <div class="constructor-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Paramètre</th>
+                                    <th>Type</th>
+                                    <th>Défaut</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>value</code></td>
+                                    <td><code>string</code></td>
+                                    <td>-</td>
+                                    <td>Texte à afficher. Peut contenir des tags d'effets spéciaux.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>width</code></td>
+                                    <td><code>number</code></td>
+                                    <td>-</td>
+                                    <td>Largeur du canvas interne.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>height</code></td>
+                                    <td><code>number</code></td>
+                                    <td>-</td>
+                                    <td>Hauteur du canvas interne.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>📜 Propriétés</h2>
+                    <div class="properties-grid">
+                        <div class="property-card">
+                            <h3><code>value</code></h3>
+                            <p><strong>Type:</strong> <code>string</code></p>
+                            <p><strong>Description:</strong> Texte à afficher.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>originalValue</code></h3>
+                            <p><strong>Type:</strong> <code>string</code></p>
+                            <p><strong>Description:</strong> Valeur originale du texte (sans les effets appliqués).</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>canvas</code></h3>
+                            <p><strong>Type:</strong> <code>HTMLCanvasElement</code></p>
+                            <p><strong>Description:</strong> Le canvas interne utilisé pour le rendu du texte.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>ctx</code></h3>
+                            <p><strong>Type:</strong> <code>CanvasRenderingContext2D</code></p>
+                            <p><strong>Description:</strong> Le contexte 2D du canvas interne.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>width</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> Largeur du canvas interne.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>height</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> Hauteur du canvas interne.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>⚙️ Méthodes</h2>
+                    <div class="methods-list">
+                        <div class="method-card">
+                            <h3><code>addGradient(name, gradient)</code></h3>
+                            <p><strong>Paramètres:</strong></p>
+                            <ul>
+                                <li><code>name: string</code> - Nom du dégradé.</li>
+                                <li><code>gradient: CanvasGradient</code> - L'objet dégradé à enregistrer.</li>
+                            </ul>
+                            <p><strong>Description:</strong> Enregistre un dégradé pour une utilisation ultérieure avec le tag <code>${grad(name)}</code>.</p>
+                            <p><strong>Retourne:</strong> <code>void</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>_updateEffect()</code></h3>
+                            <p><strong>Description:</strong> Force le recalcul des effets de texte. Utile lorsque vous modifiez les propriétés des effets.</p>
+                            <p><strong>Retourne:</strong> <code>void</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>_update()</code></h3>
+                            <p><strong>Description:</strong> Vérifie si les effets de texte doivent être mis à jour. Retourne true si une mise à jour est nécessaire.</p>
+                            <p><strong>Retourne:</strong> <code>boolean</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>_updateCanvas()</code></h3>
+                            <p><strong>Description:</strong> Met à jour le canvas interne avec le texte et les effets actuels.</p>
+                            <p><strong>Retourne:</strong> <code>void</code></p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🎯 Exemples</h2>
+
+                    <h3>Exemple 1: Texte avec plusieurs effets</h3>
+                    <div class="example-block">
+                        <div class="example-demo">
+                            <canvas id="text-demo" width="600" height="400"></canvas>
+                            <p style="text-align: center; margin-top: 10px; color: #666;">
+                                Animation de texte avec différents effets.
+                            </p>
+                        </div>
+                        <div class="code-block">
+                            <pre><code class="language-javascript">import { Text } from "../classes/text.js";
+import { Camera } from "../classes/camera.js";
+
+// Créer un texte avec plusieurs effets
+const fancyText = new Text(
+    "${wave(2,5,5)} JSGE ${shake(3,5,3)} est ${blink(0,20)} génial !",
+    400,
+    100
+);
+
+// Créer une caméra
+const canvas = document.querySelector("#gameCanvas");
+const mainCam = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600}
+});
+
+// Dessiner le texte dans la caméra
+function gameLoop() {
+    mainCam.clear();
+    
+    // Mettre à jour les effets
+    fancyText._update();
+    
+    // Dessiner le canvas du texte dans la caméra
+    mainCam.ctx.drawImage(
+        fancyText._canvas,
+        100,  // x
+        100   // y
+    );
+    
+    requestAnimationFrame(gameLoop);
+}
+gameLoop();</code></pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        </div>
+                    </div>
+
+                    <h3>Exemple 2: Texte avec dégradé</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Text } from "../classes/text.js";
+
+// Créer un texte
+const gradientText = new Text("Texte avec dégradé", 300, 50);
+
+// Créer un dégradé
+const gradient = gradientText._ctx.createLinearGradient(0, 0, 300, 0);
+gradient.addColorStop(0, "#e74c3c");
+gradient.addColorStop(0.5, "#f1c40f");
+gradient.addColorStop(1, "#2ecc71");
+
+// Ajouter le dégradé au texte
+gradientText.addGradient("rainbow", gradient);
+
+// Mettre à jour le texte pour appliquer le dégradé
+gradientText.value = "${grad(rainbow)} Texte coloré";
+gradientText._updateEffect();
+
+// Dessiner le texte
+const canvas = document.querySelector("#gameCanvas");
+const ctx = canvas.getContext("2d");
+ctx.drawImage(gradientText._canvas, 100, 100);</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+
+                    <h3>Exemple 3: Texte multi-lignes</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Text } from "../classes/text.js";
+
+// Créer un texte multi-lignes
+const multiLineText = new Text(
+    "Ligne 1\nLigne 2\nLigne 3",
+    300,
+    100
+);
+
+// Personnaliser les propriétés du texte
+multiLineText._textInfos.font = "16px Arial";
+multiLineText._textInfos.align = "center";
+multiLineText._textInfos.baseline = "middle";
+multiLineText._textInfos.color = "#3498db";
+
+// Mettre à jour le canvas
+multiLineText._updateCanvas();
+
+// Dessiner le texte
+ctx.drawImage(multiLineText._canvas, 100, 100);</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+
+                    <h3>Exemple 4: Texte avec effets dynamiques</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Text } from "../classes/text.js";
+
+// Créer un texte
+const dynamicText = new Text("Texte dynamique", 300, 50);
+
+// Changer le texte dynamiquement
+function updateTextContent() {
+    const effects = [
+        "${wave(2,5,5)} Ondulation",
+        "${shake(3,5,3)} Tremblement",
+        "${blink(0,20)} Clignotement",
+        "${wave(1,10,2)${shake(2,8,4)}} Combinaison"
+    ];
+    
+    const randomEffect = effects[Math.floor(Math.random() * effects.length)];
+    dynamicText.value = randomEffect;
+    dynamicText._updateEffect();
+}
+
+// Mettre à jour le texte toutes les 2 secondes
+setInterval(updateTextContent, 2000);
+
+// Dessiner le texte
+function gameLoop() {
+    dynamicText._update();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(dynamicText._canvas, 100, 100);
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>💡 Conseils et bonnes pratiques</h2>
+                    <ul class="tips-list">
+                        <li>🔹 Appelez <strong><code>_update()</code></strong> à chaque frame pour mettre à jour les animations de texte.</li>
+                        <li>🔹 Utilisez <strong><code>_updateEffect()</code></strong> après avoir modifié la valeur du texte ou les dégradés.</li>
+                        <li>🔹 Appelez <strong><code>addGradient()</code></strong> avant de définir la valeur du texte si vous utilisez le tag <code>${grad()}</code>.</li>
+                        <li>🔹 Vous pouvez <strong>combiner plusieurs effets</strong> dans un même texte.</li>
+                        <li>🔹 Pour de meilleures performances avec beaucoup de texte, envisagez de <strong>cacher</strong> les textes hors de l'écran.</li>
+                        <li>🔹 Utilisez la propriété <code>_textInfos</code> pour personnaliser l'apparence du texte (police, couleur, alignement, etc.).</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>🔗 Voir aussi</h2>
+                    <p>La classe Text est utilisée par :</p>
+                    <ul class="tips-list">
+                        <li>🔹 <a href="../pages/gadget.html">Gadget</a> - Classe de base pour les éléments UI</li>
+                        <li>🔹 <a href="../pages/button.html">Button</a> - Boutons cliquables</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>📖 Tags d'effets disponibles</h2>
+                    <p>Text supporte les tags d'effets suivants :</p>
+                    <div class="constructor-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tag</th>
+                                    <th>Paramètres</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>${wave(amplitude, frequency, speed)}</code></td>
+                                    <td>
+                                        <code>amplitude: number</code> - Amplitude de l'onde en pixels<br>
+                                        <code>frequency: number</code> - Fréquence de l'onde (nombre de frames avant mise à jour)<br>
+                                        <code>speed: number</code> - Vitesse de déplacement de l'onde
+                                    </td>
+                                    <td>Fait onduler le texte verticalement. Crée un effet de vague.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>${shake(amplitude, frequency, speed)}</code></td>
+                                    <td>
+                                        <code>amplitude: number</code> - Amplitude du tremblement en pixels<br>
+                                        <code>frequency: number</code> - Fréquence du tremblement<br>
+                                        <code>speed: number</code> - Vitesse du tremblement
+                                    </td>
+                                    <td>Fait trembler le texte horizontalement et verticalement.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>${blink(start, duration)}</code></td>
+                                    <td>
+                                        <code>start: number</code> - Position de départ du clignotement (0-1)<br>
+                                        <code>duration: number</code> - Durée du clignotement en frames
+                                    </td>
+                                    <td>Fait clignoter le texte en le faisant disparaître et réapparaître.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>${grad(name)}</code></td>
+                                    <td>
+                                        <code>name: string</code> - Nom du dégradé enregistré avec <code>addGradient()</code>
+                                    </td>
+                                    <td>Applique un dégradé de couleur au texte.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="info-box">
+                        <strong>ℹ️ Info:</strong> Vous pouvez imbriquer les tags d'effets pour créer des combinaisons complexes : <code>${wave(2,5,5)${shake(1,3,2)}}</code>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🎨 Personnalisation du texte</h2>
+                    <p>La propriété <code>_textInfos</code> permet de personnaliser l'apparence du texte :</p>
+                    <div class="constructor-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Propriété</th>
+                                    <th>Type</th>
+                                    <th>Défaut</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>font</code></td>
+                                    <td><code>string</code></td>
+                                    <td><code>"24px arial"</code></td>
+                                    <td>Police du texte (taille + famille).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>align</code></td>
+                                    <td><code>string</code></td>
+                                    <td><code>"start"</code></td>
+                                    <td>Alignement horizontal du texte.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>baseline</code></td>
+                                    <td><code>string</code></td>
+                                    <td><code>"alphabetic"</code></td>
+                                    <td>Ligne de base verticale du texte.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>direction</code></td>
+                                    <td><code>string</code></td>
+                                    <td><code>"inherit"</code></td>
+                                    <td>Direction du texte.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>lineHeight</code></td>
+                                    <td><code>number</code></td>
+                                    <td><code>3</code></td>
+                                    <td>Hauteur de ligne pour le texte multi-lignes.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>color</code></td>
+                                    <td><code>string</code></td>
+                                    <td><code>"black"</code></td>
+                                    <td>Couleur du texte.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </article>
+        </div>
+    </main>
+    <script src="../js/doc.js"></script>
+</body>
+</html>

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Documentation de la classe Button de JSGE - Boutons interactifs pour l'interface utilisateur.">
+    <title>Button - JSGE Documentation</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" />
+</head>
+<body>
+    <!-- Barre de navigation latérale -->
+    <nav class="sidebar">
+        <div class="logo">
+            <h1>JSGE</h1>
+            <p>Moteur de jeu léger en JavaScript</p>
+        </div>
+        <ul class="nav-list">
+            <li><a href="../index.html" class="nav-link">🏠 Accueil</a></li>
+            <li class="nav-section">🎮 Rendu</li>
+            <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
+            <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
+            <li><a href="../pages/animation.html" class="nav-link">Animation</a></li>
+            <li class="nav-section">🎭 Entités</li>
+            <li><a href="../pages/entity.html" class="nav-link">Entity</a></li>
+            <li><a href="../pages/element.html" class="nav-link">Element</a></li>
+            <li class="nav-section">⚡ UI</li>
+            <li><a href="../pages/gadget.html" class="nav-link">Gadget</a></li>
+            <li><a href="../pages/button.html" class="nav-link active">Button</a></li>
+            <li><a href="../pages/text.html" class="nav-link">Text</a></li>
+            <li class="nav-section">🔄 Transitions</li>
+            <li><a href="../pages/transition.html" class="nav-link">Transition</a></li>
+            <li><a href="../pages/bezier.html" class="nav-link">Bezier</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p><small>v1.0.0</small></p>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <!-- En-tête de page -->
+            <header class="page-header">
+                <h1 id="page-title">Button</h1>
+                <p id="page-description">Classe pour créer des boutons interactifs avec gestion des événements souris.</p>
+            </header>
+
+            <!-- Contenu de la documentation -->
+            <article class="doc-content">
+                <section class="section">
+                    <h2>📌 Description</h2>
+                    <p>
+                        La classe <code>Button</code> hérite de <code>Gadget</code> et permet de créer des boutons
+                        interactifs pour l'interface utilisateur. Les boutons peuvent contenir du texte,
+                        avoir des couleurs d'arrière-plan, des bordures, des ombres, et répondre aux événements
+                        de la souris (survol, clic).
+                    </p>
+                    <p>
+                        La particularité de Button est qu'il permet d'utiliser des <strong>tags d'effets spéciaux</strong>
+                        dans son texte pour créer des animations avancées (ondulations, clignotements, etc.).
+                    </p>
+                </section>
+
+                <section class="section">
+                    <h2>🚀 Utilisation de base</h2>
+
+                    <h3>Créer un bouton simple</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Button } from "../classes/button.js";
+import { Camera } from "../classes/camera.js";
+
+// Créer un bouton
+const myButton = Button.create("Mon Bouton", {
+    width: 200,
+    height: 50
+});
+
+// Définir la position
+myButton.position = {x: 100, y: 100};
+
+// Définir les événements
+myButton.onClick = () => {
+    console.log("Bouton cliqué !");
+};
+
+myButton.onMouseEnter = () => {
+    console.log("Souris sur le bouton");
+};
+
+myButton.onMouseLeave = () => {
+    console.log("Souris hors du bouton");
+};
+
+// Dessiner le bouton dans une caméra
+function gameLoop() {
+    mainCam.clear();
+    myButton.draw(mainCam);
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+
+                    <h3>Créer un bouton avec des effets de texte</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Button } from "../classes/button.js";
+
+// Créer un bouton avec des effets spéciaux dans le texte
+const fancyButton = Button.create(
+    "${wave(2,5,5)} Bouton ${blink(0,20)} animé ${wave(2,5,10) avec effets}",
+    {width: 250, height: 60}
+);
+
+// Personnaliser l'apparence
+fancyButton.position = {x: 150, y: 150};
+fancyButton.backgroundColor = "#3498db";
+fancyButton.color = "#fff";
+
+// Ajouter un dégradé au texte
+const gradient = document.createElement('canvas').getContext('2d').createLinearGradient(0, 0, 250, 0);
+gradient.addColorStop(0, "#f1c40f");
+gradient.addColorStop(1, "#e74c3c");
+fancyButton.addTextGradient("myGrad", gradient);
+fancyButton.updateText();
+
+// Dessiner le bouton
+fancyButton.draw(mainCam);</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🔧 Méthode de création</h2>
+                    <p>La classe <code>Button</code> utilise une méthode statique <code>create()</code> pour créer des instances :</p>
+                    <div class="constructor-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Paramètre</th>
+                                    <th>Type</th>
+                                    <th>Défaut</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>value</code></td>
+                                    <td><code>string</code></td>
+                                    <td><code>""</code></td>
+                                    <td>Texte du bouton. Peut contenir des tags d'effets spéciaux.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>dimension</code></td>
+                                    <td><code>{width: number, height: number}</code></td>
+                                    <td>-</td>
+                                    <td>Dimensions du bouton.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>position</code></td>
+                                    <td><code>{x: number, y: number}</code></td>
+                                    <td><code>{x: 0, y: 0}</code></td>
+                                    <td>Position initiale du bouton.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>backgroundType</code></td>
+                                    <td><code>"color" | "image"</code></td>
+                                    <td><code>"color"</code></td>
+                                    <td>Type d'arrière-plan du bouton.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>src</code></td>
+                                    <td><code>string</code></td>
+                                    <td><code>undefined</code></td>
+                                    <td>Chemin vers une image d'arrière-plan (si backgroundType est "image").</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>📜 Propriétés</h2>
+                    <p>En plus des propriétés héritées de <code>Gadget</code>, Button offre :</p>
+                    <div class="properties-grid">
+                        <div class="property-card">
+                            <h3><code>backgroundType</code></h3>
+                            <p><strong>Type:</strong> <code>"color" | "image"</code></p>
+                            <p><strong>Description:</strong> Type d'arrière-plan du bouton.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>backgroundColor</code></h3>
+                            <p><strong>Type:</strong> <code>string</code></p>
+                            <p><strong>Description:</strong> Couleur d'arrière-plan du bouton (si backgroundType est "color").</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>backgroundImage</code></h3>
+                            <p><strong>Type:</strong> <code>string</code></p>
+                            <p><strong>Description:</strong> Chemin vers l'image d'arrière-plan (si backgroundType est "image").</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>boxShadow</code></h3>
+                            <p><strong>Type:</strong> <code>Array</code></p>
+                            <p><strong>Description:</strong> Tableau définissant les ombres du bouton. Chaque élément est un tableau [x, y, couleur, flou, étalement, opacity].</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>borderRadius</code></h3>
+                            <p><strong>Type:</strong> <code>Array</code></p>
+                            <p><strong>Description:</strong> Tableau définissant les rayons de bordure [top-left, top-right, bottom-right, bottom-left].</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>textAlign</code></h3>
+                            <p><strong>Type:</strong> <code>string</code></p>
+                            <p><strong>Description:</strong> Alignement du texte dans le bouton ("start", "center", "end", "left", "right").</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>font</code></h3>
+                            <p><strong>Type:</strong> <code>string</code></p>
+                            <p><strong>Description:</strong> Police du texte du bouton.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🎯 Exemples</h2>
+
+                    <h3>Exemple 1: Bouton avec effets avancés</h3>
+                    <div class="example-block">
+                        <div class="example-demo">
+                            <canvas id="button-demo" width="600" height="400"></canvas>
+                            <p style="text-align: center; margin-top: 10px; color: #666;">
+                                Passez la souris sur le bouton pour voir les effets.
+                            </p>
+                        </div>
+                        <div class="code-block">
+                            <pre><code class="language-javascript">import { Button } from "../classes/button.js";
+import { Camera } from "../classes/camera.js";
+
+// Créer un bouton avec des effets de texte avancés
+const button = Button.create(
+    "${wave(5,2,7) Bouton ${blink(0,20) avec} ${wave(2,5,10) effets}}",
+    {width: 200, height: 60}
+);
+
+// Personnaliser l'apparence
+button.position = {x: 200, y: 150};
+button.backgroundColor = "#F0F";
+button.color = "#000";
+button.textAlign = "center";
+button.font = "bold 16px Arial";
+
+// Ajouter des ombres
+button.boxShadow = [
+    [-6, -10, "#FFA", 1],
+    [6, 5, "rgba(0, 0, 255, 0.61)", 3]
+];
+
+// Ajouter un rayon de bordure
+button.borderRadius = [10, 5, 20, 0];
+
+// Définir les événements
+button.onMouseEnter = () => {
+    console.log("Souris sur le bouton");
+};
+
+button.onMouseLeave = () => {
+    console.log("Souris hors du bouton");
+};
+
+button.onClick = () => {
+    console.log("Bouton cliqué !");
+};
+
+// Dessiner le bouton
+function gameLoop() {
+    mainCam.clear();
+    button.draw(mainCam);
+    requestAnimationFrame(gameLoop);
+}
+gameLoop();</code></pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        </div>
+                    </div>
+
+                    <h3>Exemple 2: Bouton avec dégradé de texte</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Button } from "../classes/button.js";
+
+// Créer un dégradé
+const gradient = document.createElement('canvas').getContext('2d').createLinearGradient(0, 0, 200, 0);
+gradient.addColorStop(0, "green");
+gradient.addColorStop(1, "rgba(0, 255, 0, 0.09)");
+
+// Créer un bouton
+const button = Button.create(
+    "${grad(myGrad) Texte avec dégradé}",
+    {width: 200, height: 50}
+);
+
+// Ajouter le dégradé au bouton
+button.addTextGradient("myGrad", gradient);
+button.updateText(); // Important: mettre à jour le texte après avoir ajouté le dégradé
+
+button.position = {x: 100, y: 100};
+button.backgroundColor = "#222";
+button.color = "#fff"; // Cette couleur ne sera pas utilisée car on a un dégradé
+
+// Dessiner le bouton
+button.draw(mainCam);</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+
+                    <h3>Exemple 3: Bouton avec image d'arrière-plan</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Button } from "../classes/button.js";
+
+// Créer un bouton avec une image d'arrière-plan
+const imageButton = Button.create(
+    "Bouton Image",
+    {width: 200, height: 80},
+    {x: 100, y: 100},
+    "image",
+    "./assets/button_bg.png"
+);
+
+// Personnaliser le texte
+imageButton.color = "#fff";
+imageButton.font = "bold 18px Arial";
+imageButton.textAlign = "center";
+
+// Dessiner le bouton
+imageButton.draw(mainCam);</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+
+                    <h3>Exemple 4: Plusieurs boutons avec gestion des clics</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Button } from "../classes/button.js";
+
+// Créer plusieurs boutons
+const buttons = [];
+const buttonConfigs = [
+    {text: "Nouveau Jeu", action: startNewGame},
+    {text: "Charger", action: loadGame},
+    {text: "Options", action: showOptions},
+    {text: "Quitter", action: quitGame}
+];
+
+buttonConfigs.forEach((config, index) => {
+    const button = Button.create(config.text, {
+        width: 150,
+        height: 40
+    });
+    
+    button.position = {x: 100, y: 100 + index * 60};
+    button.backgroundColor = "#3498db";
+    button.color = "#fff";
+    button.onClick = config.action;
+    
+    // Effet de survol
+    button.onMouseEnter = () => {
+        button.backgroundColor = "#2980b9";
+    };
+    
+    button.onMouseLeave = () => {
+        button.backgroundColor = "#3498db";
+    };
+    
+    buttons.push(button);
+});
+
+// Fonctions d'action
+function startNewGame() {
+    console.log("Nouveau jeu démarré");
+}
+
+function loadGame() {
+    console.log("Chargement du jeu");
+}
+
+function showOptions() {
+    console.log("Affichage des options");
+}
+
+function quitGame() {
+    console.log("Quitter le jeu");
+}
+
+// Dessiner tous les boutons
+function gameLoop() {
+    mainCam.clear();
+    buttons.forEach(button => button.draw(mainCam));
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>💡 Conseils et bonnes pratiques</h2>
+                    <ul class="tips-list">
+                        <li>🔹 Utilisez les <strong>tags d'effets</strong> pour créer des boutons animés et attrayants.</li>
+                        <li>🔹 Appelez <strong><code>updateText()</code></strong> après avoir ajouté ou modifié des dégradés.</li>
+                        <li>🔹 Personnalisez l'apparence avec <code>boxShadow</code> et <code>borderRadius</code> pour des boutons modernes.</li>
+                        <li>🔹 Utilisez <code>textAlign</code> pour centrer ou aligner le texte dans le bouton.</li>
+                        <li>🔹 Pour les boutons avec images, assurez-vous que l'image est chargée avant de dessiner.</li>
+                        <li>🔹 Gérez les états de survol (<code>onMouseEnter</code>, <code>onMouseLeave</code>) pour une meilleure UX.</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>🔗 Voir aussi</h2>
+                    <p>La classe Button hérite de :</p>
+                    <ul class="tips-list">
+                        <li>🔹 <a href="../pages/gadget.html">Gadget</a> - Classe de base pour les éléments UI</li>
+                    </ul>
+                    <p>Button utilise :</p>
+                    <ul class="tips-list">
+                        <li>🔹 <a href="../pages/text.html">Text</a> - Pour le rendu du texte avec effets</li>
+                        <li>🔹 <a href="../pages/camera.html">Camera</a> - Pour afficher les boutons à l'écran</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>📖 Tags d'effets disponibles</h2>
+                    <p>Button (via Gadget et Text) supporte les tags d'effets suivants dans la propriété <code>value</code> :</p>
+                    <div class="constructor-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tag</th>
+                                    <th>Paramètres</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>${wave(amplitude, frequency, speed)}</code></td>
+                                    <td>
+                                        <code>amplitude: number</code> - Amplitude de l'onde en pixels<br>
+                                        <code>frequency: number</code> - Fréquence de l'onde<br>
+                                        <code>speed: number</code> - Vitesse de l'onde
+                                    </td>
+                                    <td>Fait onduler le texte verticalement.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>${shake(amplitude, frequency, speed)}</code></td>
+                                    <td>
+                                        <code>amplitude: number</code> - Amplitude du tremblement en pixels<br>
+                                        <code>frequency: number</code> - Fréquence du tremblement<br>
+                                        <code>speed: number</code> - Vitesse du tremblement
+                                    </td>
+                                    <td>Fait trembler le texte.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>${blink(start, duration)}</code></td>
+                                    <td>
+                                        <code>start: number</code> - Position de départ du clignotement<br>
+                                        <code>duration: number</code> - Durée du clignotement
+                                    </td>
+                                    <td>Fait clignoter le texte.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>${grad(name)}</code></td>
+                                    <td>
+                                        <code>name: string</code> - Nom du dégradé enregistré avec <code>addTextGradient()</code>
+                                    </td>
+                                    <td>Applique un dégradé au texte.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </article>
+        </div>
+    </main>
+    <script src="../js/doc.js"></script>
+</body>
+</html>

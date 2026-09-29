@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Documentation de la classe Bezier de JSGE - Fonctions d'interpolation pour les animations.">
+    <title>Bezier - JSGE Documentation</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" />
+</head>
+<body>
+    <!-- Barre de navigation latérale -->
+    <nav class="sidebar">
+        <div class="logo">
+            <h1>JSGE</h1>
+            <p>Moteur de jeu léger en JavaScript</p>
+        </div>
+        <ul class="nav-list">
+            <li><a href="../index.html" class="nav-link">🏠 Accueil</a></li>
+            <li class="nav-section">🎮 Rendu</li>
+            <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
+            <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
+            <li><a href="../pages/animation.html" class="nav-link">Animation</a></li>
+            <li class="nav-section">🎭 Entités</li>
+            <li><a href="../pages/entity.html" class="nav-link">Entity</a></li>
+            <li><a href="../pages/element.html" class="nav-link">Element</a></li>
+            <li class="nav-section">⚡ UI</li>
+            <li><a href="../pages/gadget.html" class="nav-link">Gadget</a></li>
+            <li><a href="../pages/button.html" class="nav-link">Button</a></li>
+            <li><a href="../pages/text.html" class="nav-link">Text</a></li>
+            <li class="nav-section">🔄 Transitions</li>
+            <li><a href="../pages/transition.html" class="nav-link">Transition</a></li>
+            <li><a href="../pages/bezier.html" class="nav-link active">Bezier</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p><small>v1.0.0</small></p>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <!-- En-tête de page -->
+            <header class="page-header">
+                <h1 id="page-title">Bezier</h1>
+                <p id="page-description">Classe contenant les fonctions d'interpolation (easing) pour les animations fluides.</p>
+            </header>
+
+            <!-- Contenu de la documentation -->
+            <article class="doc-content">
+                <section class="section">
+                    <h2>📌 Description</h2>
+                    <p>
+                        La classe <code>Bezier</code> contient une collection complète de fonctions d'interpolation
+                        (easing functions) pour créer des animations fluides et naturelles. Ces fonctions sont utilisées
+                        par la classe <code>Transition</code> pour interpoler les valeurs entre un point de départ et
+                        un point d'arrivée.
+                    </p>
+                    <p>
+                        Chaque fonction d'interpolation prend les mêmes paramètres :
+                    </p>
+                    <ul class="tips-list">
+                        <li>🔹 <code>t</code> - Temps écoulé (en millisecondes)</li>
+                        <li>🔹 <code>b</code> - Valeur de début</li>
+                        <li>🔹 <code>c</code> - Changement de valeur (target - start)</li>
+                        <li>🔹 <code>d</code> - Durée totale (en millisecondes)</li>
+                    </ul>
+                    <p>
+                        La formule générale est : <code>position = b + easing(t, b, c, d)</code>
+                    </p>
+                    <div class="info-box">
+                        <strong>⚠️ Important:</strong> Toutes les fonctions de Bezier sont <strong>statiques</strong>. Vous ne devez pas instancier la classe Bezier.
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🚀 Utilisation de base</h2>
+
+                    <h3>Utiliser une fonction d'interpolation directement</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Bezier } from "../classes/bezier.js";
+
+// Utiliser une fonction d'interpolation
+const startValue = 0;
+const endValue = 100;
+const duration = 2000; // 2 secondes
+let startTime = performance.now();
+
+function animate(timestamp) {
+    const elapsed = timestamp - startTime;
+    
+    // Calculer la valeur interpolée
+    const progress = Math.min(elapsed / duration, 1);
+    const value = Bezier.easeOutElastic(
+        progress * duration,  // t
+        startValue,          // b
+        endValue - startValue, // c
+        duration             // d
+    );
+    
+    console.log("Valeur:", value);
+    
+    if (progress < 1) {
+        requestAnimationFrame(animate);
+    }
+}
+
+requestAnimationFrame(animate);</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+
+                    <h3>Utiliser avec la classe Transition</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Transition } from "../classes/transition.js";
+
+// Transition utilise automatiquement les fonctions de Bezier
+const transitionId = Transition.create([
+    0,
+    500,
+    "easeOutElastic",  // Nom de la fonction d'interpolation
+    (value) => {
+        element.style.left = value + "px";
+    },
+    1.5  // Durée en secondes
+]);</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>📜 Fonctions d'interpolation</h2>
+                    <p>La classe <code>Bezier</code> contient les fonctions d'interpolation suivantes, classées par type :</p>
+
+                    <h3>📈 Linéaire</h3>
+                    <div class="methods-list">
+                        <div class="method-card">
+                            <h3><code>Bezier.linear(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Interpolation linéaire. Vitesse constante.</p>
+                            <p><strong>Formule:</strong> <code>c * (t / d) + b</code></p>
+                            <p><strong>Utilisation:</strong> Déplacements à vitesse constante, progressions linéaires.</p>
+                        </div>
+                    </div>
+
+                    <h3>📊 Quadratique</h3>
+                    <div class="methods-list">
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInQuad(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération quadratique.</p>
+                            <p><strong>Formule:</strong> <code>c * (t /= d) * t + b</code></p>
+                            <p><strong>Utilisation:</strong> Animations qui commencent lentement et accélèrent.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeOutQuad(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Décélération quadratique.</p>
+                            <p><strong>Formule:</strong> <code>-c * (t /= d) * (t - 2) + b</code></p>
+                            <p><strong>Utilisation:</strong> Animations qui commencent rapidement et ralentissent.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInOutQuad(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération puis décélération quadratique.</p>
+                            <p><strong>Formule:</strong> <code>t < d/2 ? c/2 * t * t + b : -c/2 * ((--t) * (t - 2) - 1) + b</code></p>
+                            <p><strong>Utilisation:</strong> Animations fluides avec accélération et décélération.</p>
+                        </div>
+                    </div>
+
+                    <h3>📉 Cubique</h3>
+                    <div class="methods-list">
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInCubic(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération cubique.</p>
+                            <p><strong>Formule:</strong> <code>c * (t /= d) * t * t + b</code></p>
+                            <p><strong>Utilisation:</strong> Accélération plus prononcée que Quad.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeOutCubic(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Décélération cubique.</p>
+                            <p><strong>Formule:</strong> <code>c * ((t = t / d - 1) * t * t + 1) + b</code></p>
+                            <p><strong>Utilisation:</strong> Décélération plus prononcée que Quad.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInOutCubic(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération puis décélération cubique.</p>
+                            <p><strong>Formule:</strong> <code>t < d/2 ? c/2 * t * t * t + b : c/2 * ((t -= 2) * t * t + 2) + b</code></p>
+                            <p><strong>Utilisation:</strong> Effet plus prononcé que Quad.</p>
+                        </div>
+                    </div>
+
+                    <h3>🔢 Quartique</h3>
+                    <div class="methods-list">
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInQuart(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération quartique.</p>
+                            <p><strong>Formule:</strong> <code>c * (t /= d) * t * t * t + b</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeOutQuart(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Décélération quartique.</p>
+                            <p><strong>Formule:</strong> <code>-c * ((t = t / d - 1) * t * t * t - 1) + b</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInOutQuart(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération puis décélération quartique.</p>
+                        </div>
+                    </div>
+
+                    <h3>🔢 Quintique</h3>
+                    <div class="methods-list">
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInQuint(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération quintique.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeOutQuint(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Décélération quintique.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInOutQuint(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération puis décélération quintique.</p>
+                        </div>
+                    </div>
+
+                    <h3>🌊 Sinusoïdale</h3>
+                    <div class="methods-list">
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInSine(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération sinusoïdale.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeOutSine(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Décélération sinusoïdale.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInOutSine(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération puis décélération sinusoïdale.</p>
+                        </div>
+                    </div>
+
+                    <h3>🚀 Exponentielle</h3>
+                    <div class="methods-list">
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInExpo(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération exponentielle.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeOutExpo(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Décélération exponentielle.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInOutExpo(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération puis décélération exponentielle.</p>
+                        </div>
+                    </div>
+
+                    <h3>🎯 Circulaire</h3>
+                    <div class="methods-list">
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInCirc(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération circulaire.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeOutCirc(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Décélération circulaire.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInOutCirc(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération puis décélération circulaire.</p>
+                        </div>
+                    </div>
+
+                    <h3>🪀 Élastique</h3>
+                    <div class="methods-list">
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInElastic(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération élastique avec rebond.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeOutElastic(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Décélération élastique avec rebond.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInOutElastic(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération puis décélération élastique avec rebond.</p>
+                        </div>
+                    </div>
+
+                    <h3>🔙 Retour (Back)</h3>
+                    <div class="methods-list">
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInBack(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération avec mouvement de retour.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeOutBack(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Décélération avec mouvement de retour.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInOutBack(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération puis décélération avec mouvement de retour.</p>
+                        </div>
+                    </div>
+
+                    <h3>🏀 Rebond (Bounce)</h3>
+                    <div class="methods-list">
+                        <div class="method-card">
+                            <h3><code>Bezier.easeOutBounce(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Décélération avec effet de rebond.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInBounce(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération avec effet de rebond.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>Bezier.easeInOutBounce(t, b, c, d)</code></h3>
+                            <p><strong>Description:</strong> Accélération puis décélération avec effet de rebond.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🎯 Exemples</h2>
+
+                    <h3>Exemple 1: Visualisation des courbes d'interpolation</h3>
+                    <div class="example-block">
+                        <div class="example-demo">
+                            <canvas id="bezier-demo" width="600" height="400"></canvas>
+                            <p style="text-align: center; margin-top: 10px; color: #666;">
+                                Animation automatique montrant une courbe de Bézier cubique.
+                            </p>
+                        </div>
+                        <div class="code-block">
+                            <pre><code class="language-javascript">import { Bezier } from "../classes/bezier.js";
+
+const canvas = document.querySelector("#bezier-canvas");
+const ctx = canvas.getContext("2d");
+
+// Dessiner une courbe de Bézier cubique
+function drawBezierCurve() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Points de contrôle
+    const p0 = {x: 50, y: 200};
+    const p1 = {x: 150, y: 50};
+    const p2 = {x: 250, y: 350};
+    const p3 = {x: 350, y: 200};
+    
+    // Dessiner la courbe
+    ctx.strokeStyle = "#3498db";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(p0.x, p0.y);
+    ctx.bezierCurveTo(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+    ctx.stroke();
+    
+    // Dessiner les points de contrôle
+    ctx.fillStyle = "#e74c3c";
+    [p0, p1, p2, p3].forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+        ctx.fill();
+    });
+    
+    // Dessiner les lignes de contrôle
+    ctx.strokeStyle = "#ddd";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(p0.x, p0.y);
+    ctx.lineTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.lineTo(p3.x, p3.y);
+    ctx.stroke();
+}
+
+drawBezierCurve();</code></pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        </div>
+                    </div>
+
+                    <h3>Exemple 2: Comparaison des fonctions d'interpolation</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Bezier } from "../classes/bezier.js";
+
+const canvas = document.querySelector("#comparison-canvas");
+const ctx = canvas.getContext("2d");
+
+// Fonctions d'interpolation à comparer
+const easings = [
+    "linear",
+    "easeInQuad",
+    "easeOutQuad",
+    "easeInOutQuad",
+    "easeOutElastic",
+    "easeOutBounce"
+];
+
+// Dessiner les courbes de toutes les fonctions
+function drawEasingComparison() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    const width = canvas.width / easings.length;
+    
+    easings.forEach((easing, index) => {
+        ctx.strokeStyle = getRandomColor();
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        
+        for (let t = 0; t <= 1; t += 0.01) {
+            // Normaliser t entre 0 et 1
+            const x = index * width + t * width;
+            const y = canvas.height - Bezier[easing](t * 1000, 0, 1, 1000) * canvas.height;
+            
+            if (t === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+        
+        ctx.stroke();
+        
+        // Dessiner le nom de la fonction
+        ctx.fillStyle = "#000";
+        ctx.font = "12px Arial";
+        ctx.fillText(easing, index * width + 10, canvas.height - 10);
+    });
+}
+
+drawEasingComparison();
+
+function getRandomColor() {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+
+                    <h3>Exemple 3: Animation avec différentes fonctions d'interpolation</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Bezier } from "../classes/bezier.js";
+
+// Animer plusieurs éléments avec différentes fonctions d'interpolation
+const elements = [
+    {el: document.getElementById("box1"), easing: "easeInQuad"},
+    {el: document.getElementById("box2"), easing: "easeOutElastic"},
+    {el: document.getElementById("box3"), easing: "easeInOutBack"},
+    {el: document.getElementById("box4"), easing: "easeOutBounce"}
+];
+
+let startTime = performance.now();
+const duration = 2000;
+
+function animate() {
+    const elapsed = performance.now() - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    
+    elements.forEach(({el, easing}) => {
+        const value = Bezier[easing](
+            progress * duration,
+            0,
+            400,
+            duration
+        );
+        el.style.left = value + "px";
+    });
+    
+    if (progress < 1) {
+        requestAnimationFrame(animate);
+    } else {
+        // Réinitialiser pour une nouvelle animation
+        startTime = performance.now();
+        elements.forEach(({el}) => {
+            el.style.left = "0px";
+        });
+        requestAnimationFrame(animate);
+    }
+}
+
+animate();</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>💡 Conseils et bonnes pratiques</h2>
+                    <ul class="tips-list">
+                        <li>🔹 Utilisez <strong><code>easeOutElastic</code></strong> pour des effets de rebond élastique.</li>
+                        <li>🔹 Utilisez <strong><code>easeInOutQuad</code> ou <code>easeInOutCubic</code></strong> pour des animations fluides et naturelles.</li>
+                        <li>🔹 Utilisez <strong><code>linear</code></strong> pour des déplacements à vitesse constante.</li>
+                        <li>🔹 Utilisez <strong><code>easeOutBounce</code></strong> pour des effets de rebond (comme un ballon qui tombe).</li>
+                        <li>🔹 Utilisez <strong><code>easeInBack</code></strong> pour des animations qui "tirent" vers l'arrière avant de partir.</li>
+                        <li>🔹 Expérimentez avec différentes fonctions pour trouver celle qui correspond le mieux à votre effet souhaité.</li>
+                        <li>🔹 Vous pouvez <strong>combiner plusieurs fonctions</strong> pour créer des animations complexes.</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>🔗 Voir aussi</h2>
+                    <p>La classe Bezier est utilisée par :</p>
+                    <ul class="tips-list">
+                        <li>🔹 <a href="../pages/transition.html">Transition</a> - Pour créer des animations fluides</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>📚 Tableau récapitulatif des fonctions</h2>
+                    <p>Voici un tableau récapitulatif de toutes les fonctions d'interpolation disponibles :</p>
+                    <div class="constructor-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Catégorie</th>
+                                    <th>Fonction</th>
+                                    <th>Effet</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td rowspan="1">Linéaire</td>
+                                    <td><code>linear</code></td>
+                                    <td>Vitesse constante</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="3">Quadratique</td>
+                                    <td><code>easeInQuad</code></td>
+                                    <td>Accélération</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeOutQuad</code></td>
+                                    <td>Décélération</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeInOutQuad</code></td>
+                                    <td>Accélération + Décélération</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="3">Cubique</td>
+                                    <td><code>easeInCubic</code></td>
+                                    <td>Accélération forte</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeOutCubic</code></td>
+                                    <td>Décélération forte</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeInOutCubic</code></td>
+                                    <td>Accélération + Décélération forte</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="3">Quartique</td>
+                                    <td><code>easeInQuart</code></td>
+                                    <td>Accélération très forte</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeOutQuart</code></td>
+                                    <td>Décélération très forte</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeInOutQuart</code></td>
+                                    <td>Accélération + Décélération très forte</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="3">Quintique</td>
+                                    <td><code>easeInQuint</code></td>
+                                    <td>Accélération extrêmement forte</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeOutQuint</code></td>
+                                    <td>Décélération extrêmement forte</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeInOutQuint</code></td>
+                                    <td>Accélération + Décélération extrêmement forte</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="3">Sinusoïdale</td>
+                                    <td><code>easeInSine</code></td>
+                                    <td>Accélération sinusoïdale</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeOutSine</code></td>
+                                    <td>Décélération sinusoïdale</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeInOutSine</code></td>
+                                    <td>Accélération + Décélération sinusoïdale</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="3">Exponentielle</td>
+                                    <td><code>easeInExpo</code></td>
+                                    <td>Accélération exponentielle</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeOutExpo</code></td>
+                                    <td>Décélération exponentielle</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeInOutExpo</code></td>
+                                    <td>Accélération + Décélération exponentielle</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="3">Circulaire</td>
+                                    <td><code>easeInCirc</code></td>
+                                    <td>Accélération circulaire</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeOutCirc</code></td>
+                                    <td>Décélération circulaire</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeInOutCirc</code></td>
+                                    <td>Accélération + Décélération circulaire</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="3">Élastique</td>
+                                    <td><code>easeInElastic</code></td>
+                                    <td>Accélération avec rebond élastique</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeOutElastic</code></td>
+                                    <td>Décélération avec rebond élastique</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeInOutElastic</code></td>
+                                    <td>Accélération + Décélération avec rebond élastique</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="3">Retour (Back)</td>
+                                    <td><code>easeInBack</code></td>
+                                    <td>Accélération avec mouvement de retour</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeOutBack</code></td>
+                                    <td>Décélération avec mouvement de retour</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeInOutBack</code></td>
+                                    <td>Accélération + Décélération avec mouvement de retour</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="3">Rebond (Bounce)</td>
+                                    <td><code>easeOutBounce</code></td>
+                                    <td>Décélération avec effet de rebond</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeInBounce</code></td>
+                                    <td>Accélération avec effet de rebond</td>
+                                </tr>
+                                <tr>
+                                    <td><code>easeInOutBounce</code></td>
+                                    <td>Accélération + Décélération avec effet de rebond</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </article>
+        </div>
+    </main>
+    <script src="../js/doc.js"></script>
+</body>
+</html>
