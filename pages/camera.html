@@ -1,27 +1,27 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Documentation de la classe Camera de JSGE - Gestion de l'affichage et du rendu dans un canvas.">
+    <meta name="description" content="Documentation for the Camera class in JSGE - Manage display and rendering in a canvas.">
     <title>Camera - JSGE Documentation</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="icon" href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" />
 </head>
 <body>
-    <!-- Barre de navigation latérale -->
+    <!-- Sidebar Navigation -->
     <nav class="sidebar">
         <div class="logo">
             <h1>JSGE</h1>
-            <p>Moteur de jeu léger en JavaScript</p>
+            <p>Lightweight 2D Game Engine</p>
         </div>
         <ul class="nav-list">
-            <li><a href="../index.html" class="nav-link">🏠 Accueil</a></li>
-            <li class="nav-section">🎮 Rendu</li>
+            <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+            <li class="nav-section">🎮 Rendering</li>
             <li><a href="../pages/camera.html" class="nav-link active">Camera</a></li>
             <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
             <li><a href="../pages/animation.html" class="nav-link">Animation</a></li>
-            <li class="nav-section">🎭 Entités</li>
+            <li class="nav-section">🎭 Entities</li>
             <li><a href="../pages/entity.html" class="nav-link">Entity</a></li>
             <li><a href="../pages/element.html" class="nav-link">Element</a></li>
             <li class="nav-section">⚡ UI</li>
@@ -37,35 +37,34 @@
         </div>
     </nav>
 
-    <!-- Contenu principal -->
+    <!-- Main Content -->
     <main class="main-content">
         <div class="content-wrapper">
-            <!-- En-tête de page -->
+            <!-- Page Header -->
             <header class="page-header">
                 <h1 id="page-title">Camera</h1>
-                <p id="page-description">Classe permettant de gérer l'affichage et le rendu des éléments dans un canvas.</p>
+                <p id="page-description">Class for managing display and rendering of elements in a canvas.</p>
             </header>
 
-            <!-- Contenu de la documentation -->
+            <!-- Documentation Content -->
             <article class="doc-content">
                 <section class="section">
                     <h2>📌 Description</h2>
                     <p>
-                        La classe <code>Camera</code> est le cœur du système de rendu de JSGE.
-                        Elle permet de définir une zone de visualisation dans un canvas, de gérer
-                        les arrière-plans (couleur ou image), et de dessiner des entités à des positions
-                        spécifiques. Plusieurs caméras peuvent coexister sur le même canvas, ce qui
-                        permet de créer des effets de split-screen ou des interfaces complexes.
+                        The <code>Camera</code> class is the heart of the JSGE rendering system.
+                        It allows you to define a viewing area within a canvas, manage backgrounds (color or image),
+                        and draw entities at specific positions. Multiple cameras can coexist on the same canvas,
+                        which allows you to create split-screen effects or complex interfaces.
                     </p>
                     <div class="info-box">
-                        <strong>⚠️ Important:</strong> Une caméra doit toujours être associée à un élément canvas valide.
-                        Sans canvas, la caméra ne pourra pas rendre les éléments.
+                        <strong>⚠️ Important:</strong> A camera must always be associated with a valid canvas element.
+                        Without a canvas, the camera cannot render elements.
                     </div>
                 </section>
 
                 <section class="section">
-                    <h2>🚀 Utilisation de base</h2>
-                    <p>Pour créer une caméra, vous avez besoin d'un élément canvas et de définir ses dimensions :</p>
+                    <h2>🚀 Basic Usage</h2>
+                    <p>To create a camera, you need a canvas element and define its dimensions:</p>
                     <div class="code-block">
                         <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
 
@@ -76,29 +75,29 @@ const mainCam = new Camera({
     dimensions: {width: 800, height: 600},
     backgroundColor: "#222"
 });</code></pre>
-                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <p>Une fois la caméra créée, vous pouvez commencer à dessiner des éléments :</p>
+                    <p>Once the camera is created, you can start drawing elements:</p>
                     <div class="code-block">
-                        <pre><code class="language-javascript">// Effacer la caméra (à faire à chaque frame)
+                        <pre><code class="language-javascript">// Clear the camera (do this every frame)
 mainCam.clear();
 
-// Dessiner une entité (après avoir créé l'entité)
+// Draw an entity (after creating the entity)
 entity.drawEntity(mainCam);</code></pre>
-                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                 </section>
 
                 <section class="section">
-                    <h2>🔧 Constructeur</h2>
-                    <p>La classe <code>Camera</code> accepte les paramètres suivants :</p>
+                    <h2>🔧 Constructor</h2>
+                    <p>The <code>Camera</code> class accepts the following parameters:</p>
                     <div class="constructor-table">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Paramètre</th>
+                                    <th>Parameter</th>
                                     <th>Type</th>
-                                    <th>Défaut</th>
+                                    <th>Default</th>
                                     <th>Description</th>
                                 </tr>
                             </thead>
@@ -107,31 +106,31 @@ entity.drawEntity(mainCam);</code></pre>
                                     <td><code>canvas</code></td>
                                     <td><code>HTMLCanvasElement</code></td>
                                     <td><code>null</code></td>
-                                    <td>L'élément canvas sur lequel la caméra va dessiner. <strong>Obligatoire</strong></td>
+                                    <td>The canvas element on which the camera will draw. <strong>Required</strong></td>
                                 </tr>
                                 <tr>
                                     <td><code>position</code></td>
                                     <td><code>{x: number, y: number}</code></td>
                                     <td><code>{x: 0, y: 0}</code></td>
-                                    <td>Position initiale de la caméra dans la scène (en pixels).</td>
+                                    <td>Initial position of the camera in the scene (in pixels).</td>
                                 </tr>
                                 <tr>
                                     <td><code>dimensions</code></td>
                                     <td><code>{width: number, height: number}</code></td>
                                     <td><code>{width: 100, height: 100}</code></td>
-                                    <td>Largeur et hauteur de la zone de rendu de la caméra.</td>
+                                    <td>Width and height of the camera's rendering area.</td>
                                 </tr>
                                 <tr>
                                     <td><code>backgroundColor</code></td>
                                     <td><code>string</code></td>
                                     <td><code>null</code></td>
-                                    <td>Couleur d'arrière-plan de la caméra (ex: "#ff0000", "blue", "rgba(0,0,0,0.5)").</td>
+                                    <td>Background color of the camera (e.g., "#ff0000", "blue", "rgba(0,0,0,0.5)").</td>
                                 </tr>
                                 <tr>
                                     <td><code>backgroundImage</code></td>
                                     <td><code>string</code></td>
                                     <td><code>null</code></td>
-                                    <td>Chemin vers une image d'arrière-plan (ex: "./assets/background.png").</td>
+                                    <td>Path to a background image (e.g., "./assets/background.png").</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -139,99 +138,99 @@ entity.drawEntity(mainCam);</code></pre>
                 </section>
 
                 <section class="section">
-                    <h2>📜 Propriétés</h2>
+                    <h2>📜 Properties</h2>
                     <div class="properties-grid">
                         <div class="property-card">
                             <h3><code>canvas</code></h3>
                             <p><strong>Type:</strong> <code>HTMLCanvasElement</code></p>
-                            <p><strong>Description:</strong> L'élément canvas associé à la caméra.</p>
+                            <p><strong>Description:</strong> The canvas element associated with the camera.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>ctx</code></h3>
                             <p><strong>Type:</strong> <code>CanvasRenderingContext2D</code></p>
-                            <p><strong>Description:</strong> Le contexte 2D du canvas.</p>
+                            <p><strong>Description:</strong> The 2D context of the canvas.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>position</code></h3>
                             <p><strong>Type:</strong> <code>{x: number, y: number}</code></p>
-                            <p><strong>Description:</strong> Position de la caméra dans la scène (en pixels).</p>
+                            <p><strong>Description:</strong> Position of the camera in the scene (in pixels).</p>
                         </div>
                         <div class="property-card">
                             <h3><code>dimensions</code></h3>
                             <p><strong>Type:</strong> <code>{width: number, height: number}</code></p>
-                            <p><strong>Description:</strong> Taille de la zone de rendu de la caméra.</p>
+                            <p><strong>Description:</strong> Size of the camera's rendering area.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>backgroundColor</code></h3>
                             <p><strong>Type:</strong> <code>string | null</code></p>
-                            <p><strong>Description:</strong> Couleur d'arrière-plan de la caméra.</p>
+                            <p><strong>Description:</strong> Background color of the camera.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>backgroundImage</code></h3>
                             <p><strong>Type:</strong> <code>string | null</code></p>
-                            <p><strong>Description:</strong> Image d'arrière-plan de la caméra.</p>
+                            <p><strong>Description:</strong> Background image of the camera.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>backgroundImageVelocity</code></h3>
                             <p><strong>Type:</strong> <code>{x: number, y: number}</code></p>
-                            <p><strong>Description:</strong> Vitesse de défilement de l'image d'arrière-plan (en pixels par frame).</p>
+                            <p><strong>Description:</strong> Scrolling speed of the background image (in pixels per frame).</p>
                         </div>
                         <div class="property-card">
                             <h3><code>backgroundImageLoop</code></h3>
                             <p><strong>Type:</strong> <code>boolean</code></p>
-                            <p><strong>Description:</strong> Si vrai, l'image d'arrière-plan se répète en boucle.</p>
+                            <p><strong>Description:</strong> If true, the background image repeats in a loop.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>backgroundImageFillStyle</code></h3>
                             <p><strong>Type:</strong> <code>string</code></p>
-                            <p><strong>Description:</strong> Style de remplissage de l'image. Valeurs possibles : "imageSize" ou "cover".</p>
+                            <p><strong>Description:</strong> Fill style of the image. Possible values: "imageSize" or "cover".</p>
                         </div>
                     </div>
                 </section>
 
                 <section class="section">
-                    <h2>⚙️ Méthodes</h2>
+                    <h2>⚙️ Methods</h2>
                     <div class="methods-list">
                         <div class="method-card">
                             <h3><code>clear()</code></h3>
-                            <p><strong>Description:</strong> Efface le contenu de la caméra en appelant clearRect sur le contexte. Si un arrière-plan est défini, il sera redessiné.</p>
-                            <p><strong>Retourne:</strong> <code>void</code></p>
+                            <p><strong>Description:</strong> Clears the camera content by calling clearRect on the context. If a background is defined, it will be redrawn.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                         <div class="method-card">
                             <h3><code>drawCameraBorder(color)</code></h3>
-                            <p><strong>Paramètres:</strong></p>
+                            <p><strong>Parameters:</strong></p>
                             <ul>
-                                <li><code>color: string</code> - La couleur de la bordure (ex: "yellow", "#ff0000").</li>
+                                <li><code>color: string</code> - The border color (e.g., "yellow", "#ff0000").</li>
                             </ul>
-                            <p><strong>Description:</strong> Dessine une bordure colorée autour de la caméra. Utile pour le débogage.</p>
-                            <p><strong>Retourne:</strong> <code>void</code></p>
+                            <p><strong>Description:</strong> Draws a colored border around the camera. Useful for debugging.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                         <div class="method-card">
-                            <h3><code>moveCamera(offset, mode)</code></h3>
-                            <p><strong>Paramètres:</strong></p>
+                            <h3><code>moveCamera(newPosition, mode)</code></h3>
+                            <p><strong>Parameters:</strong></p>
                             <ul>
-                                <li><code>offset: {x: number, y: number}</code> - Le déplacement à appliquer.</li>
-                                <li><code>mode: "relative" | "absolute"</code> - Le mode de déplacement.</li>
+                                <li><code>newPosition: {x: number, y: number}</code> - The position offset to apply.</li>
+                                <li><code>mode: "relative" | "absolute"</code> - The movement mode.</li>
                             </ul>
-                            <p><strong>Description:</strong> Déplace la caméra selon un offset. En mode "relative", l'offset est ajouté à la position actuelle. En mode "absolute", l'offset devient la nouvelle position.</p>
-                            <p><strong>Retourne:</strong> <code>void</code></p>
+                            <p><strong>Description:</strong> Moves the camera by an offset. In "relative" mode, the offset is added to the current position. In "absolute" mode, the offset becomes the new position.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                     </div>
                 </section>
 
                 <section class="section">
-                    <h2>🎯 Exemples</h2>
+                    <h2>🎯 Examples</h2>
 
-                <h3>Exemple 1: Caméra avec arrière-plan couleur</h3>
-                <div class="example-block">
-                    <div class="example-demo">
-                        <canvas id="camera-demo" width="600" height="400"></canvas>
-                        <p style="text-align: center; margin-top: 10px; color: #666;">
-                            Utilisez les flèches pour déplacer la caméra.
-                        </p>
-                    </div>
-                    <div class="code-block">
-                        <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+                    <h3>Example 1: Camera with Color Background</h3>
+                    <div class="example-block">
+                        <div class="example-demo">
+                            <canvas id="camera-demo" width="600" height="400"></canvas>
+                            <p style="text-align: center; margin-top: 10px; color: #666;">
+                                Use arrow keys to move the camera.
+                            </p>
+                        </div>
+                        <div class="code-block">
+                            <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
 
 const canvas = document.querySelector("#gameCanvas");
 const mainCam = new Camera({
@@ -241,7 +240,7 @@ const mainCam = new Camera({
     backgroundColor: "#222"
 });
 
-// Déplacer la caméra avec les flèches
+// Move camera with arrow keys
 document.addEventListener("keydown", (e) => {
     const speed = 5;
     switch(e.key) {
@@ -262,17 +261,17 @@ document.addEventListener("keydown", (e) => {
 
 function gameLoop() {
     mainCam.clear();
-    // Dessiner vos entités ici...
+    // Draw your entities here...
     requestAnimationFrame(gameLoop);
 }
 gameLoop();</code></pre>
-                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
                     </div>
-                </div>
 
-                <h3>Exemple 2: Caméra avec image d'arrière-plan animée</h3>
-                <div class="code-block">
-                    <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+                    <h3>Example 2: Camera with Animated Background Image</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
 
 const canvas = document.querySelector("#gameCanvas");
 const mainCam = new Camera({
@@ -285,23 +284,23 @@ const mainCam = new Camera({
     backgroundImageFillStyle: "imageSize"
 });
 
-// L'image va défiler automatiquement vers la droite
+// The image will automatically scroll to the right
 function gameLoop() {
     mainCam.clear();
-    // Dessiner vos entités ici...
+    // Draw your entities here...
     requestAnimationFrame(gameLoop);
 }
 gameLoop();</code></pre>
-                    <button class="copy-btn" onclick="copyCode(this)">Copier</button>
-                </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
 
-                <h3>Exemple 3: Plusieurs caméras sur le même canvas</h3>
-                <div class="code-block">
-                    <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+                    <h3>Example 3: Multiple Cameras on the Same Canvas</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
 
 const canvas = document.querySelector("#gameCanvas");
 
-// Caméra principale pour le jeu
+// Main camera for the game
 const mainCam = new Camera({
     canvas: canvas,
     position: {x: 0, y: 0},
@@ -309,7 +308,7 @@ const mainCam = new Camera({
     backgroundColor: "#222"
 });
 
-// Caméra secondaire pour l'interface
+// Secondary camera for the UI
 const uiCam = new Camera({
     canvas: canvas,
     position: {x: 600, y: 0},
@@ -318,42 +317,42 @@ const uiCam = new Camera({
 });
 
 function gameLoop() {
-    // Effacer les deux caméras
+    // Clear both cameras
     mainCam.clear();
     uiCam.clear();
     
-    // Dessiner le jeu dans mainCam
+    // Draw game in mainCam
     // ...
     
-    // Dessiner l'interface dans uiCam
+    // Draw UI in uiCam
     // ...
     
     requestAnimationFrame(gameLoop);
 }
 gameLoop();</code></pre>
-                    <button class="copy-btn" onclick="copyCode(this)">Copier</button>
-                </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
                 </section>
 
                 <section class="section">
-                    <h2>💡 Conseils et bonnes pratiques</h2>
+                    <h2>💡 Tips and Best Practices</h2>
                     <ul class="tips-list">
-                        <li>🔹 <strong>Toujours effacer la caméra</strong> à chaque frame avec <code>clear()</code> pour éviter les artefacts visuels.</li>
-                        <li>🔹 Utilisez <strong>plusieurs caméras</strong> pour créer des effets de split-screen ou séparer le jeu de l'interface.</li>
-                        <li>🔹 Pour un jeu avec défilement, utilisez <code>moveCamera()</code> avec un offset relatif pour suivre le joueur.</li>
-                        <li>🔹 Les propriétés <code>backgroundImageVelocity</code> et <code>backgroundImageLoop</code> permettent de créer des arrière-plans animés sans code supplémentaire.</li>
-                        <li>🔹 Utilisez <code>drawCameraBorder()</code> pendant le développement pour visualiser les limites de la caméra.</li>
-                        <li>🔹 Pour de meilleures performances, évitez de créer trop de caméras actives simultanément.</li>
+                        <li>🔹 <strong>Always clear the camera</strong> every frame with <code>clear()</code> to avoid visual artifacts.</li>
+                        <li>🔹 Use <strong>multiple cameras</strong> to create split-screen effects or separate game from UI.</li>
+                        <li>🔹 For a game with scrolling, adjust the camera's <code>position</code> property directly to follow the player. Note: a dedicated scrolling method is planned but not yet implemented.</li>
+                        <li>🔹 The <code>backgroundImageVelocity</code> and <code>backgroundImageLoop</code> properties allow you to create animated backgrounds without additional code.</li>
+                        <li>🔹 Use <code>drawCameraBorder()</code> during development to visualize camera boundaries.</li>
+                        <li>🔹 For better performance, avoid creating too many active cameras simultaneously.</li>
                     </ul>
                 </section>
 
                 <section class="section">
-                    <h2>🔗 Voir aussi</h2>
-                    <p>La classe Camera travaille en étroite collaboration avec :</p>
+                    <h2>🔗 See Also</h2>
+                    <p>The Camera class works closely with:</p>
                     <ul class="tips-list">
-                        <li>🔹 <a href="../pages/entity.html">Entity</a> - Pour dessiner des entités dans la caméra</li>
-                        <li>🔹 <a href="../pages/element.html">Element</a> - Pour dessiner des éléments statiques</li>
-                        <li>🔹 <a href="../pages/sprite.html">Sprite</a> - Pour charger et gérer les images</li>
+                        <li>🔹 <a href="../pages/entity.html">Entity</a> - To draw entities in the camera</li>
+                        <li>🔹 <a href="../pages/element.html">Element</a> - To draw static elements</li>
+                        <li>🔹 <a href="../pages/sprite.html">Sprite</a> - To load and manage images</li>
                     </ul>
                 </section>
             </article>

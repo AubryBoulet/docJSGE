@@ -1,27 +1,27 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Documentation de la classe Element de JSGE - Éléments statiques pour le rendu 2D.">
+    <meta name="description" content="Documentation for the Element class in JSGE - Static elements for 2D rendering.">
     <title>Element - JSGE Documentation</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="icon" href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" />
 </head>
 <body>
-    <!-- Barre de navigation latérale -->
+    <!-- Sidebar Navigation -->
     <nav class="sidebar">
         <div class="logo">
             <h1>JSGE</h1>
-            <p>Moteur de jeu léger en JavaScript</p>
+            <p>Lightweight 2D Game Engine</p>
         </div>
         <ul class="nav-list">
-            <li><a href="../index.html" class="nav-link">🏠 Accueil</a></li>
-            <li class="nav-section">🎮 Rendu</li>
+            <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+            <li class="nav-section">🎮 Rendering</li>
             <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
             <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
             <li><a href="../pages/animation.html" class="nav-link">Animation</a></li>
-            <li class="nav-section">🎭 Entités</li>
+            <li class="nav-section">🎭 Entities</li>
             <li><a href="../pages/entity.html" class="nav-link">Entity</a></li>
             <li><a href="../pages/element.html" class="nav-link active">Element</a></li>
             <li class="nav-section">⚡ UI</li>
@@ -37,101 +37,101 @@
         </div>
     </nav>
 
-    <!-- Contenu principal -->
+    <!-- Main Content -->
     <main class="main-content">
         <div class="content-wrapper">
-            <!-- En-tête de page -->
+            <!-- Page Header -->
             <header class="page-header">
                 <h1 id="page-title">Element</h1>
-                <p id="page-description">Classe pour créer des éléments statiques avec sprite, sans physique ni animations.</p>
+                <p id="page-description">Class for creating static elements with sprites, without physics or animations.</p>
             </header>
 
-            <!-- Contenu de la documentation -->
+            <!-- Documentation Content -->
             <article class="doc-content">
                 <section class="section">
                     <h2>📌 Description</h2>
                     <p>
-                        La classe <code>Element</code> représente un élément statique du jeu. Contrairement à <code>Entity</code>,
-                        les éléments n'ont pas de physique, d'animations, ou de propriétés dynamiques. Ils sont parfaits
-                        pour les décors, les arrière-plans, ou tout élément qui ne nécessite pas de mise à jour à chaque frame.
+                        The <code>Element</code> class represents a static game element. Unlike <code>Entity</code>,
+                        elements do not have physics, animations, or dynamic properties. They are perfect for
+                        scenery, backgrounds, or any element that does not require updating every frame.
                     </p>
                     <div class="info-box">
-                        <strong>⚠️ Important:</strong> Les éléments ne peuvent pas être animés. Utilisez <code>Entity</code> si vous avez besoin d'animations ou de physique.
+                        <strong>⚠️ Important:</strong> Elements cannot be animated. Use <code>Entity</code> if you need animations or physics.
                     </div>
                     <div class="warning-box">
-                        <strong>⚠️ Attention:</strong> La méthode <code>drawElement()</code> ne fonctionne pas avec des sprites animés. Utilisez <code>draw()</code> pour un contrôle plus fin.
+                        <strong>⚠️ Warning:</strong> The <code>drawElement()</code> method does not work with animated sprites. Use <code>draw()</code> for more fine-grained control.
                     </div>
                 </section>
 
                 <section class="section">
-                    <h2>🚀 Utilisation de base</h2>
+                    <h2>🚀 Basic Usage</h2>
 
-                    <h3>Créer un élément simple</h3>
+                    <h3>Create a Simple Element</h3>
                     <div class="code-block">
                         <pre><code class="language-javascript">import { Element } from "../classes/element.js";
 import { Sprite } from "../classes/sprites.js";
 
-// Créer un sprite pour l'élément
+// Create a sprite for the element
 const treeSprite = await Sprite.load("./assets/tree.png", false);
 
-// Créer un élément
+// Create an element
 const tree = new Element({
     sprite: treeSprite,
     position: {x: 200, y: 300},
     scale: 1
 });
 
-// Dessiner l'élément dans une caméra
+// Draw the element in a camera
 function gameLoop() {
     mainCam.clear();
     tree.drawElement(mainCam);
     requestAnimationFrame(gameLoop);
 }</code></pre>
-                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
 
-                    <h3>Créer un élément avec un sprite généré</h3>
+                    <h3>Create an Element with a Generated Sprite</h3>
                     <div class="code-block">
                         <pre><code class="language-javascript">import { Element } from "../classes/element.js";
 import { Sprite } from "../classes/sprites.js";
 
-// Créer un sprite vide
+// Create an empty sprite
 const wallSprite = Sprite.create(100, 50, false);
 const ctx = wallSprite.ctx;
 
-// Dessiner un mur
-ctx.fillStyle = "#8B4513"; // Marron
+// Draw a wall
+ctx.fillStyle = "#8B4513"; // Brown
 ctx.fillRect(0, 0, 100, 50);
 
-// Ajouter des détails
+// Add details
 ctx.fillStyle = "#A0522D";
 for (let i = 0; i < 100; i += 10) {
     ctx.fillRect(i, 0, 5, 50);
 }
 
-// Créer un élément avec le sprite
+// Create an element with the sprite
 const wall = new Element({
     sprite: wallSprite,
     position: {x: 100, y: 200},
     scale: 1
 });
 
-// Dessiner l'élément
+// Draw the element
 wall.drawElement(mainCam);</code></pre>
-                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                 </section>
 
                 <section class="section">
-                    <h2>🔧 Constructeur</h2>
-                    <p>La classe <code>Element</code> accepte les paramètres suivants :</p>
+                    <h2>🔧 Constructor</h2>
+                    <p>The <code>Element</code> class accepts the following parameters:</p>
                     <div class="constructor-table">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Paramètre</th>
+                                    <th>Parameter</th>
                                     <th>Type</th>
-                                    <th>Défaut</th>
+                                    <th>Default</th>
                                     <th>Description</th>
                                 </tr>
                             </thead>
@@ -140,25 +140,25 @@ wall.drawElement(mainCam);</code></pre>
                                     <td><code>sprite</code></td>
                                     <td><code>Sprite</code></td>
                                     <td>-</td>
-                                    <td>Le sprite de l'élément.</td>
+                                    <td>The element's sprite.</td>
                                 </tr>
                                 <tr>
                                     <td><code>position</code></td>
                                     <td><code>{x: number, y: number}</code></td>
                                     <td><code>{x: 0, y: 0}</code></td>
-                                    <td>Position initiale de l'élément.</td>
+                                    <td>Initial position of the element.</td>
                                 </tr>
                                 <tr>
                                     <td><code>scale</code></td>
                                     <td><code>number</code></td>
                                     <td><code>1</code></td>
-                                    <td>Échelle de l'élément.</td>
+                                    <td>Scale of the element.</td>
                                 </tr>
                                 <tr>
                                     <td><code>targetFPS</code></td>
                                     <td><code>number</code></td>
                                     <td><code>60</code></td>
-                                    <td>FPS cible (peu utilisé pour les éléments statiques).</td>
+                                    <td>Target FPS (rarely used for static elements).</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -166,72 +166,72 @@ wall.drawElement(mainCam);</code></pre>
                 </section>
 
                 <section class="section">
-                    <h2>📜 Propriétés</h2>
+                    <h2>📜 Properties</h2>
                     <div class="properties-grid">
                         <div class="property-card">
                             <h3><code>sprite</code></h3>
                             <p><strong>Type:</strong> <code>Sprite</code></p>
-                            <p><strong>Description:</strong> Le sprite de l'élément.</p>
+                            <p><strong>Description:</strong> The element's sprite.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>position</code></h3>
                             <p><strong>Type:</strong> <code>{x: number, y: number}</code></p>
-                            <p><strong>Description:</strong> Position de l'élément dans la scène.</p>
+                            <p><strong>Description:</strong> Position of the element in the scene.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>scale</code></h3>
                             <p><strong>Type:</strong> <code>number</code></p>
-                            <p><strong>Description:</strong> Échelle de l'élément.</p>
+                            <p><strong>Description:</strong> Scale of the element.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>targetFPS</code></h3>
                             <p><strong>Type:</strong> <code>number</code></p>
-                            <p><strong>Description:</strong> FPS cible pour l'élément.</p>
+                            <p><strong>Description:</strong> Target FPS for the element.</p>
                         </div>
                     </div>
                 </section>
 
                 <section class="section">
-                    <h2>⚙️ Méthodes</h2>
+                    <h2>⚙️ Methods</h2>
                     <div class="methods-list">
                         <div class="method-card">
                             <h3><code>drawElement(camera)</code></h3>
-                            <p><strong>Paramètres:</strong></p>
+                            <p><strong>Parameters:</strong></p>
                             <ul>
-                                <li><code>camera: Camera</code> - La caméra dans laquelle dessiner l'élément.</li>
+                                <li><code>camera: Camera</code> - The camera to draw the element in.</li>
                             </ul>
-                            <p><strong>Description:</strong> Dessine l'élément dans la caméra spécifiée. Cette méthode gère automatiquement le clippage si l'élément est partiellement hors de la caméra.</p>
-                            <p><strong>Retourne:</strong> <code>void</code></p>
+                            <p><strong>Description:</strong> Draws the element in the specified camera. This method automatically handles clipping if the element is partially outside the camera.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                         <div class="method-card">
                             <h3><code>draw(camera, dimension, position)</code></h3>
-                            <p><strong>Paramètres:</strong></p>
+                            <p><strong>Parameters:</strong></p>
                             <ul>
-                                <li><code>camera: Camera</code> - La caméra dans laquelle dessiner.</li>
-                                <li><code>dimension: object</code> - Les dimensions de la source à dessiner.</li>
-                                <li><code>position: object</code> - La position et la taille de destination.</li>
+                                <li><code>camera: Camera</code> - The camera to draw in.</li>
+                                <li><code>dimension: object</code> - The source dimensions to draw.</li>
+                                <li><code>position: object</code> - The destination position and size.</li>
                             </ul>
-                            <p><strong>Description:</strong> Méthode de dessin de bas niveau pour un contrôle plus fin. Utilisée en interne par <code>drawElement()</code>.</p>
-                            <p><strong>Retourne:</strong> <code>void</code></p>
+                            <p><strong>Description:</strong> Low-level drawing method for finer control. Used internally by <code>drawElement()</code>.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                     </div>
                 </section>
 
                 <section class="section">
-                    <h2>🎯 Exemples</h2>
+                    <h2>🎯 Examples</h2>
 
-                    <h3>Exemple 1: Créer un décor avec des éléments</h3>
+                    <h3>Example 1: Create Scenery with Elements</h3>
                     <div class="code-block">
                         <pre><code class="language-javascript">import { Element } from "../classes/element.js";
 import { Sprite } from "../classes/sprites.js";
 import { Camera } from "../classes/camera.js";
 
-// Charger les sprites pour le décor
+// Load sprites for the scenery
 const groundSprite = await Sprite.load("./assets/ground.png", false);
 const treeSprite = await Sprite.load("./assets/tree.png", false);
 const rockSprite = await Sprite.load("./assets/rock.png", false);
 
-// Créer les éléments du décor
+// Create scenery elements
 const ground = new Element({
     sprite: groundSprite,
     position: {x: 0, y: 500},
@@ -262,44 +262,44 @@ const rock2 = new Element({
     scale: 0.8
 });
 
-// Créer une caméra
+// Create a camera
 const canvas = document.querySelector("#gameCanvas");
 const mainCam = new Camera({
     canvas: canvas,
     position: {x: 0, y: 0},
     dimensions: {width: 800, height: 600},
-    backgroundColor: "#87CEEB" // Ciel bleu
+    backgroundColor: "#87CEEB" // Sky blue
 });
 
 function gameLoop() {
     mainCam.clear();
     
-    // Dessiner le décor
+    // Draw scenery
     ground.drawElement(mainCam);
     tree1.drawElement(mainCam);
     tree2.drawElement(mainCam);
     rock1.drawElement(mainCam);
     rock2.drawElement(mainCam);
     
-    // Dessiner les entités dynamiques...
+    // Draw dynamic entities...
     
     requestAnimationFrame(gameLoop);
 }</code></pre>
-                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
 
-                    <h3>Exemple 2: Arrière-plan en tuiles</h3>
+                    <h3>Example 2: Tiled Background</h3>
                     <div class="code-block">
                         <pre><code class="language-javascript">import { Element } from "../classes/element.js";
 import { Sprite } from "../classes/sprites.js";
 
-// Créer un sprite pour une tuile
+// Create a sprite for a tile
 const tileSprite = Sprite.create(32, 32, false);
 const ctx = tileSprite.ctx;
-ctx.fillStyle = "#4CAF50"; // Vert
+ctx.fillStyle = "#4CAF50"; // Green
 ctx.fillRect(0, 0, 32, 32);
 
-// Créer un tableau d'éléments pour l'arrière-plan
+// Create an array of elements for the background
 const tiles = [];
 const tileSize = 32;
 const mapWidth = 20;
@@ -316,24 +316,24 @@ for (let y = 0; y < mapHeight; y++) {
     }
 }
 
-// Dessiner toutes les tuiles
+// Draw all tiles
 function drawTiles() {
     tiles.forEach(tile => {
         tile.drawElement(mainCam);
     });
 }</code></pre>
-                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
 
-                    <h3>Exemple 3: Éléments avec différents sprites</h3>
+                    <h3>Example 3: Elements with Different Sprites</h3>
                     <div class="code-block">
                         <pre><code class="language-javascript">import { Element } from "../classes/element.js";
 import { Sprite } from "../classes/sprites.js";
 
-// Créer différents types d'éléments
+// Create different types of elements
 const elements = [];
 
-// Éléments de type "sol"
+// Ground elements
 for (let i = 0; i < 10; i++) {
     const groundSprite = Sprite.create(50, 20, false);
     groundSprite.ctx.fillStyle = "#8B4513";
@@ -347,7 +347,7 @@ for (let i = 0; i < 10; i++) {
     elements.push(ground);
 }
 
-// Éléments de type "plateforme"
+// Platform elements
 for (let i = 0; i < 5; i++) {
     const platformSprite = Sprite.create(80, 15, false);
     platformSprite.ctx.fillStyle = "#654321";
@@ -361,7 +361,7 @@ for (let i = 0; i < 5; i++) {
     elements.push(platform);
 }
 
-// Éléments de type "piège"
+// Trap elements
 for (let i = 0; i < 3; i++) {
     const trapSprite = Sprite.create(30, 30, false);
     trapSprite.ctx.fillStyle = "#FF0000";
@@ -375,35 +375,35 @@ for (let i = 0; i < 3; i++) {
     elements.push(trap);
 }
 
-// Dessiner tous les éléments
+// Draw all elements
 function drawElements() {
     elements.forEach(element => {
         element.drawElement(mainCam);
     });
 }</code></pre>
-                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                 </section>
 
                 <section class="section">
-                    <h2>💡 Conseils et bonnes pratiques</h2>
+                    <h2>💡 Tips and Best Practices</h2>
                     <ul class="tips-list">
-                        <li>🔹 Utilisez <code>Element</code> pour les <strong>éléments statiques</strong> qui ne changent pas (décors, arrière-plans, plateformes).</li>
-                        <li>🔹 Utilisez <code>Entity</code> pour les <strong>objets dynamiques</strong> qui nécessitent des animations ou de la physique.</li>
-                        <li>🔹 Pour les grands décors, envisagez de <strong>regrouper les éléments</strong> dans des sprites plus grands pour réduire le nombre d'appels de dessin.</li>
-                        <li>🔹 Vous pouvez <strong>changer le sprite</strong> d'un élément à tout moment pour créer des effets visuels.</li>
-                        <li>🔹 Utilisez la propriété <code>scale</code> pour redimensionner les éléments sans modifier le sprite original.</li>
-                        <li>🔹 Pour les jeux avec défilement, les éléments statiques peuvent être <strong>optimisés</strong> car ils ne nécessitent pas de mise à jour à chaque frame.</li>
+                        <li>🔹 Use <code>Element</code> for <strong>static elements</strong> that don't change (scenery, backgrounds, platforms).</li>
+                        <li>🔹 Use <code>Entity</code> for <strong>dynamic objects</strong> that require animations or physics.</li>
+                        <li>🔹 For large scenery, consider <strong>grouping elements</strong> into larger sprites to reduce the number of draw calls.</li>
+                        <li>🔹 You can <strong>change the sprite</strong> of an element at any time to create visual effects.</li>
+                        <li>🔹 Use the <code>scale</code> property to resize elements without modifying the original sprite.</li>
+                        <li>🔹 For scrolling games, static elements can be <strong>optimized</strong> as they don't require updates every frame.</li>
                     </ul>
                 </section>
 
                 <section class="section">
-                    <h2>🔗 Voir aussi</h2>
-                    <p>La classe Element est liée à :</p>
+                    <h2>🔗 See Also</h2>
+                    <p>The Element class is related to:</p>
                     <ul class="tips-list">
-                        <li>🔹 <a href="../pages/entity.html">Entity</a> - Pour des objets dynamiques avec physique et animations</li>
-                        <li>🔹 <a href="../pages/sprite.html">Sprite</a> - Pour créer et gérer les images</li>
-                        <li>🔹 <a href="../pages/camera.html">Camera</a> - Pour afficher les éléments à l'écran</li>
+                        <li>🔹 <a href="../pages/entity.html">Entity</a> - For dynamic objects with physics and animations</li>
+                        <li>🔹 <a href="../pages/sprite.html">Sprite</a> - To create and manage images</li>
+                        <li>🔹 <a href="../pages/camera.html">Camera</a> - To display elements on screen</li>
                     </ul>
                 </section>
             </article>

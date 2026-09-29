@@ -1,27 +1,27 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Documentation de la classe Transition de JSGE - Animations fluides avec courbes d'interpolation.">
+    <meta name="description" content="Documentation for the Transition class in JSGE - Smooth animations with interpolation curves.">
     <title>Transition - JSGE Documentation</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="icon" href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" />
 </head>
 <body>
-    <!-- Barre de navigation latérale -->
+    <!-- Sidebar Navigation -->
     <nav class="sidebar">
         <div class="logo">
             <h1>JSGE</h1>
-            <p>Moteur de jeu léger en JavaScript</p>
+            <p>Lightweight 2D Game Engine</p>
         </div>
         <ul class="nav-list">
-            <li><a href="../index.html" class="nav-link">🏠 Accueil</a></li>
-            <li class="nav-section">🎮 Rendu</li>
+            <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+            <li class="nav-section">🎮 Rendering</li>
             <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
             <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
             <li><a href="../pages/animation.html" class="nav-link">Animation</a></li>
-            <li class="nav-section">🎭 Entités</li>
+            <li class="nav-section">🎭 Entities</li>
             <li><a href="../pages/entity.html" class="nav-link">Entity</a></li>
             <li><a href="../pages/element.html" class="nav-link">Element</a></li>
             <li class="nav-section">⚡ UI</li>
@@ -37,91 +37,90 @@
         </div>
     </nav>
 
-    <!-- Contenu principal -->
+    <!-- Main Content -->
     <main class="main-content">
         <div class="content-wrapper">
-            <!-- En-tête de page -->
+            <!-- Page Header -->
             <header class="page-header">
                 <h1 id="page-title">Transition</h1>
-                <p id="page-description">Classe pour créer des animations fluides avec différentes courbes d'interpolation.</p>
+                <p id="page-description">Class for creating smooth animations with different interpolation curves.</p>
             </header>
 
-            <!-- Contenu de la documentation -->
+            <!-- Documentation Content -->
             <article class="doc-content">
                 <section class="section">
                     <h2>📌 Description</h2>
                     <p>
-                        La classe <code>Transition</code> permet de créer des animations fluides entre deux valeurs
-                        en utilisant différentes fonctions d'interpolation (easing functions). Elle est particulièrement
-                        utile pour les animations d'interface, les déplacements d'entités, ou toute autre animation
-                        qui nécessite un contrôle précis du mouvement.
+                        The <code>Transition</code> class allows you to create smooth animations between two values
+                        using different interpolation functions (easing functions). It is particularly useful for UI
+                        animations, entity movements, or any other animation that requires precise motion control.
                     </p>
                     <p>
-                        Transition utilise les fonctions de la classe <code>Bezier</code> pour les courbes d'interpolation,
-                        ce qui permet une grande variété d'effets d'animation.
+                        Transition uses the functions from the <code>Bezier</code> class for interpolation curves,
+                        which allows for a wide variety of animation effects.
                     </p>
                     <div class="info-box">
-                        <strong>⚠️ Important:</strong> Les transitions sont gérées globalement et mises à jour automatiquement via <code>requestAnimationFrame</code>.
+                        <strong>⚠️ Important:</strong> Transitions are globally managed and automatically updated via <code>requestAnimationFrame</code>.
                     </div>
                 </section>
 
                 <section class="section">
-                    <h2>🚀 Utilisation de base</h2>
+                    <h2>🚀 Basic Usage</h2>
 
-                    <h3>Créer une transition simple</h3>
+                    <h3>Create a Simple Transition</h3>
                     <div class="code-block">
                         <pre><code class="language-javascript">import { Transition } from "../classes/transition.js";
 
-// Créer une transition entre deux valeurs
+// Create a transition between two values
 const transitionId = Transition.create([
-    0,          // Valeur initiale
-    100,       // Valeur cible
-    "linear",  // Fonction d'interpolation
+    0,          // Initial value
+    100,       // Target value
+    "linear",  // Interpolation function
     (value) => {
-        // Callback appelé à chaque mise à jour avec la valeur actuelle
-        console.log("Valeur actuelle:", value);
+        // Callback called on each update with the current value
+        console.log("Current value:", value);
     },
-    1,         // Durée en secondes
-    0,         // Délai avant le début
-    () => {    // Callback appelé à la fin de la transition
-        console.log("Transition terminée !");
+    1,         // Duration in seconds
+    0,         // Delay before start
+    () => {    // Callback called at the end of the transition
+        console.log("Transition complete!");
     }
 ]);
 
-// Pour annuler la transition plus tard :
+// To cancel the transition later:
 // Transition.delete(transitionId);</code></pre>
-                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
 
-                    <h3>Créer une transition avec easing</h3>
+                    <h3>Create a Transition with Easing</h3>
                     <div class="code-block">
                         <pre><code class="language-javascript">import { Transition } from "../classes/transition.js";
 
-// Créer une transition avec easing "easeOutElastic"
+// Create a transition with "easeOutElastic" easing
 const bouncyTransition = Transition.create([
     0,
     500,
-    "easeOutElastic",  // Effet rebond
+    "easeOutElastic",  // Bounce effect
     (value) => {
         element.style.left = value + "px";
     },
-    1.5,  // 1.5 secondes
-    0.5   // Délai de 0.5 seconde
+    1.5,  // 1.5 seconds
+    0.5   // 0.5 second delay
 ]);</code></pre>
-                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                 </section>
 
                 <section class="section">
-                    <h2>🔧 Méthode de création</h2>
-                    <p>La classe <code>Transition</code> utilise une méthode statique <code>create()</code> :</p>
+                    <h2>🔧 Creation Method</h2>
+                    <p>The <code>Transition</code> class uses a static <code>create()</code> method:</p>
                     <div class="constructor-table">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Paramètre</th>
+                                    <th>Parameter</th>
                                     <th>Type</th>
-                                    <th>Défaut</th>
+                                    <th>Default</th>
                                     <th>Description</th>
                                 </tr>
                             </thead>
@@ -130,20 +129,20 @@ const bouncyTransition = Transition.create([
                                     <td><code>args</code></td>
                                     <td><code>Array</code></td>
                                     <td>-</td>
-                                    <td>Tableau contenant les paramètres de la transition.</td>
+                                    <td>Array containing the transition parameters.</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <p>Le tableau <code>args</code> doit contenir les éléments suivants dans l'ordre :</p>
+                    <p>The <code>args</code> array must contain the following elements in order:</p>
                     <div class="constructor-table">
                         <table>
                             <thead>
                                 <tr>
                                     <th>Index</th>
-                                    <th>Paramètre</th>
+                                    <th>Parameter</th>
                                     <th>Type</th>
-                                    <th>Défaut</th>
+                                    <th>Default</th>
                                     <th>Description</th>
                                 </tr>
                             </thead>
@@ -153,49 +152,49 @@ const bouncyTransition = Transition.create([
                                     <td><code>initialValue</code></td>
                                     <td><code>number</code></td>
                                     <td>-</td>
-                                    <td>Valeur de départ de la transition.</td>
+                                    <td>Starting value of the transition.</td>
                                 </tr>
                                 <tr>
                                     <td>1</td>
                                     <td><code>targetValue</code></td>
                                     <td><code>number</code></td>
                                     <td>-</td>
-                                    <td>Valeur cible de la transition.</td>
+                                    <td>Target value of the transition.</td>
                                 </tr>
                                 <tr>
                                     <td>2</td>
                                     <td><code>timingFunction</code></td>
                                     <td><code>string</code></td>
                                     <td><code>"linear"</code></td>
-                                    <td>Nom de la fonction d'interpolation (voir <a href="../pages/bezier.html">Bezier</a>).</td>
+                                    <td>Name of the interpolation function (see <a href="../pages/bezier.html">Bezier</a>).</td>
                                 </tr>
                                 <tr>
                                     <td>3</td>
                                     <td><code>callback</code></td>
                                     <td><code>function</code></td>
                                     <td>-</td>
-                                    <td>Fonction appelée à chaque mise à jour avec la valeur interpolée.</td>
+                                    <td>Function called on each update with the interpolated value.</td>
                                 </tr>
                                 <tr>
                                     <td>4</td>
                                     <td><code>duration</code></td>
                                     <td><code>number</code></td>
                                     <td><code>1</code></td>
-                                    <td>Durée de la transition en secondes.</td>
+                                    <td>Duration of the transition in seconds.</td>
                                 </tr>
                                 <tr>
                                     <td>5</td>
                                     <td><code>delay</code></td>
                                     <td><code>number</code></td>
                                     <td><code>0</code></td>
-                                    <td>Délai avant le début de la transition en secondes.</td>
+                                    <td>Delay before the transition starts in seconds.</td>
                                 </tr>
                                 <tr>
                                     <td>6</td>
                                     <td><code>endCallback</code></td>
                                     <td><code>function</code></td>
                                     <td>-</td>
-                                    <td>Fonction appelée à la fin de la transition.</td>
+                                    <td>Function called at the end of the transition.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -203,88 +202,88 @@ const bouncyTransition = Transition.create([
                 </section>
 
                 <section class="section">
-                    <h2>⚙️ Méthodes statiques</h2>
+                    <h2>⚙️ Static Methods</h2>
                     <div class="methods-list">
                         <div class="method-card">
                             <h3><code>Transition.create(args)</code></h3>
-                            <p><strong>Paramètres:</strong></p>
+                            <p><strong>Parameters:</strong></p>
                             <ul>
-                                <li><code>args: Array</code> - Tableau de paramètres (voir ci-dessus).</li>
+                                <li><code>args: Array</code> - Array of parameters (see above).</li>
                             </ul>
-                            <p><strong>Description:</strong> Crée une nouvelle transition.</p>
-                            <p><strong>Retourne:</strong> <code>number</code> - L'ID de la transition créée.</p>
+                            <p><strong>Description:</strong> Creates a new transition.</p>
+                            <p><strong>Returns:</strong> <code>number</code> - The ID of the created transition.</p>
                         </div>
                         <div class="method-card">
                             <h3><code>Transition.delete(transitionId)</code></h3>
-                            <p><strong>Paramètres:</strong></p>
+                            <p><strong>Parameters:</strong></p>
                             <ul>
-                                <li><code>transitionId: number</code> - L'ID de la transition à supprimer.</li>
+                                <li><code>transitionId: number</code> - The ID of the transition to remove.</li>
                             </ul>
-                            <p><strong>Description:</strong> Supprime une transition spécifique.</p>
-                            <p><strong>Retourne:</strong> <code>void</code></p>
+                            <p><strong>Description:</strong> Removes a specific transition.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                         <div class="method-card">
                             <h3><code>Transition.clear()</code></h3>
-                            <p><strong>Description:</strong> Supprime toutes les transitions actives.</p>
-                            <p><strong>Retourne:</strong> <code>void</code></p>
+                            <p><strong>Description:</strong> Removes all active transitions.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                         <div class="method-card">
                             <h3><code>Transition.reset(transitionId)</code></h3>
-                            <p><strong>Paramètres:</strong></p>
+                            <p><strong>Parameters:</strong></p>
                             <ul>
-                                <li><code>transitionId: number</code> - L'ID de la transition à réinitialiser.</li>
+                                <li><code>transitionId: number</code> - The ID of the transition to reset.</li>
                             </ul>
-                            <p><strong>Description:</strong> Réinitialise une transition (redémarre depuis le début).</p>
-                            <p><strong>Retourne:</strong> <code>void</code></p>
+                            <p><strong>Description:</strong> Resets a transition (restarts from the beginning).</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                     </div>
                 </section>
 
                 <section class="section">
-                    <h2>🎯 Exemples</h2>
+                    <h2>🎯 Examples</h2>
 
-                    <h3>Exemple 1: Transition basique</h3>
+                    <h3>Example 1: Basic Transition</h3>
                     <div class="example-block">
                         <div class="example-demo">
                             <canvas id="transition-demo" width="600" height="400"></canvas>
                             <p style="text-align: center; margin-top: 10px; color: #666;">
-                                1-7: Changer easing | R: Réinitialiser
+                                1-7: Change easing | R: Reset
                             </p>
                         </div>
                         <div class="code-block">
                             <pre><code class="language-javascript">import { Transition } from "../classes/transition.js";
 
-// Créer une transition pour animer la position X d'un élément
+// Create a transition to animate an element's X position
 let currentX = 0;
 const targetX = 500;
 
 const transitionId = Transition.create([
-    currentX,           // Valeur initiale
-    targetX,           // Valeur cible
-    "easeInOutQuad",   // Fonction d'interpolation
+    currentX,           // Initial value
+    targetX,           // Target value
+    "easeInOutQuad",   // Interpolation function
     (value) => {
-        // Mettre à jour la position
+        // Update position
         currentX = value;
         element.style.left = currentX + "px";
     },
-    2,                 // Durée: 2 secondes
-    0,                 // Délai: 0 seconde
+    2,                 // Duration: 2 seconds
+    0,                 // Delay: 0 second
     () => {
-        console.log("Transition terminée !");
+        console.log("Transition complete!");
     }
 ]);
 
-// Plus tard, vous pouvez annuler la transition
+// Later, you can cancel the transition
 // Transition.delete(transitionId);</code></pre>
-                            <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         </div>
                     </div>
 
-                    <h3>Exemple 2: Transition avec délai</h3>
+                    <h3>Example 2: Transition with Delay</h3>
                     <div class="code-block">
                         <pre><code class="language-javascript">import { Transition } from "../classes/transition.js";
 
-// Créer une transition avec un délai
+// Create a transition with a delay
 const delayedTransition = Transition.create([
     0,
     300,
@@ -292,11 +291,11 @@ const delayedTransition = Transition.create([
     (value) => {
         box.style.left = value + "px";
     },
-    1,      // Durée: 1 seconde
-    2       // Délai: 2 secondes
+    1,      // Duration: 1 second
+    2       // Delay: 2 seconds
 ]);
 
-// Créer une autre transition qui commence immédiatement
+// Create another transition that starts immediately
 const immediateTransition = Transition.create([
     0,
     200,
@@ -304,30 +303,30 @@ const immediateTransition = Transition.create([
     (value) => {
         otherBox.style.top = value + "px";
     },
-    1.5    // Durée: 1.5 secondes
+    1.5    // Duration: 1.5 seconds
 ]);</code></pre>
-                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
 
-                    <h3>Exemple 3: Animation d'une entité avec Transition</h3>
+                    <h3>Example 3: Animate an Entity with Transition</h3>
                     <div class="code-block">
                         <pre><code class="language-javascript">import { Transition } from "../classes/transition.js";
 import { Entity } from "../classes/entity.js";
 
-// Créer une entité
+// Create an entity
 const player = Entity.create({
     sprite: playerSprite,
     position: {x: 100, y: 100}
 });
 
-// Animer le déplacement de l'entité
+// Animate entity movement
 function moveTo(x, y, easing = "linear", duration = 1) {
-    // Supprimer les transitions existantes
+    // Delete existing transitions
     if (player.transitionId) {
         Transition.delete(player.transitionId);
     }
     
-    // Créer de nouvelles transitions pour X et Y
+    // Create new transitions for X and Y
     const startX = player.position.x;
     const startY = player.position.y;
     
@@ -351,23 +350,23 @@ function moveTo(x, y, easing = "linear", duration = 1) {
         duration
     ]);
     
-    // Stocker les IDs pour pouvoir les annuler plus tard
+    // Store IDs to be able to cancel them later
     player.transitionId = [xTransitionId, yTransitionId];
 }
 
-// Utiliser la fonction
+// Use the function
 moveTo(300, 200, "easeOutElastic", 1.5);</code></pre>
-                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
 
-                    <h3>Exemple 4: Transition en chaîne</h3>
+                    <h3>Example 4: Chained Transition</h3>
                     <div class="code-block">
                         <pre><code class="language-javascript">import { Transition } from "../classes/transition.js";
 
 let currentTransitionId = null;
 
 function startChainedAnimation() {
-    // Étape 1: Déplacer vers la droite
+    // Step 1: Move to the right
     currentTransitionId = Transition.create([
         0,
         400,
@@ -378,7 +377,7 @@ function startChainedAnimation() {
         1,
         0,
         () => {
-            // Étape 2: Déplacer vers le bas (après la fin de l'étape 1)
+            // Step 2: Move down (after step 1 completes)
             currentTransitionId = Transition.create([
                 0,
                 300,
@@ -389,7 +388,7 @@ function startChainedAnimation() {
                 1,
                 0,
                 () => {
-                    // Étape 3: Retour à la position initiale
+                    // Step 3: Return to initial position
                     currentTransitionId = Transition.create([
                         400,
                         0,
@@ -405,16 +404,16 @@ function startChainedAnimation() {
     ]);
 }
 
-// Démarrer l'animation
+// Start animation
 startChainedAnimation();</code></pre>
-                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
 
-                    <h3>Exemple 5: Transition avec callback de fin</h3>
+                    <h3>Example 5: Transition with End Callback</h3>
                     <div class="code-block">
                         <pre><code class="language-javascript">import { Transition } from "../classes/transition.js";
 
-// Transition avec callback de fin
+// Transition with end callback
 const transitionId = Transition.create([
     0,
     100,
@@ -425,217 +424,217 @@ const transitionId = Transition.create([
     1.5,
     0,
     () => {
-        // Code exécuté à la fin de la transition
-        console.log("Animation terminée !");
+        // Code executed at the end of the transition
+        console.log("Animation complete!");
         
-        // Par exemple, afficher un message
+        // For example, show a message
         messageElement.style.display = "block";
         
-        // Ou déclencher une autre action
+        // Or trigger another action
         startNextLevel();
     }
 ]);
 
-// Plus tard, vous pouvez réinitialiser la transition
+// Later, you can reset the transition
 // Transition.reset(transitionId);</code></pre>
-                        <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                 </section>
 
                 <section class="section">
-                    <h2>💡 Conseils et bonnes pratiques</h2>
+                    <h2>💡 Tips and Best Practices</h2>
                     <ul class="tips-list">
-                        <li>🔹 Utilisez des <strong>fonctions d'interpolation</strong> appropriées pour l'effet souhaité (ex: <code>easeOutElastic</code> pour un effet rebond).</li>
-                        <li>🔹 N'oubliez pas de <strong>supprimer les transitions</strong> inutiles avec <code>Transition.delete()</code> pour éviter les fuites de mémoire.</li>
-                        <li>🔹 Utilisez <code>Transition.clear()</code> pour supprimer toutes les transitions si nécessaire.</li>
-                        <li>🔹 Les transitions sont <strong>automatiquement mises à jour</strong> via <code>requestAnimationFrame</code>, vous n'avez pas besoin de les mettre à jour manuellement.</li>
-                        <li>🔹 Pour les animations complexes, envisagez d'<strong>enchaîner les transitions</strong> en utilisant les callbacks de fin.</li>
-                        <li>🔹 Utilisez la méthode <code>reset()</code> pour redémarrer une transition depuis le début.</li>
-                        <li>🔹 Les transitions sont <strong>légères</strong> et optimisées pour les animations fluides.</li>
+                        <li>🔹 Use appropriate <strong>interpolation functions</strong> for the desired effect (e.g., <code>easeOutElastic</code> for a bounce effect).</li>
+                        <li>🔹 Don't forget to <strong>delete unused transitions</strong> with <code>Transition.delete()</code> to avoid memory leaks.</li>
+                        <li>🔹 Use <code>Transition.clear()</code> to remove all transitions if needed.</li>
+                        <li>🔹 Transitions are <strong>automatically updated</strong> via <code>requestAnimationFrame</code>, you don't need to update them manually.</li>
+                        <li>🔹 For complex animations, consider <strong>chaining transitions</strong> using end callbacks.</li>
+                        <li>🔹 Use the <code>reset()</code> method to restart a transition from the beginning.</li>
+                        <li>🔹 Transitions are <strong>lightweight</strong> and optimized for smooth animations.</li>
                     </ul>
                 </section>
 
                 <section class="section">
-                    <h2>🔗 Voir aussi</h2>
-                    <p>La classe Transition utilise :</p>
+                    <h2>🔗 See Also</h2>
+                    <p>The Transition class uses:</p>
                     <ul class="tips-list">
-                        <li>🔹 <a href="../pages/bezier.html">Bezier</a> - Pour les fonctions d'interpolation</li>
+                        <li>🔹 <a href="../pages/bezier.html">Bezier</a> - For interpolation functions</li>
                     </ul>
                 </section>
 
                 <section class="section">
-                    <h2>📖 Fonctions d'interpolation disponibles</h2>
-                    <p>Transition utilise les fonctions de la classe <code>Bezier</code>. Voici la liste complète :</p>
+                    <h2>📖 Available Interpolation Functions</h2>
+                    <p>Transition uses the functions from the <code>Bezier</code> class. Here is the complete list:</p>
                     <div class="constructor-table">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Nom</th>
+                                    <th>Name</th>
                                     <th>Description</th>
-                                    <th>Effet</th>
+                                    <th>Effect</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td><code>linear</code></td>
-                                    <td>Interpolation linéaire</td>
-                                    <td>Vitesse constante</td>
+                                    <td>Linear interpolation</td>
+                                    <td>Constant speed</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInQuad</code></td>
-                                    <td>Accélération quadratique</td>
-                                    <td>Départ lent, accélération</td>
+                                    <td>Quadratic acceleration</td>
+                                    <td>Slow start, acceleration</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeOutQuad</code></td>
-                                    <td>Décélération quadratique</td>
-                                    <td>Départ rapide, ralentissement</td>
+                                    <td>Quadratic deceleration</td>
+                                    <td>Fast start, slow down</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInOutQuad</code></td>
-                                    <td>Accélération puis décélération quadratique</td>
-                                    <td>Départ lent, accélération, ralentissement</td>
+                                    <td>Quadratic acceleration then deceleration</td>
+                                    <td>Slow start, acceleration, slow down</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInCubic</code></td>
-                                    <td>Accélération cubique</td>
-                                    <td>Accélération plus prononcée</td>
+                                    <td>Cubic acceleration</td>
+                                    <td>More pronounced acceleration</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeOutCubic</code></td>
-                                    <td>Décélération cubique</td>
-                                    <td>Ralentissement plus prononcé</td>
+                                    <td>Cubic deceleration</td>
+                                    <td>More pronounced slow down</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInOutCubic</code></td>
-                                    <td>Accélération puis décélération cubique</td>
-                                    <td>Effet plus prononcé que Quad</td>
+                                    <td>Cubic acceleration then deceleration</td>
+                                    <td>More pronounced than Quad</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInQuart</code></td>
-                                    <td>Accélération quartique</td>
-                                    <td>Accélération très prononcée</td>
+                                    <td>Quartic acceleration</td>
+                                    <td>Very pronounced acceleration</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeOutQuart</code></td>
-                                    <td>Décélération quartique</td>
-                                    <td>Ralentissement très prononcé</td>
+                                    <td>Quartic deceleration</td>
+                                    <td>Very pronounced slow down</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInOutQuart</code></td>
-                                    <td>Accélération puis décélération quartique</td>
-                                    <td>Effet très prononcé</td>
+                                    <td>Quartic acceleration then deceleration</td>
+                                    <td>Very pronounced effect</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInQuint</code></td>
-                                    <td>Accélération quintique</td>
-                                    <td>Accélération extrêmement prononcée</td>
+                                    <td>Quintic acceleration</td>
+                                    <td>Extremely pronounced acceleration</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeOutQuint</code></td>
-                                    <td>Décélération quintique</td>
-                                    <td>Ralentissement extrêmement prononcé</td>
+                                    <td>Quintic deceleration</td>
+                                    <td>Extremely pronounced slow down</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInOutQuint</code></td>
-                                    <td>Accélération puis décélération quintique</td>
-                                    <td>Effet extrêmement prononcé</td>
+                                    <td>Quintic acceleration then deceleration</td>
+                                    <td>Extremely pronounced effect</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInSine</code></td>
-                                    <td>Accélération sinusoïdale</td>
-                                    <td>Effet sinusoïdal en entrée</td>
+                                    <td>Sine acceleration</td>
+                                    <td>Sine wave in effect</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeOutSine</code></td>
-                                    <td>Décélération sinusoïdale</td>
-                                    <td>Effet sinusoïdal en sortie</td>
+                                    <td>Sine deceleration</td>
+                                    <td>Sine wave out effect</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInOutSine</code></td>
-                                    <td>Accélération puis décélération sinusoïdale</td>
-                                    <td>Effet sinusoïdal complet</td>
+                                    <td>Sine acceleration then deceleration</td>
+                                    <td>Complete sine wave effect</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInExpo</code></td>
-                                    <td>Accélération exponentielle</td>
-                                    <td>Accélération très rapide</td>
+                                    <td>Exponential acceleration</td>
+                                    <td>Very fast acceleration</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeOutExpo</code></td>
-                                    <td>Décélération exponentielle</td>
-                                    <td>Ralentissement très rapide</td>
+                                    <td>Exponential deceleration</td>
+                                    <td>Very fast slow down</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInOutExpo</code></td>
-                                    <td>Accélération puis décélération exponentielle</td>
-                                    <td>Effet exponentiel complet</td>
+                                    <td>Exponential acceleration then deceleration</td>
+                                    <td>Complete exponential effect</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInCirc</code></td>
-                                    <td>Accélération circulaire</td>
-                                    <td>Effet circulaire en entrée</td>
+                                    <td>Circular acceleration</td>
+                                    <td>Circular in effect</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeOutCirc</code></td>
-                                    <td>Décélération circulaire</td>
-                                    <td>Effet circulaire en sortie</td>
+                                    <td>Circular deceleration</td>
+                                    <td>Circular out effect</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInOutCirc</code></td>
-                                    <td>Accélération puis décélération circulaire</td>
-                                    <td>Effet circulaire complet</td>
+                                    <td>Circular acceleration then deceleration</td>
+                                    <td>Complete circular effect</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInElastic</code></td>
-                                    <td>Accélération élastique</td>
-                                    <td>Effet élastique avec rebond en entrée</td>
+                                    <td>Elastic acceleration</td>
+                                    <td>Elastic effect with bounce in</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeOutElastic</code></td>
-                                    <td>Décélération élastique</td>
-                                    <td>Effet élastique avec rebond en sortie</td>
+                                    <td>Elastic deceleration</td>
+                                    <td>Elastic effect with bounce out</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInOutElastic</code></td>
-                                    <td>Accélération puis décélération élastique</td>
-                                    <td>Effet élastique complet</td>
+                                    <td>Elastic acceleration then deceleration</td>
+                                    <td>Complete elastic effect</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInBack</code></td>
-                                    <td>Accélération avec rebond arrière</td>
-                                    <td>Effet de rebond en entrée</td>
+                                    <td>Back acceleration</td>
+                                    <td>Pull back effect in</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeOutBack</code></td>
-                                    <td>Décélération avec rebond arrière</td>
-                                    <td>Effet de rebond en sortie</td>
+                                    <td>Back deceleration</td>
+                                    <td>Pull back effect out</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInOutBack</code></td>
-                                    <td>Accélération puis décélération avec rebond</td>
-                                    <td>Effet de rebond complet</td>
+                                    <td>Back acceleration then deceleration</td>
+                                    <td>Complete pull back effect</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeOutBounce</code></td>
-                                    <td>Décélération avec rebond</td>
-                                    <td>Effet de rebond prononcée (comme un ballon)</td>
+                                    <td>Bounce deceleration</td>
+                                    <td>Pronounced bounce effect (like a ball)</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInBounce</code></td>
-                                    <td>Accélération avec rebond</td>
-                                    <td>Effet de rebond en entrée</td>
+                                    <td>Bounce acceleration</td>
+                                    <td>Bounce effect in</td>
                                 </tr>
                                 <tr>
                                     <td><code>easeInOutBounce</code></td>
-                                    <td>Accélération puis décélération avec rebond</td>
-                                    <td>Effet de rebond complet</td>
+                                    <td>Bounce acceleration then deceleration</td>
+                                    <td>Complete bounce effect</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="info-box">
-                        <strong>ℹ️ Info:</strong> Vous pouvez tester visuellement ces fonctions d'interpolation dans la démo de la page <a href="../pages/bezier.html">Bezier</a>.
+                        <strong>ℹ️ Info:</strong> You can visually test these interpolation functions in the demo on the <a href="../pages/bezier.html">Bezier</a> page.
                     </div>
                 </section>
             </article>
