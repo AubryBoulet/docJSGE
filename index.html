@@ -17,18 +17,22 @@
         </div>
         <ul class="nav-list">
             <li><a href="/index.html" class="nav-link active">🏠 Home</a></li>
-            <li class="nav-section">🎮 Rendering</li>
+            <li class="nav-section">📦 Core</li>
+            <li><a href="/pages/jsge.html" class="nav-link">JSGE Central Import</a></li>
+            <li class="nav-section">🎨 Rendering</li>
             <li><a href="/pages/camera.html" class="nav-link">Camera</a></li>
             <li><a href="/pages/sprite.html" class="nav-link">Sprite</a></li>
             <li><a href="/pages/animation.html" class="nav-link">Animation</a></li>
-            <li class="nav-section">🎭 Entities</li>
+            <li class="nav-section">🎭 Scenes & Organization</li>
+            <li><a href="/pages/scene.html" class="nav-link">Scene</a></li>
+            <li class="nav-section">🌲 Entities</li>
             <li><a href="/pages/entity.html" class="nav-link">Entity</a></li>
             <li><a href="/pages/element.html" class="nav-link">Element</a></li>
-            <li class="nav-section">⚡ UI</li>
+            <li class="nav-section">🪟 UI</li>
             <li><a href="/pages/gadget.html" class="nav-link">Gadget</a></li>
             <li><a href="/pages/button.html" class="nav-link">Button</a></li>
             <li><a href="/pages/text.html" class="nav-link">Text</a></li>
-            <li class="nav-section">🔄 Transitions</li>
+            <li class="nav-section">🎯 Transitions</li>
             <li><a href="/pages/transition.html" class="nav-link">Transition</a></li>
             <li><a href="/pages/bezier.html" class="nav-link">Bezier</a></li>
         </ul>
@@ -49,18 +53,18 @@
             <!-- Documentation Content -->
             <article class="doc-content">
                 <section class="section">
-                    <h2>📖 About JSGE</h2>
+                    <h2>📚 About JSGE</h2>
                     <div class="about-grid">
                         <div class="about-card">
                             <h3>⚡ Fast</h3>
                             <p>JSGE is optimized for maximum performance, using requestAnimationFrame for smooth 60 FPS rendering.</p>
                         </div>
                         <div class="about-card">
-                            <h3>🎨 Flexible</h3>
+                            <h3>🎮 Flexible</h3>
                             <p>Designed to be easily extensible, with a modular and well-organized class system.</p>
                         </div>
                         <div class="about-card">
-                            <h3>📱 Lightweight</h3>
+                            <h3>📦 Lightweight</h3>
                             <p>No external dependencies, just pure JavaScript. Perfect for lightweight web games.</p>
                         </div>
                     </div>
@@ -68,6 +72,9 @@
 
                 <section class="section">
                     <h2>🚀 Installation and Usage</h2>
+                    <p>To use JSGE in your project, you have two options:</p>
+                    
+                    <h3>Option 1: Import from Central File (Recommended)</h3>
                     <div class="code-block">
                         <pre><code class="language-html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
@@ -82,11 +89,31 @@
 &lt;/html&gt;</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
-                    <p>Or import individual classes from the <code>classes/</code> folder.</p>
+                    <p>Then import from the central file in your JavaScript:</p>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">// Import everything you need from a single file
+import { Camera, Sprite, Entity, Scene, Button, Text } from "./jsge.js";
+
+// Or import the entire namespace
+import JSGE from "./jsge.js";
+const camera = new JSGE.Camera({/* ... */});</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Option 2: Import Individual Class Files</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">// Import individual classes from their files
+import { Camera } from "./classes/camera.js";
+import { Sprite } from "./classes/sprites.js";
+import { Entity } from "./classes/entity.js";
+import { Scene } from "./classes/scene.js";
+import { Button } from "./classes/button.js";</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
                 </section>
 
                 <section class="section">
-                    <h2>📚 Quick Start Guide</h2>
+                    <h2>📖 Quick Start Guide</h2>
                     <div class="quick-start">
                         <h3>1️⃣ Create a Canvas</h3>
                         <p>Start by adding a canvas element to your HTML:</p>
@@ -98,7 +125,7 @@
                         <h3>2️⃣ Initialize a Camera</h3>
                         <p>The Camera is the heart of rendering in JSGE:</p>
                         <div class="code-block">
-                            <pre><code class="language-javascript">import { Camera } from "./classes/camera.js";
+                            <pre><code class="language-javascript">import { Camera } from "./jsge.js";
 
 const canvas = document.querySelector("#gameCanvas");
 const mainCam = new Camera({
@@ -113,7 +140,7 @@ const mainCam = new Camera({
                         <h3>3️⃣ Load a Sprite</h3>
                         <p>Load images to create sprites:</p>
                         <div class="code-block">
-                            <pre><code class="language-javascript">import { Sprite } from "./classes/sprites.js";
+                            <pre><code class="language-javascript">import { Sprite } from "./jsge.js";
 
 // Load a sprite from an image
 const playerSprite = await Sprite.load("./assets/player.png", true);
@@ -126,7 +153,7 @@ const emptySprite = Sprite.create(32, 32, false);</code></pre>
                         <h3>4️⃣ Create an Entity</h3>
                         <p>Entities are the game objects:</p>
                         <div class="code-block">
-                            <pre><code class="language-javascript">import { Entity } from "./classes/entity.js";
+                            <pre><code class="language-javascript">import { Entity } from "./jsge.js";
 
 const player = Entity.create({
     sprite: playerSprite,
@@ -138,7 +165,20 @@ const player = Entity.create({
                             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         </div>
 
-                        <h3>5️⃣ Game Loop</h3>
+                        <h3>5️⃣ Create a Scene (Optional)</h3>
+                        <p>Organize your elements with scenes:</p>
+                        <div class="code-block">
+                            <pre><code class="language-javascript">import { Scene } from "./jsge.js";
+
+const gameScene = new Scene();
+
+// Add elements with z-order
+gameScene.add(player, 1);
+gameScene.add(background, 0);</code></pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+
+                        <h3>6️⃣ Game Loop</h3>
                         <p>Update and draw your entities:</p>
                         <div class="code-block">
                             <pre><code class="language-javascript">function gameLoop() {
@@ -148,8 +188,10 @@ const player = Entity.create({
     // Update entity
     player.update();
     
-    // Draw entity
-    player.drawEntity(mainCam);
+    // Draw entity or scene
+    player.draw(mainCam);
+    // OR
+    gameScene.draw(mainCam);
     
     requestAnimationFrame(gameLoop);
 }
@@ -163,33 +205,47 @@ gameLoop();</code></pre>
                     <h2>🏗️ Engine Architecture</h2>
                     <div class="architecture-diagram">
                         <div class="arch-box core">
-                            <strong>Core</strong>
+                            <strong>📦 Core</strong>
+                            <div class="arch-items">
+                                <span>JSGE Import</span>
+                            </div>
+                        </div>
+                        <div class="arch-arrow">➡️</div>
+                        <div class="arch-box rendering">
+                            <strong>🎨 Rendering</strong>
                             <div class="arch-items">
                                 <span>Camera</span>
                                 <span>Sprite</span>
                                 <span>Animation</span>
                             </div>
                         </div>
-                        <div class="arch-arrow">→</div>
+                        <div class="arch-arrow">➡️</div>
+                        <div class="arch-box organization">
+                            <strong>🎭 Organization</strong>
+                            <div class="arch-items">
+                                <span>Scene</span>
+                            </div>
+                        </div>
+                        <div class="arch-arrow">➡️</div>
                         <div class="arch-box entities">
-                            <strong>Entities</strong>
+                            <strong>🌲 Entities</strong>
                             <div class="arch-items">
                                 <span>Entity</span>
                                 <span>Element</span>
                             </div>
                         </div>
-                        <div class="arch-arrow">→</div>
+                        <div class="arch-arrow">➡️</div>
                         <div class="arch-box ui">
-                            <strong>UI</strong>
+                            <strong>🪟 UI</strong>
                             <div class="arch-items">
                                 <span>Gadget</span>
                                 <span>Button</span>
                                 <span>Text</span>
                             </div>
                         </div>
-                        <div class="arch-arrow">→</div>
+                        <div class="arch-arrow">➡️</div>
                         <div class="arch-box effects">
-                            <strong>Effects</strong>
+                            <strong>🎯 Effects</strong>
                             <div class="arch-items">
                                 <span>Transition</span>
                                 <span>Bezier</span>
@@ -197,33 +253,45 @@ gameLoop();</code></pre>
                         </div>
                     </div>
                     <p style="text-align: center; margin-top: 20px; color: #666;">
-                        Render Flow: Camera → Entities/UI → Effects
+                        Render Flow: Core → Rendering → Organization → Entities/UI → Effects
                     </p>
                 </section>
 
                 <section class="section">
-                    <h2>📖 Documentation by Category</h2>
+                    <h2>📚 Documentation by Category</h2>
                     <div class="categories-grid">
                         <div class="category-card">
-                            <div class="category-icon">🎮</div>
+                            <div class="category-icon">📦</div>
+                            <h3>Core</h3>
+                            <p>Central import and engine overview.</p>
+                            <a href="/pages/jsge.html" class="category-link">View Documentation →</a>
+                        </div>
+                        <div class="category-card">
+                            <div class="category-icon">🎨</div>
                             <h3>Rendering</h3>
                             <p>Manage display with Camera, Sprite and Animation.</p>
                             <a href="/pages/camera.html" class="category-link">View Documentation →</a>
                         </div>
                         <div class="category-card">
                             <div class="category-icon">🎭</div>
+                            <h3>Organization</h3>
+                            <p>Organize elements with Scene and z-order.</p>
+                            <a href="/pages/scene.html" class="category-link">View Documentation →</a>
+                        </div>
+                        <div class="category-card">
+                            <div class="category-icon">🌲</div>
                             <h3>Entities</h3>
                             <p>Create and manage game objects with Entity and Element.</p>
                             <a href="/pages/entity.html" class="category-link">View Documentation →</a>
                         </div>
                         <div class="category-card">
-                            <div class="category-icon">⚡</div>
+                            <div class="category-icon">🪟</div>
                             <h3>User Interface</h3>
                             <p>Create interfaces with Gadget, Button and Text.</p>
                             <a href="/pages/gadget.html" class="category-link">View Documentation →</a>
                         </div>
                         <div class="category-card">
-                            <div class="category-icon">🔄</div>
+                            <div class="category-icon">🎯</div>
                             <h3>Transitions & Animations</h3>
                             <p>Smooth effects with Transition and Bezier curves.</p>
                             <a href="/pages/transition.html" class="category-link">View Documentation →</a>
@@ -232,7 +300,7 @@ gameLoop();</code></pre>
                 </section>
 
                 <section class="section">
-                    <h2>📝 Full Example</h2>
+                    <h2>💻 Full Example</h2>
                     <p>A complete example showing multiple JSGE features:</p>
                     <div class="example-block">
                         <div class="example-demo">
@@ -242,20 +310,19 @@ gameLoop();</code></pre>
                             </p>
                         </div>
                         <div class="code-block">
-                            <pre><code class="language-javascript">import { Camera } from "./classes/camera.js";
-import { Sprite } from "./classes/sprites.js";
-import { Entity } from "./classes/entity.js";
-import { Button } from "./classes/button.js";
+                            <pre><code class="language-javascript">import { Camera, Sprite, Entity, Scene, Button } from "./jsge.js";
 
 // Initialization
 const canvas = document.querySelector("#gameCanvas");
-const ctx = canvas.getContext("2d");
 const mainCam = new Camera({
     canvas: canvas,
     position: {x: 0, y: 0},
     dimensions: {width: 800, height: 600},
     backgroundColor: "#222"
 });
+
+// Create a scene
+const gameScene = new Scene();
 
 // Load a sprite
 const playerSprite = await Sprite.load("./assets/player.png", true);
@@ -266,6 +333,9 @@ const player = Entity.create({
     position: {x: 400, y: 300},
     physic: true
 });
+
+// Add to scene
+gameScene.add(player, 1);
 
 // Create a button
 const button = Button.create("Click Me", {
@@ -290,9 +360,12 @@ function gameLoop() {
     mainCam.clear();
     
     player.update();
-    player.drawEntity(mainCam);
     
-    button.draw(mainCam);
+    // Draw scene
+    gameScene.draw(mainCam);
+    
+    // Draw UI
+    button.draw(mainCam, 2);
     
     requestAnimationFrame(gameLoop);
 }
@@ -303,17 +376,17 @@ gameLoop();</code></pre>
                 </section>
 
                 <section class="section">
-                    <h2>🤝 Contributing</h2>
+                    <h2>👾 Contributing</h2>
                     <p>JSGE is an open source project. You can contribute in several ways:</p>
                     <ul class="contrib-list">
                         <li>🐛 <strong>Report bugs</strong>: Open an issue on GitHub with a detailed description.</li>
                         <li>📝 <strong>Improve documentation</strong>: Help make this documentation even clearer.</li>
-                        <li>💻 <strong>Submit PRs</strong>: Propose improvements or new features.</li>
-                        <li>🎨 <strong>Create examples</strong>: Share your creations using JSGE.</li>
+                        <li>🔧 <strong>Submit PRs</strong>: Propose improvements or new features.</li>
+                        <li>🎮 <strong>Create examples</strong>: Share your creations using JSGE.</li>
                     </ul>
                     <div class="contrib-links">
                         <a href="https://github.com/AubryBoulet/JSGE" class="contrib-btn" target="_blank">
-                            📦 View on GitHub
+                            🔗 View on GitHub
                         </a>
                     </div>
                 </section>

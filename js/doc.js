@@ -1,36 +1,36 @@
-// ===== Fonction pour copier du code =====
+// ===== Function to copy code =====
 function copyCode(button) {
     const codeBlock = button.parentElement.querySelector('code');
     const code = codeBlock.textContent;
 
     navigator.clipboard.writeText(code).then(() => {
-        button.textContent = 'Copié !';
+        button.textContent = 'Copied!';
         button.classList.add('copied');
 
         setTimeout(() => {
-            button.textContent = 'Copier';
+            button.textContent = 'Copy';
             button.classList.remove('copied');
         }, 2000);
     }).catch(err => {
-        console.error('Échec de la copie: ', err);
-        button.textContent = 'Erreur';
+        console.error('Copy failed: ', err);
+        button.textContent = 'Error';
         setTimeout(() => {
-            button.textContent = 'Copier';
+            button.textContent = 'Copy';
         }, 2000);
     });
 }
 
-// ===== Mise en surbrillance de la syntaxe =====
+// ===== Syntax Highlighting =====
 function highlightCode() {
     const codeBlocks = document.querySelectorAll('.code-block code');
     
     codeBlocks.forEach(block => {
         let html = block.innerHTML;
         
-        // Échapper le HTML pour éviter les problèmes
+        // Escape HTML to avoid issues
         const text = block.textContent;
         
-        // Mots-clés JavaScript
+        // JavaScript keywords
         const keywords = [
             'import', 'export', 'from', 'class', 'const', 'let', 'var', 'function',
             'return', 'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break',
@@ -38,55 +38,58 @@ function highlightCode() {
             'static', 'async', 'await', 'yield', 'null', 'true', 'false', 'undefined'
         ];
         
-        // Types et classes JSGE
+        // JSGE types and classes
         const jsgeTypes = [
             'Camera', 'Sprite', 'Entity', 'Element', 'Animation', 'Button',
-            'Gadget', 'Text', 'Transition', 'Bezier', 'position', 'dimensions',
+            'Gadget', 'Text', 'Transition', 'Bezier', 'Scene', 'position', 'dimensions',
             'velocity', 'acceleration', 'scale', 'physic', 'gravity', 'flip',
             'currentAnimation', 'frameRate', 'ctx', 'canvas', 'backgroundColor',
             'backgroundImage', 'backgroundImageVelocity', 'backgroundImageLoop',
-            'backgroundImageFillStyle', 'create', 'load', 'update', 'draw',
-            'drawEntity', 'drawElement', 'clear', 'moveCamera', 'addColisionWithEntity',
-            'onMouseEnter', 'onMouseLeave', 'onClick', 'addTextGradient', 'updateText'
+            'backgroundImageFillStyle', 'backgroundType', 'backgroundImagePosition',
+            'backgroundImageDimension', 'cacheCanvas', 'targetFPS', 'toleranceDelta',
+            'create', 'load', 'update', 'draw', 'drawEntity', 'drawElement',
+            'clear', 'moveCamera', 'flipBuffer', 'addColisionWithEntity',
+            'onMouseEnter', 'onMouseLeave', 'onMouseOver', 'onClick', 'addTextGradient',
+            'updateText', 'zOrder', 'remove', 'assign', 'Scene', 'JSGE'
         ];
         
-        // Fonctions et méthodes
+        // Functions and methods
         const functions = [
-            'requestAnimationFrame', 'document\.querySelector', 'document\.createElement',
-            'addEventListener', 'performance\.now', 'Math\.floor', 'Math\.random',
-            'console\.log', 'setTimeout', 'clearRect', 'fillRect', 'drawImage',
+            'requestAnimationFrame', 'document\\.querySelector', 'document\\.createElement',
+            'addEventListener', 'performance\\.now', 'Math\\.floor', 'Math\\.random',
+            'console\\.log', 'setTimeout', 'clearRect', 'fillRect', 'drawImage',
             'measureText', 'fillText', 'strokeRect', 'beginPath', 'moveTo', 'lineTo',
             'stroke', 'fill', 'save', 'restore', 'translate', 'rotate', 'scale'
         ];
         
-        // Chaînes de caractères
+        // Strings
         html = html.replace(/("[^"]*"|'[^']*')/g, '<span class="string">$1</span>');
         
-        // Nombres
+        // Numbers
         html = html.replace(/\b(\d+(\.\d+)?)\b/g, '<span class="number">$1</span>');
         
-        // Commentaires
+        // Comments
         html = html.replace(/(\/\/[^\n]*)/g, '<span class="comment">$1</span>');
         html = html.replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="comment">$1</span>');
         
-        // Opérateurs
+        // Operators
         html = html.replace(/([+\-*/%=<>!&|^~?:]|\(\)|\{\}|\\[\]|\\.)/g, '<span class="operator">$1</span>');
         
-        // Fonctions JSGE
+        // JSGE Types
         jsgeTypes.forEach(type => {
-            const regex = new RegExp(`\b(${type})\b`, 'g');
+            const regex = new RegExp(`\\b(${type})\\b`, 'g');
             html = html.replace(regex, '<span class="jsge-type">$1</span>');
         });
         
-        // Mots-clés JavaScript
+        // JavaScript keywords
         keywords.forEach(keyword => {
-            const regex = new RegExp(`\b(${keyword})\b`, 'g');
+            const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
             html = html.replace(regex, '<span class="keyword">$1</span>');
         });
         
-        // Fonctions
+        // Functions
         functions.forEach(func => {
-            const regex = new RegExp(`\b(${func})\b`, 'g');
+            const regex = new RegExp(`\\b(${func})\\b`, 'g');
             html = html.replace(regex, '<span class="function">$1</span>');
         });
         
@@ -94,9 +97,9 @@ function highlightCode() {
     });
 }
 
-// ===== Initialisation de la page =====
+// ===== Page Initialization =====
 document.addEventListener('DOMContentLoaded', () => {
-    // Ajouter la classe active à la page courante dans la navbar
+    // Add active class to current page in navbar
     const currentPath = window.location.pathname.split('/').pop();
     const navLinks = document.querySelectorAll('.nav-link');
 
@@ -109,13 +112,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Initialisation des démos
+    // Initialize demos
     initDemos();
 
-    // Mise en surbrillance du code
+    // Highlight code
     highlightCode();
 
-    // Gestion du scroll pour la sidebar
+    // Sidebar scroll handling
     let lastScrollTop = 0;
     const sidebar = document.querySelector('.sidebar');
     
@@ -135,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lastScrollTop = scrollTop;
     });
 
-    // Ajouter un effet de smooth scroll pour les ancres
+    // Add smooth scroll for anchors
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
@@ -150,55 +153,60 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// ===== Initialisation des démos =====
+// ===== Initialize Demos =====
 function initDemos() {
-    // Démo pour la page d'accueil
+    // Demo for home page
     if (document.getElementById('full-demo')) {
         initFullDemo();
     }
     
-    // Démo Camera
+    // Camera demo
     if (document.getElementById('camera-demo')) {
         initCameraDemo();
     }
     
-    // Démo Sprite
+    // Sprite demo
     if (document.getElementById('sprite-demo')) {
         initSpriteDemo();
     }
     
-    // Démo Entity
+    // Entity demo
     if (document.getElementById('entity-demo')) {
         initEntityDemo();
     }
     
-    // Démo Animation
+    // Animation demo
     if (document.getElementById('animation-demo')) {
         initAnimationDemo();
     }
     
-    // Démo Button
+    // Button demo
     if (document.getElementById('button-demo')) {
         initButtonDemo();
     }
     
-    // Démo Text
+    // Text demo
     if (document.getElementById('text-demo')) {
         initTextDemo();
     }
     
-    // Démo Transition
+    // Transition demo
     if (document.getElementById('transition-demo')) {
         initTransitionDemo();
     }
     
-    // Démo Bezier
+    // Bezier demo
     if (document.getElementById('bezier-demo')) {
         initBezierDemo();
     }
+    
+    // Scene demo
+    if (document.getElementById('scene-demo')) {
+        initSceneDemo();
+    }
 }
 
-// ===== Démo complète pour la page d'accueil =====
+// ===== Full Demo for Home Page =====
 function initFullDemo() {
     const canvas = document.getElementById('full-demo');
     const ctx = canvas.getContext('2d');
@@ -209,7 +217,7 @@ function initFullDemo() {
     let playerY = canvas.height / 2;
     let buttonHovered = false;
     
-    // Position du bouton
+    // Button position
     const button = {
         x: canvas.width / 2 - 100,
         y: canvas.height - 100,
@@ -217,7 +225,7 @@ function initFullDemo() {
         height: 50
     };
     
-    // Gestion des entrées clavier
+    // Keyboard input
     const keys = {
         ArrowUp: false,
         ArrowDown: false,
@@ -237,46 +245,46 @@ function initFullDemo() {
         }
     });
     
-    // Gestion de la souris
+    // Mouse handling
     canvas.addEventListener('mousemove', (e) => {
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
         
-        // Vérifier si la souris est sur le bouton
+        // Check if mouse is over button
         buttonHovered = mouseX >= button.x && mouseX <= button.x + button.width &&
                        mouseY >= button.y && mouseY <= button.y + button.height;
     });
     
-    // Simulation de la boucle de jeu
+    // Game loop simulation
     function gameLoop() {
-        // Effacer
+        // Clear
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Dessiner l'arrière-plan
+        // Draw background
         ctx.fillStyle = '#222';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Dessiner un "monde" plus grand
+        // Draw a larger "world"
         ctx.fillStyle = '#166088';
         ctx.fillRect(-canvas.width, -canvas.height, canvas.width * 3, canvas.height * 3);
         
-        // Déplacer le joueur
+        // Move player
         const speed = 3;
         if (keys.ArrowUp) playerY -= speed;
         if (keys.ArrowDown) playerY += speed;
         if (keys.ArrowLeft) playerX -= speed;
         if (keys.ArrowRight) playerX += speed;
         
-        // Garder le joueur dans les limites
+        // Keep player within bounds
         playerX = Math.max(0, Math.min(canvas.width, playerX));
         playerY = Math.max(0, Math.min(canvas.height, playerY));
         
-        // Déplacer la caméra pour suivre le joueur (centré)
+        // Move camera to follow player (centered)
         cameraX = playerX - canvas.width / 2;
         cameraY = playerY - canvas.height / 2;
         
-        // Dessiner le joueur (carré rouge)
+        // Draw player (red square)
         ctx.fillStyle = '#e74c3c';
         ctx.fillRect(
             playerX - cameraX - 25,
@@ -284,7 +292,7 @@ function initFullDemo() {
             50, 50
         );
         
-        // Dessiner le bouton
+        // Draw button
         ctx.fillStyle = buttonHovered ? '#3498db' : '#2980b9';
         ctx.fillRect(
             button.x - cameraX,
@@ -297,25 +305,25 @@ function initFullDemo() {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(
-            'Bouton JSGE',
+            'JSGE Button',
             button.x + button.width / 2 - cameraX,
             button.y + button.height / 2 - cameraY
         );
         
-        // Dessiner la bordure de la caméra
+        // Draw camera border
         ctx.strokeStyle = '#f1c40f';
         ctx.lineWidth = 2;
         ctx.strokeRect(0, 0, canvas.width, canvas.height);
         
-        // Dessiner les informations
+        // Draw information
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(10, 10, 200, 60);
         ctx.fillStyle = '#fff';
         ctx.font = '12px Arial';
         ctx.textAlign = 'left';
         ctx.fillText(`Position: (${Math.round(playerX)}, ${Math.round(playerY)})`, 15, 25);
-        ctx.fillText(`Caméra: (${Math.round(cameraX)}, ${Math.round(cameraY)})`, 15, 40);
-        ctx.fillText('Flèches: Déplacer', 15, 55);
+        ctx.fillText(`Camera: (${Math.round(cameraX)}, ${Math.round(cameraY)})`, 15, 40);
+        ctx.fillText('Arrows: Move', 15, 55);
         
         requestAnimationFrame(gameLoop);
     }
@@ -323,7 +331,7 @@ function initFullDemo() {
     gameLoop();
 }
 
-// ===== Démo Camera =====
+// ===== Camera Demo =====
 function initCameraDemo() {
     const canvas = document.getElementById('camera-demo');
     const ctx = canvas.getContext('2d');
@@ -331,35 +339,35 @@ function initCameraDemo() {
     let cameraX = 0;
     let cameraY = 0;
     
-    // Simulation d'une caméra JSGE
+    // JSGE camera simulation
     function drawDemo() {
-        // Effacer
+        // Clear
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Dessiner l'arrière-plan
+        // Draw background
         ctx.fillStyle = '#222';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Dessiner un "monde" plus grand que la caméra
+        // Draw a world larger than the camera
         ctx.fillStyle = '#4a6fa5';
         ctx.fillRect(-canvas.width, -canvas.height, canvas.width * 3, canvas.height * 3);
         
-        // Dessiner un rectangle rouge (simulation d'entité)
+        // Draw a red rectangle (entity simulation)
         ctx.fillStyle = 'red';
         ctx.fillRect(100 - cameraX, 100 - cameraY, 50, 50);
         
-        // Dessiner un cercle bleu
+        // Draw a blue circle
         ctx.fillStyle = 'blue';
         ctx.beginPath();
         ctx.arc(300 - cameraX, 200 - cameraY, 30, 0, Math.PI * 2);
         ctx.fill();
         
-        // Dessiner la bordure de la caméra
+        // Draw camera border
         ctx.strokeStyle = 'yellow';
         ctx.lineWidth = 2;
         ctx.strokeRect(0, 0, canvas.width, canvas.height);
         
-        // Déplacer la caméra avec les flèches
+        // Move camera with arrow keys
         document.addEventListener('keydown', (e) => {
             const speed = 5;
             if (e.key === 'ArrowRight') cameraX += speed;
@@ -374,12 +382,12 @@ function initCameraDemo() {
     drawDemo();
 }
 
-// ===== Démo Sprite =====
+// ===== Sprite Demo =====
 function initSpriteDemo() {
     const canvas = document.getElementById('sprite-demo');
     const ctx = canvas.getContext('2d');
     
-    // Créer un sprite simple (carré avec un dégradé)
+    // Create a simple sprite (square with gradient)
     const spriteCanvas = document.createElement('canvas');
     spriteCanvas.width = 64;
     spriteCanvas.height = 64;
@@ -408,7 +416,7 @@ function initSpriteDemo() {
         ctx.fillStyle = '#f0f0f0';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Dessiner le sprite
+        // Draw the sprite
         ctx.save();
         ctx.translate(x + 32, y + 32);
         ctx.rotate(rotation);
@@ -416,19 +424,19 @@ function initSpriteDemo() {
         ctx.drawImage(spriteCanvas, -32, -32, 64, 64);
         ctx.restore();
         
-        // Dessiner les contrôles
+        // Draw controls
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(10, 10, 200, 120);
         ctx.fillStyle = '#fff';
         ctx.font = '12px Arial';
         ctx.textAlign = 'left';
-        ctx.fillText('Controles:', 15, 25);
-        ctx.fillText('Flèches: Déplacer', 15, 40);
+        ctx.fillText('Controls:', 15, 25);
+        ctx.fillText('Arrows: Move', 15, 40);
         ctx.fillText('+ / -: Zoom', 15, 55);
-        ctx.fillText('R: Rotation', 15, 70);
-        ctx.fillText('S: Réinitialiser', 15, 85);
+        ctx.fillText('R: Rotate', 15, 70);
+        ctx.fillText('S: Reset', 15, 85);
         ctx.fillText(`Scale: ${scale.toFixed(1)}`, 15, 100);
-        ctx.fillText(`Rotation: ${(rotation * 180 / Math.PI).toFixed(1)}°`, 15, 115);
+        ctx.fillText(`Rotation: ${(rotation * 180 / Math.PI).toFixed(1)}deg`, 15, 115);
         
         requestAnimationFrame(drawDemo);
     }
@@ -452,19 +460,19 @@ function initSpriteDemo() {
                 break;
         }
         
-        // Limiter le scale
+        // Limit scale
         scale = Math.max(0.5, Math.min(3, scale));
     });
     
     drawDemo();
 }
 
-// ===== Démo Entity =====
+// ===== Entity Demo =====
 function initEntityDemo() {
     const canvas = document.getElementById('entity-demo');
     const ctx = canvas.getContext('2d');
     
-    // Simulation d'une entité avec physique
+    // Simulation of an entity with physics
     const entity = {
         x: canvas.width / 2,
         y: canvas.height / 2,
@@ -485,18 +493,18 @@ function initEntityDemo() {
         ctx.fillStyle = '#f0f0f0';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Appliquer la gravité
+        // Apply gravity
         entity.velocityY += gravity;
         
-        // Appliquer la friction
+        // Apply friction
         entity.velocityX *= friction;
         entity.velocityY *= friction;
         
-        // Mettre à jour la position
+        // Update position
         entity.x += entity.velocityX;
         entity.y += entity.velocityY;
         
-        // Garder dans les limites
+        // Keep within bounds
         if (entity.x < 0) {
             entity.x = 0;
             entity.velocityX *= -0.5;
@@ -514,16 +522,16 @@ function initEntityDemo() {
             entity.velocityY *= -0.5;
         }
         
-        // Dessiner l'entité
+        // Draw entity
         ctx.fillStyle = entity.color;
         ctx.fillRect(entity.x, entity.y, entity.width, entity.height);
         
-        // Dessiner les yeux
+        // Draw eyes
         ctx.fillStyle = '#fff';
         ctx.fillRect(entity.x + 10, entity.y + 10, 8, 8);
         ctx.fillRect(entity.x + 22, entity.y + 10, 8, 8);
         
-        // Dessiner la bouche
+        // Draw mouth
         ctx.strokeStyle = '#fff';
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -531,16 +539,16 @@ function initEntityDemo() {
         ctx.quadraticCurveTo(entity.x + 20, entity.y + 35, entity.x + 30, entity.y + 30);
         ctx.stroke();
         
-        // Dessiner les informations
+        // Draw information
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(10, 10, 250, 80);
         ctx.fillStyle = '#fff';
         ctx.font = '12px Arial';
         ctx.textAlign = 'left';
         ctx.fillText(`Position: (${Math.round(entity.x)}, ${Math.round(entity.y)})`, 15, 25);
-        ctx.fillText(`Vitesse: (${entity.velocityX.toFixed(1)}, ${entity.velocityY.toFixed(1)})`, 15, 40);
-        ctx.fillText('Flèches: Déplacer', 15, 55);
-        ctx.fillText('Espace: Sauter', 15, 70);
+        ctx.fillText(`Velocity: (${entity.velocityX.toFixed(1)}, ${entity.velocityY.toFixed(1)})`, 15, 40);
+        ctx.fillText('Arrows: Move', 15, 55);
+        ctx.fillText('Space: Jump', 15, 70);
         
         requestAnimationFrame(drawDemo);
     }
@@ -558,18 +566,18 @@ function initEntityDemo() {
     drawDemo();
 }
 
-// ===== Démo Animation =====
+// ===== Animation Demo =====
 function initAnimationDemo() {
     const canvas = document.getElementById('animation-demo');
     const ctx = canvas.getContext('2d');
     
-    // Simulation d'une animation de sprite sheet
+    // Simulation of a sprite sheet animation
     const spriteSheet = document.createElement('canvas');
     spriteSheet.width = 128;
     spriteSheet.height = 32;
     const spriteCtx = spriteSheet.getContext('2d');
     
-    // Dessiner un sprite sheet simple (4 frames)
+    // Draw a simple sprite sheet (4 frames)
     for (let i = 0; i < 4; i++) {
         spriteCtx.fillStyle = ['#e74c3c', '#3498db', '#2ecc71', '#f1c40f'][i];
         spriteCtx.fillRect(i * 32, 0, 32, 32);
@@ -596,7 +604,7 @@ function initAnimationDemo() {
         ctx.fillStyle = '#f0f0f0';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Mettre à jour l'animation
+        // Update animation
         if (!frameTimer) {
             frameTimer = timestamp;
         }
@@ -607,25 +615,25 @@ function initAnimationDemo() {
             frameTimer = timestamp;
         }
         
-        // Dessiner le frame actuel
+        // Draw current frame
         ctx.drawImage(
             spriteSheet,
             frame * frameWidth, 0, frameWidth, frameHeight,
             x, y, frameWidth, frameHeight
         );
         
-        // Dessiner le sprite sheet complet
+        // Draw complete sprite sheet
         ctx.drawImage(spriteSheet, 10, 10, 128, 32);
         ctx.strokeStyle = '#000';
         ctx.lineWidth = 1;
         ctx.strokeRect(10, 10, 128, 32);
         
-        // Mettre en évidence le frame actuel dans le sprite sheet
+        // Highlight current frame in sprite sheet
         ctx.strokeStyle = '#e74c3c';
         ctx.lineWidth = 2;
         ctx.strokeRect(10 + frame * 32, 10, 32, 32);
         
-        // Dessiner les informations
+        // Draw information
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(10, canvas.height - 60, 200, 50);
         ctx.fillStyle = '#fff';
@@ -633,7 +641,7 @@ function initAnimationDemo() {
         ctx.textAlign = 'left';
         ctx.fillText(`Frame: ${frame + 1}/${frameCount}`, 15, canvas.height - 45);
         ctx.fillText(`Frame Rate: ${frameRate} FPS`, 15, canvas.height - 30);
-        ctx.fillText('+ / -: Changer la vitesse', 15, canvas.height - 15);
+        ctx.fillText('+ / -: Change speed', 15, canvas.height - 15);
         
         requestAnimationFrame(drawDemo);
     }
@@ -646,18 +654,18 @@ function initAnimationDemo() {
     requestAnimationFrame(drawDemo);
 }
 
-// ===== Démo Button =====
+// ===== Button Demo =====
 function initButtonDemo() {
     const canvas = document.getElementById('button-demo');
     const ctx = canvas.getContext('2d');
     
-    // Simulation d'un bouton JSGE
+    // JSGE button simulation
     const button = {
         x: canvas.width / 2 - 100,
         y: canvas.height / 2 - 25,
         width: 200,
         height: 50,
-        text: 'Bouton JSGE',
+        text: 'JSGE Button',
         color: '#3498db',
         hoverColor: '#2980b9',
         textColor: '#fff',
@@ -665,7 +673,7 @@ function initButtonDemo() {
         pressed: false
     };
     
-    // Gestion de la souris
+    // Mouse handling
     canvas.addEventListener('mousemove', (e) => {
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
@@ -700,35 +708,44 @@ function initButtonDemo() {
         ctx.fillStyle = '#f0f0f0';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Dessiner le bouton
+        // Draw button
         ctx.fillStyle = button.pressed ? button.hoverColor : button.hovered ? button.hoverColor : button.color;
-        ctx.beginPath();
-        ctx.roundRect(button.x, button.y, button.width, button.height, 5);
-        ctx.fill();
+        // Draw rounded rectangle (fallback for browsers without roundRect)
+        if (ctx.roundRect) {
+            ctx.beginPath();
+            ctx.roundRect(button.x, button.y, button.width, button.height, 5);
+            ctx.fill();
+        } else {
+            ctx.fillRect(button.x, button.y, button.width, button.height);
+        }
         
-        // Dessiner la bordure
+        // Draw border
         ctx.strokeStyle = '#2c3e50';
         ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.roundRect(button.x, button.y, button.width, button.height, 5);
-        ctx.stroke();
+        if (ctx.roundRect) {
+            ctx.beginPath();
+            ctx.roundRect(button.x, button.y, button.width, button.height, 5);
+            ctx.stroke();
+        } else {
+            ctx.strokeRect(button.x, button.y, button.width, button.height);
+        }
         
-        // Dessiner le texte
+        // Draw text
         ctx.fillStyle = button.textColor;
         ctx.font = '16px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(button.text, button.x + button.width / 2, button.y + button.height / 2);
         
-        // Dessiner les informations
+        // Draw information
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(10, 10, 250, 60);
         ctx.fillStyle = '#fff';
         ctx.font = '12px Arial';
         ctx.textAlign = 'left';
-        ctx.fillText(`État: ${button.hovered ? 'Survolé' : button.pressed ? 'Enfoncé' : 'Normal'}`, 15, 25);
-        ctx.fillText('Cliquez sur le bouton', 15, 40);
-        ctx.fillText('pour interagir', 15, 55);
+        ctx.fillText(`State: ${button.hovered ? 'Hovered' : button.pressed ? 'Pressed' : 'Normal'}`, 15, 25);
+        ctx.fillText('Click the button', 15, 40);
+        ctx.fillText('to interact', 15, 55);
         
         requestAnimationFrame(drawDemo);
     }
@@ -736,7 +753,7 @@ function initButtonDemo() {
     drawDemo();
 }
 
-// ===== Démo Text =====
+// ===== Text Demo =====
 function initTextDemo() {
     const canvas = document.getElementById('text-demo');
     const ctx = canvas.getContext('2d');
@@ -748,71 +765,71 @@ function initTextDemo() {
     function drawDemo() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Dessiner un dégradé d'arrière-plan
+        // Draw background gradient
         const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
         gradient.addColorStop(0, '#3498db');
         gradient.addColorStop(1, '#2980b9');
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Mettre à jour l'animation
+        // Update animation
         angle += 0.01;
         scale += 0.01 * direction;
         if (scale > 1.2 || scale < 0.8) direction *= -1;
         
-        // Dessiner du texte avec différents styles
+        // Draw text with different styles
         ctx.save();
         
-        // Texte 1: Normal
+        // Text 1: Normal
         ctx.fillStyle = '#fff';
         ctx.font = '24px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('Texte JSGE', canvas.width / 2, 50);
+        ctx.fillText('JSGE Text', canvas.width / 2, 50);
         
-        // Texte 2: Avec ombre
+        // Text 2: With shadow
         ctx.fillStyle = '#fff';
         ctx.font = '20px Arial';
         ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
         ctx.shadowBlur = 5;
-        ctx.fillText('Texte avec ombre', canvas.width / 2, 100);
+        ctx.fillText('Text with shadow', canvas.width / 2, 100);
         ctx.shadowBlur = 0;
         
-        // Texte 3: Rotation
+        // Text 3: Rotation
         ctx.translate(canvas.width / 2, 150);
         ctx.rotate(angle);
         ctx.fillStyle = '#f1c40f';
         ctx.font = '18px Arial';
-        ctx.fillText('Texte en rotation', 0, 0);
+        ctx.fillText('Rotating text', 0, 0);
         ctx.rotate(-angle);
         ctx.translate(-canvas.width / 2, -150);
         
-        // Texte 4: Scale
+        // Text 4: Scale
         ctx.translate(canvas.width / 2, 200);
         ctx.scale(scale, scale);
         ctx.fillStyle = '#e74c3c';
         ctx.font = '20px Arial';
-        ctx.fillText('Texte redimensionné', 0, 0);
+        ctx.fillText('Scaled text', 0, 0);
         ctx.scale(1/scale, 1/scale);
         ctx.translate(-canvas.width / 2, -200);
         
-        // Texte 5: Dégradé
+        // Text 5: Gradient
         const textGradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
         textGradient.addColorStop(0, '#e74c3c');
         textGradient.addColorStop(0.5, '#f1c40f');
         textGradient.addColorStop(1, '#2ecc71');
         ctx.fillStyle = textGradient;
         ctx.font = '24px Arial';
-        ctx.fillText('Texte avec dégradé', canvas.width / 2, 250);
+        ctx.fillText('Gradient text', canvas.width / 2, 250);
         
         ctx.restore();
         
-        // Dessiner les informations
+        // Draw information
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(10, canvas.height - 50, 200, 40);
         ctx.fillStyle = '#fff';
         ctx.font = '12px Arial';
         ctx.textAlign = 'left';
-        ctx.fillText(`Rotation: ${(angle * 180 / Math.PI).toFixed(1)}°`, 15, canvas.height - 35);
+        ctx.fillText(`Rotation: ${(angle * 180 / Math.PI).toFixed(1)}deg`, 15, canvas.height - 35);
         ctx.fillText(`Scale: ${scale.toFixed(2)}`, 15, canvas.height - 20);
         
         requestAnimationFrame(drawDemo);
@@ -821,12 +838,12 @@ function initTextDemo() {
     drawDemo();
 }
 
-// ===== Démo Transition =====
+// ===== Transition Demo =====
 function initTransitionDemo() {
     const canvas = document.getElementById('transition-demo');
     const ctx = canvas.getContext('2d');
     
-    // Simulation de transition avec easing
+    // Transition with easing simulation
     const box = {
         x: 50,
         y: canvas.height / 2 - 25,
@@ -838,10 +855,10 @@ function initTransitionDemo() {
     const targetX = canvas.width - 100;
     let progress = 0;
     let startTime = null;
-    let duration = 2000; // 2 secondes
+    let duration = 2000; // 2 seconds
     let easingFunction = 'easeInOutQuad';
     
-    // Fonctions d'easing (simplifiées)
+    // Easing functions (simplified)
     const easings = {
         linear: (t) => t,
         easeInQuad: (t) => t * t,
@@ -858,7 +875,7 @@ function initTransitionDemo() {
         const elapsed = timestamp - startTime;
         progress = Math.min(elapsed / duration, 1);
         
-        // Appliquer l'easing
+        // Apply easing
         const easedProgress = easings[easingFunction](progress);
         box.x = 50 + (targetX - 50) * easedProgress;
         
@@ -872,7 +889,7 @@ function initTransitionDemo() {
         ctx.fillStyle = '#f0f0f0';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Dessiner la ligne de progression
+        // Draw progress line
         ctx.strokeStyle = '#ddd';
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -880,7 +897,7 @@ function initTransitionDemo() {
         ctx.lineTo(canvas.width - 50, canvas.height / 2 + 30);
         ctx.stroke();
         
-        // Dessiner la progression
+        // Draw progress
         ctx.strokeStyle = '#3498db';
         ctx.lineWidth = 4;
         ctx.beginPath();
@@ -888,27 +905,27 @@ function initTransitionDemo() {
         ctx.lineTo(50 + (canvas.width - 100) * progress, canvas.height / 2 + 30);
         ctx.stroke();
         
-        // Dessiner la boîte
+        // Draw box
         ctx.fillStyle = box.color;
         ctx.fillRect(box.x, box.y, box.width, box.height);
         
-        // Dessiner les positions
+        // Draw positions
         ctx.fillStyle = '#000';
         ctx.font = '12px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('Départ', 50, canvas.height / 2 + 50);
-        ctx.fillText('Fin', canvas.width - 50, canvas.height / 2 + 50);
+        ctx.fillText('Start', 50, canvas.height / 2 + 50);
+        ctx.fillText('End', canvas.width - 50, canvas.height / 2 + 50);
         
-        // Dessiner les informations
+        // Draw information
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(10, 10, 300, 80);
         ctx.fillStyle = '#fff';
         ctx.font = '12px Arial';
         ctx.textAlign = 'left';
-        ctx.fillText(`Progression: ${(progress * 100).toFixed(1)}%`, 15, 25);
+        ctx.fillText(`Progress: ${(progress * 100).toFixed(1)}%`, 15, 25);
         ctx.fillText(`Easing: ${easingFunction}`, 15, 40);
-        ctx.fillText('1-7: Changer easing', 15, 55);
-        ctx.fillText('R: Réinitialiser', 15, 70);
+        ctx.fillText('1-7: Change easing', 15, 55);
+        ctx.fillText('R: Reset', 15, 70);
         
         requestAnimationFrame(drawDemo);
     }
@@ -930,12 +947,97 @@ function initTransitionDemo() {
     requestAnimationFrame(drawDemo);
 }
 
-// ===== Démo Bezier =====
+// ===== Scene Demo =====
+function initSceneDemo() {
+    const canvas = document.getElementById('scene-demo');
+    const ctx = canvas.getContext('2d');
+    
+    // Create a simple scene with layered elements
+    let cameraX = 0;
+    let cameraY = 0;
+    
+    // Elements at different depths
+    const elements = [
+        { x: 0, y: 0, width: 800, height: 400, color: '#166088', zOrder: 0, name: 'Background' },
+        { x: 200, y: 150, width: 50, height: 100, color: '#4a6fa5', zOrder: 1, name: 'Tree' },
+        { x: 400, y: 200, width: 60, height: 60, color: '#e74c3c', zOrder: 2, name: 'Player' },
+        { x: 300, y: 100, width: 40, height: 40, color: '#f1c40f', zOrder: 3, name: 'Foreground' }
+    ];
+    
+    // Keyboard controls
+    document.addEventListener('keydown', (e) => {
+        const speed = 5;
+        if (e.key === 'ArrowRight') cameraX += speed;
+        if (e.key === 'ArrowLeft') cameraX -= speed;
+        if (e.key === 'ArrowDown') cameraY += speed;
+        if (e.key === 'ArrowUp') cameraY -= speed;
+    });
+    
+    function gameLoop() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw background
+        ctx.fillStyle = '#222';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw a larger world
+        ctx.fillStyle = '#4a6fa5';
+        ctx.fillRect(-canvas.width, -canvas.height, canvas.width * 3, canvas.height * 3);
+        
+        // Draw elements sorted by z-order (simulating scene drawing)
+        // In JSGE, the Scene class automatically sorts elements by z-order
+        elements.sort((a, b) => a.zOrder - b.zOrder);
+        
+        elements.forEach(element => {
+            ctx.fillStyle = element.color;
+            ctx.fillRect(
+                element.x - cameraX,
+                element.y - cameraY,
+                element.width,
+                element.height
+            );
+            
+            // Draw element label
+            ctx.fillStyle = '#fff';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(
+                element.name,
+                element.x + element.width / 2 - cameraX,
+                element.y + element.height / 2 - cameraY
+            );
+        });
+        
+        // Draw camera border
+    if (ctx.strokeRect) {
+        ctx.strokeStyle = 'yellow';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(0, 0, canvas.width, canvas.height);
+    }
+        
+        // Draw information
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(10, 10, 250, 80);
+        ctx.fillStyle = '#fff';
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText(`Camera: (${cameraX.toFixed(0)}, ${cameraY.toFixed(0)})`, 15, 25);
+        ctx.fillText('Elements sorted by z-order', 15, 40);
+        ctx.fillText('Arrows: Move camera', 15, 55);
+        ctx.fillText('Higher z-order = on top', 15, 70);
+        
+        requestAnimationFrame(gameLoop);
+    }
+    
+    gameLoop();
+}
+
+// ===== Bezier Demo =====
 function initBezierDemo() {
     const canvas = document.getElementById('bezier-demo');
     const ctx = canvas.getContext('2d');
     
-    // Points de contrôle
+    // Control points
     const points = {
         p0: { x: 50, y: canvas.height / 2 },
         p1: { x: canvas.width / 3, y: canvas.height / 4 },
@@ -952,7 +1054,7 @@ function initBezierDemo() {
         ctx.fillStyle = '#f0f0f0';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Mettre à jour t
+        // Update t
         t += direction;
         if (t > 1) {
             t = 1;
@@ -962,10 +1064,10 @@ function initBezierDemo() {
             direction = 0.005;
         }
         
-        // Calculer le point sur la courbe de Bézier
+        // Calculate point on Bezier curve
         const point = calculateBezierPoint(t, points.p0, points.p1, points.p2, points.p3);
         
-        // Dessiner les lignes de contrôle
+        // Draw control lines
         ctx.strokeStyle = '#ddd';
         ctx.lineWidth = 1;
         ctx.beginPath();
@@ -975,7 +1077,7 @@ function initBezierDemo() {
         ctx.lineTo(points.p3.x, points.p3.y);
         ctx.stroke();
         
-        // Dessiner la courbe de Bézier
+        // Draw Bezier curve
         ctx.strokeStyle = '#3498db';
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -986,7 +1088,7 @@ function initBezierDemo() {
         }
         ctx.stroke();
         
-        // Dessiner les points de contrôle
+        // Draw control points
         ctx.fillStyle = '#e74c3c';
         [points.p0, points.p1, points.p2, points.p3].forEach(p => {
             ctx.beginPath();
@@ -994,13 +1096,13 @@ function initBezierDemo() {
             ctx.fill();
         });
         
-        // Dessiner le point actuel
+        // Draw current point
         ctx.fillStyle = '#f1c40f';
         ctx.beginPath();
         ctx.arc(point.x, point.y, 8, 0, Math.PI * 2);
         ctx.fill();
         
-        // Dessiner les informations
+        // Draw information
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(10, 10, 250, 60);
         ctx.fillStyle = '#fff';
@@ -1008,12 +1110,12 @@ function initBezierDemo() {
         ctx.textAlign = 'left';
         ctx.fillText(`t: ${t.toFixed(2)}`, 15, 25);
         ctx.fillText(`Point: (${point.x.toFixed(1)}, ${point.y.toFixed(1)})`, 15, 40);
-        ctx.fillText('Animation automatique', 15, 55);
+        ctx.fillText('Auto animation', 15, 55);
         
         requestAnimationFrame(drawDemo);
     }
     
-    // Fonction pour calculer un point sur une courbe de Bézier cubique
+    // Function to calculate a point on a cubic Bezier curve
     function calculateBezierPoint(t, p0, p1, p2, p3) {
         const u = 1 - t;
         const tt = t * t;

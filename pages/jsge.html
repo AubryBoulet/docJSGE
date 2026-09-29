@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Documentation for JSGE central import - Import all JSGE classes from a single file.">
+    <title>JSGE Central Import - JSGE Documentation</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" />
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="logo">
+            <h1>JSGE</h1>
+            <p>Lightweight 2D Game Engine</p>
+        </div>
+        <ul class="nav-list">
+            <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+            <li class="nav-section">📦 Core</li>
+            <li><a href="../pages/jsge.html" class="nav-link active">JSGE Central Import</a></li>
+            <li class="nav-section">🎨 Rendering</li>
+            <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
+            <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
+            <li><a href="../pages/animation.html" class="nav-link">Animation</a></li>
+            <li class="nav-section">🎭 Scenes & Organization</li>
+            <li><a href="../pages/scene.html" class="nav-link">Scene</a></li>
+            <li class="nav-section">🌲 Entities</li>
+            <li><a href="../pages/entity.html" class="nav-link">Entity</a></li>
+            <li><a href="../pages/element.html" class="nav-link">Element</a></li>
+            <li class="nav-section">🪟 UI</li>
+            <li><a href="../pages/gadget.html" class="nav-link">Gadget</a></li>
+            <li><a href="../pages/button.html" class="nav-link">Button</a></li>
+            <li><a href="../pages/text.html" class="nav-link">Text</a></li>
+            <li class="nav-section">🎯 Transitions</li>
+            <li><a href="../pages/transition.html" class="nav-link">Transition</a></li>
+            <li><a href="../pages/bezier.html" class="nav-link">Bezier</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p><small>v1.0.0</small></p>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <!-- Page Header -->
+            <header class="page-header">
+                <h1 id="page-title">JSGE Central Import</h1>
+                <p id="page-description">Import all JSGE classes from a single file for simplified usage.</p>
+            </header>
+
+            <!-- Documentation Content -->
+            <article class="doc-content">
+                <section class="section">
+                    <h2>📝 Description</h2>
+                    <p>
+                        The <code>jsge.js</code> file serves as a central import point for the JSGE engine. 
+                        It re-exports all the main classes from their individual files, allowing you to import 
+                        everything you need from a single location. This simplifies your import statements and 
+                        makes your code cleaner and more maintainable.
+                    </p>
+                    <p>
+                        This file is particularly useful when you're using multiple JSGE classes in your project 
+                        and want to avoid long, repetitive import paths.
+                    </p>
+                    <div class="info-box">
+                        <strong>ℹ️ Note:</strong> This file uses ES6 module syntax. Make sure your HTML file uses <code>type="module"</code> when importing this file.
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🚀 Basic Usage</h2>
+                    <p>Import individual classes from the central file:</p>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">// Import individual classes
+import { Camera } from "./jsge.js";
+import { Sprite } from "./jsge.js";
+import { Entity } from "./jsge.js";
+import { Scene } from "./jsge.js";
+import { Button } from "./jsge.js";</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <p>Or import everything as a namespace:</p>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">// Import everything as JSGE namespace
+import JSGE from "./jsge.js";
+
+// Use classes through the namespace
+const camera = new JSGE.Camera({/* ... */});
+const sprite = await JSGE.Sprite.load("./assets/image.png");
+const entity = JSGE.Entity.create({/* ... */});</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>📦 Available Imports</h2>
+                    <p>The following classes are available for import from <code>jsge.js</code>:</p>
+                    <div class="constructor-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Class Name</th>
+                                    <th>Category</th>
+                                    <th>Description</th>
+                                    <th>Import Statement</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>Camera</code></td>
+                                    <td>Rendering</td>
+                                    <td>Manages display and rendering of elements in a canvas</td>
+                                    <td><code>import { Camera } from "./jsge.js"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>Sprite</code></td>
+                                    <td>Rendering</td>
+                                    <td>Loads and manages images for game elements</td>
+                                    <td><code>import { Sprite } from "./jsge.js"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>Animation</code></td>
+                                    <td>Rendering</td>
+                                    <td>Manages sprite sheet animations and frame sequences</td>
+                                    <td><code>import { Animation } from "./jsge.js"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>Scene</code></td>
+                                    <td>Organization</td>
+                                    <td>Organizes and manages groups of elements with z-order</td>
+                                    <td><code>import { Scene } from "./jsge.js"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>Entity</code></td>
+                                    <td>Entities</td>
+                                    <td>Game objects with physics, animations, and collision detection</td>
+                                    <td><code>import { Entity } from "./jsge.js"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>Element</code></td>
+                                    <td>Entities</td>
+                                    <td>Static elements without physics for background and foreground</td>
+                                    <td><code>import { Element } from "./jsge.js"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>Gadget</code></td>
+                                    <td>UI</td>
+                                    <td>Base UI class with mouse event handling</td>
+                                    <td><code>import { Gadget } from "./jsge.js"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>Button</code></td>
+                                    <td>UI</td>
+                                    <td>Interactive button with hover, click, and visual effects</td>
+                                    <td><code>import { Button } from "./jsge.js"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>Text</code></td>
+                                    <td>UI</td>
+                                    <td>Text rendering with special effects (wave, shake, blink, gradient)</td>
+                                    <td><code>import { Text } from "./jsge.js"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>Transition</code></td>
+                                    <td>Effects</td>
+                                    <td>Smooth transitions and animations with easing functions</td>
+                                    <td><code>import { Transition } from "./jsge.js"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>Bezier</code></td>
+                                    <td>Effects</td>
+                                    <td>Bezier curve calculations for smooth motion paths</td>
+                                    <td><code>import { Bezier } from "./jsge.js"</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🎯 Examples</h2>
+
+                    <h3>Example 1: Complete Game Setup with Central Import</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">// myGame.js
+import { Camera, Sprite, Entity, Scene, Button, Text } from "./jsge.js";
+
+// HTML: &lt;canvas id="gameCanvas" width="800" height="600"&gt;&lt;/canvas&gt;
+
+// Initialize
+const canvas = document.querySelector("#gameCanvas");
+const camera = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600},
+    backgroundColor: "#222"
+});
+
+// Create a scene
+const gameScene = new Scene();
+
+// Load assets and create entities
+const playerSprite = await Sprite.load("./assets/player.png", true);
+const player = Entity.create({
+    sprite: playerSprite,
+    position: {x: 400, y: 300},
+    physic: true,
+    gravity: 0.5
+});
+
+// Add to scene
+gameScene.add(player, 1);
+
+// Create UI
+const scoreText = new Text("Score: 0", 200, 50);
+const startButton = Button.create("Start Game", {width: 200, height: 50});
+
+// Game loop
+function gameLoop() {
+    camera.clear();
+    
+    // Update and draw
+    player.update();
+    gameScene.draw(camera);
+    
+    // Draw UI
+    scoreText.draw(camera, 2);
+    startButton.draw(camera, 3);
+    
+    requestAnimationFrame(gameLoop);
+}
+gameLoop();</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Example 2: Using the JSGE Namespace</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">// Import everything as a namespace
+import JSGE from "./jsge.js";
+
+// Use the namespace to access all classes
+const camera = new JSGE.Camera({
+    canvas: document.querySelector("#gameCanvas"),
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600}
+});
+
+const playerSprite = await JSGE.Sprite.load("./assets/player.png");
+const player = JSGE.Entity.create({
+    sprite: playerSprite,
+    position: {x: 100, y: 100}
+});
+
+const scene = new JSGE.Scene();
+scene.add(player, 1);
+
+// Draw
+scene.draw(camera);</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Example 3: HTML Setup</h3>
+                    <div class="code-block">
+                        <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;My JSGE Game&lt;/title&gt;
+    &lt;style&gt;
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;canvas id="gameCanvas" width="800" height="600"&gt;&lt;/canvas&gt;
+    
+    &lt;!-- Import JSGE central file --&gt;
+    &lt;script src="./jsge.js" type="module"&gt;&lt;/script&gt;
+    
+    &lt;!-- Your game code --&gt;
+    &lt;script src="./myGame.js" type="module"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>💡 Tips and Best Practices</h2>
+                    <ul class="tips-list">
+                        <li>🎯 <strong>Use central import for simplicity</strong>: Importing from <code>jsge.js</code> reduces the number of import statements and makes your code more readable.</li>
+                        <li>🎯 <strong>Import only what you need</strong>: While you can import everything, it's good practice to only import the classes you actually use.</li>
+                        <li>🎯 <strong>Tree-shaking friendly</strong>: Modern bundlers can tree-shake unused imports, so importing from the central file won't increase your bundle size unnecessarily.</li>
+                        <li>🎯 <strong>Namespace for quick prototyping</strong>: The <code>JSGE</code> namespace is useful for quick prototyping or when you want to avoid import statements altogether.</li>
+                        <li>🎯 <strong>Module compatibility</strong>: Always use <code>type="module"</code> in your script tags when using ES6 imports.</li>
+                        <li>🎯 <strong>Path considerations</strong>: Make sure the path to <code>jsge.js</code> is correct relative to your HTML file or JavaScript module.</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>🔗 See Also</h2>
+                    <p>The central import file references the following classes:</p>
+                    <ul class="tips-list">
+                        <li>🎯 <a href="../pages/camera.html">Camera</a> - Core rendering class</li>
+                        <li>🎯 <a href="../pages/sprite.html">Sprite</a> - Image management</li>
+                        <li>🎯 <a href="../pages/scene.html">Scene</a> - Element organization</li>
+                        <li>🎯 <a href="../pages/entity.html">Entity</a> - Game objects with physics</li>
+                        <li>🎯 <a href="../pages/element.html">Element</a> - Static elements</li>
+                        <li>🎯 <a href="../pages/gadget.html">Gadget</a> - Base UI class</li>
+                        <li>🎯 <a href="../pages/button.html">Button</a> - Interactive buttons</li>
+                        <li>🎯 <a href="../pages/text.html">Text</a> - Text rendering</li>
+                        <li>🎯 <a href="../pages/transition.html">Transition</a> - Animation effects</li>
+                        <li>🎯 <a href="../pages/bezier.html">Bezier</a> - Curve calculations</li>
+                    </ul>
+                </section>
+            </article>
+        </div>
+    </main>
+    <script src="../js/doc.js"></script>
+</body>
+</html>

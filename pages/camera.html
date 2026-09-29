@@ -17,18 +17,20 @@
         </div>
         <ul class="nav-list">
             <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
-            <li class="nav-section">🎮 Rendering</li>
+            <li class="nav-section">🎨 Rendering</li>
             <li><a href="../pages/camera.html" class="nav-link active">Camera</a></li>
             <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
             <li><a href="../pages/animation.html" class="nav-link">Animation</a></li>
-            <li class="nav-section">🎭 Entities</li>
+            <li class="nav-section">🎭 Scenes & Organization</li>
+            <li><a href="../pages/scene.html" class="nav-link">Scene</a></li>
+            <li class="nav-section">🌲 Entities</li>
             <li><a href="../pages/entity.html" class="nav-link">Entity</a></li>
             <li><a href="../pages/element.html" class="nav-link">Element</a></li>
-            <li class="nav-section">⚡ UI</li>
+            <li class="nav-section">🪟 UI</li>
             <li><a href="../pages/gadget.html" class="nav-link">Gadget</a></li>
             <li><a href="../pages/button.html" class="nav-link">Button</a></li>
             <li><a href="../pages/text.html" class="nav-link">Text</a></li>
-            <li class="nav-section">🔄 Transitions</li>
+            <li class="nav-section">🎯 Transitions</li>
             <li><a href="../pages/transition.html" class="nav-link">Transition</a></li>
             <li><a href="../pages/bezier.html" class="nav-link">Bezier</a></li>
         </ul>
@@ -49,15 +51,25 @@
             <!-- Documentation Content -->
             <article class="doc-content">
                 <section class="section">
-                    <h2>📌 Description</h2>
+                    <h2>📝 Description</h2>
                     <p>
                         The <code>Camera</code> class is the heart of the JSGE rendering system.
                         It allows you to define a viewing area within a canvas, manage backgrounds (color or image),
                         and draw entities at specific positions. Multiple cameras can coexist on the same canvas,
                         which allows you to create split-screen effects or complex interfaces.
                     </p>
+                    <p>
+                        The Camera class now supports advanced background features including:
+                        <ul>
+                            <li>Static and animated background images</li>
+                            <li>Background image scrolling with velocity</li>
+                            <li>Looped background images for seamless tiling</li>
+                            <li>Customizable background fill styles</li>
+                            <li>Frame rate stabilization for consistent rendering</li>
+                        </ul>
+                    </p>
                     <div class="info-box">
-                        <strong>⚠️ Important:</strong> A camera must always be associated with a valid canvas element.
+                        <strong>ℹ️ Important:</strong> A camera must always be associated with a valid canvas element.
                         Without a canvas, the camera cannot render elements.
                     </div>
                 </section>
@@ -66,7 +78,7 @@
                     <h2>🚀 Basic Usage</h2>
                     <p>To create a camera, you need a canvas element and define its dimensions:</p>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+                        <pre><code class="language-javascript">import { Camera } from "./jsge.js";
 
 const canvas = document.querySelector("#gameCanvas");
 const mainCam = new Camera({
@@ -83,13 +95,13 @@ const mainCam = new Camera({
 mainCam.clear();
 
 // Draw an entity (after creating the entity)
-entity.drawEntity(mainCam);</code></pre>
+entity.draw(mainCam);</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                 </section>
 
                 <section class="section">
-                    <h2>🔧 Constructor</h2>
+                    <h2>📥 Constructor</h2>
                     <p>The <code>Camera</code> class accepts the following parameters:</p>
                     <div class="constructor-table">
                         <table>
@@ -103,34 +115,46 @@ entity.drawEntity(mainCam);</code></pre>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><code>canvas</code></td>
-                                    <td><code>HTMLCanvasElement</code></td>
-                                    <td><code>null</code></td>
-                                    <td>The canvas element on which the camera will draw. <strong>Required</strong></td>
+                                    <td><code>options</code></td>
+                                    <td><code>Object</code></td>
+                                    <td><code>{}</code></td>
+                                    <td>Configuration object for the camera. <strong>Required</strong></td>
                                 </tr>
                                 <tr>
-                                    <td><code>position</code></td>
+                                    <td><code>options.canvas</code></td>
+                                    <td><code>HTMLCanvasElement | string</code></td>
+                                    <td><code>null</code></td>
+                                    <td>The canvas element (or its ID) on which the camera will draw. <strong>Required</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><code>options.position</code></td>
                                     <td><code>{x: number, y: number}</code></td>
                                     <td><code>{x: 0, y: 0}</code></td>
                                     <td>Initial position of the camera in the scene (in pixels).</td>
                                 </tr>
                                 <tr>
-                                    <td><code>dimensions</code></td>
+                                    <td><code>options.dimensions</code></td>
                                     <td><code>{width: number, height: number}</code></td>
                                     <td><code>{width: 100, height: 100}</code></td>
                                     <td>Width and height of the camera's rendering area.</td>
                                 </tr>
                                 <tr>
-                                    <td><code>backgroundColor</code></td>
+                                    <td><code>options.backgroundColor</code></td>
                                     <td><code>string</code></td>
                                     <td><code>null</code></td>
                                     <td>Background color of the camera (e.g., "#ff0000", "blue", "rgba(0,0,0,0.5)").</td>
                                 </tr>
                                 <tr>
-                                    <td><code>backgroundImage</code></td>
+                                    <td><code>options.backgroundImage</code></td>
                                     <td><code>string</code></td>
                                     <td><code>null</code></td>
                                     <td>Path to a background image (e.g., "./assets/background.png").</td>
+                                </tr>
+                                <tr>
+                                    <td><code>targetFPS</code></td>
+                                    <td><code>number</code></td>
+                                    <td><code>60</code></td>
+                                    <td>Target frames per second for frame rate stabilization.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -138,7 +162,7 @@ entity.drawEntity(mainCam);</code></pre>
                 </section>
 
                 <section class="section">
-                    <h2>📜 Properties</h2>
+                    <h2>📊 Properties</h2>
                     <div class="properties-grid">
                         <div class="property-card">
                             <h3><code>canvas</code></h3>
@@ -161,29 +185,59 @@ entity.drawEntity(mainCam);</code></pre>
                             <p><strong>Description:</strong> Size of the camera's rendering area.</p>
                         </div>
                         <div class="property-card">
+                            <h3><code>backgroundType</code></h3>
+                            <p><strong>Type:</strong> <code>"color" | "image" | null</code></p>
+                            <p><strong>Description:</strong> Type of background: "color", "image", or null for transparent.</p>
+                        </div>
+                        <div class="property-card">
                             <h3><code>backgroundColor</code></h3>
                             <p><strong>Type:</strong> <code>string | null</code></p>
                             <p><strong>Description:</strong> Background color of the camera.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>backgroundImage</code></h3>
-                            <p><strong>Type:</strong> <code>string | null</code></p>
-                            <p><strong>Description:</strong> Background image of the camera.</p>
+                            <p><strong>Type:</strong> <code>HTMLImageElement | null</code></p>
+                            <p><strong>Description:</strong> Background image element of the camera.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>backgroundImageVelocity</code></h3>
-                            <p><strong>Type:</strong> <code>{x: number, y: number}</code></p>
-                            <p><strong>Description:</strong> Scrolling speed of the background image (in pixels per frame).</p>
+                            <p><strong>Type:</strong> <code>{x: number, y: number} | null</code></p>
+                            <p><strong>Description:</strong> Scrolling speed of the background image (in pixels per frame). Creates automatic parallax effect.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>backgroundImageLoop</code></h3>
                             <p><strong>Type:</strong> <code>boolean</code></p>
-                            <p><strong>Description:</strong> If true, the background image repeats in a loop.</p>
+                            <p><strong>Description:</strong> If true, the background image repeats in a loop (tiles seamlessly).</p>
                         </div>
                         <div class="property-card">
                             <h3><code>backgroundImageFillStyle</code></h3>
-                            <p><strong>Type:</strong> <code>string</code></p>
-                            <p><strong>Description:</strong> Fill style of the image. Possible values: "imageSize" or "cover".</p>
+                            <p><strong>Type:</strong> <code>"fill" | "imageSize" | null</code></p>
+                            <p><strong>Description:</strong> Fill style of the background image. "fill" stretches to camera dimensions, "imageSize" uses original image size.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>backgroundImagePosition</code></h3>
+                            <p><strong>Type:</strong> <code>{x: number, y: number} | null</code></p>
+                            <p><strong>Description:</strong> Current position offset of the background image.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>backgroundImageDimension</code></h3>
+                            <p><strong>Type:</strong> <code>{width: number, height: number} | null</code></p>
+                            <p><strong>Description:</strong> Dimensions used for background image rendering.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>cacheCanvas</code></h3>
+                            <p><strong>Type:</strong> <code>HTMLCanvasElement | null</code></p>
+                            <p><strong>Description:</strong> Internal cache canvas used for background rendering optimization.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>targetFPS</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> Target frame rate in milliseconds (1000/fps). Used for frame rate stabilization.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>toleranceDelta</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> Tolerance in milliseconds for frame timing. Helps avoid requestAnimationFrame imprecision.</p>
                         </div>
                     </div>
                 </section>
@@ -193,7 +247,7 @@ entity.drawEntity(mainCam);</code></pre>
                     <div class="methods-list">
                         <div class="method-card">
                             <h3><code>clear()</code></h3>
-                            <p><strong>Description:</strong> Clears the camera content by calling clearRect on the context. If a background is defined, it will be redrawn.</p>
+                            <p><strong>Description:</strong> Clears the camera content by calling clearRect on the context. If a background is defined, it will be redrawn. This method respects the target FPS and only clears when a new frame is needed.</p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                         <div class="method-card">
@@ -202,7 +256,7 @@ entity.drawEntity(mainCam);</code></pre>
                             <ul>
                                 <li><code>color: string</code> - The border color (e.g., "yellow", "#ff0000").</li>
                             </ul>
-                            <p><strong>Description:</strong> Draws a colored border around the camera. Useful for debugging.</p>
+                            <p><strong>Description:</strong> Draws a colored border around the camera. Useful for debugging and visualizing camera boundaries.</p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                         <div class="method-card">
@@ -212,9 +266,131 @@ entity.drawEntity(mainCam);</code></pre>
                                 <li><code>newPosition: {x: number, y: number}</code> - The position offset to apply.</li>
                                 <li><code>mode: "relative" | "absolute"</code> - The movement mode.</li>
                             </ul>
-                            <p><strong>Description:</strong> Moves the camera by an offset. In "relative" mode, the offset is added to the current position. In "absolute" mode, the offset becomes the new position.</p>
+                            <p><strong>Description:</strong> Moves the camera by an offset. In "relative" mode, the offset is added to the current position. In "absolute" mode, the offset becomes the new position. Note: this moves the camera and its content, not the viewport for scrolling.</p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
+                        <div class="method-card">
+                            <h3><code>flipBuffer()</code></h3>
+                            <p><strong>Description:</strong> Processes the draw list and renders all queued elements. This is called internally by the engine and should typically not be called directly.</p>
+                            <p><strong>Returns:</strong> <code>boolean</code> - Returns true if a new frame was rendered.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>_addToDrawList(elem, zOrder)</code></h3>
+                            <p><strong>Parameters:</strong></p>
+                            <ul>
+                                <li><code>elem: Entity | Element</code> - The element to add to the draw list.</li>
+                                <li><code>zOrder: number</code> - The z-order for rendering.</li>
+                            </ul>
+                            <p><strong>Description:</strong> Internal method to add elements to the draw list. Elements are automatically sorted by z-order when rendered.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>_addToDrawScene(scene)</code></h3>
+                            <p><strong>Parameters:</strong></p>
+                            <ul>
+                                <li><code>scene: Scene</code> - The scene to add to the draw queue.</li>
+                            </ul>
+                            <p><strong>Description:</strong> Internal method used by Scene class to register scenes for drawing.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🎨 Background Features</h2>
+                    <p>The Camera class provides powerful background management capabilities:</p>
+
+                    <h3>Static Background Color</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">const camera = new Camera({
+    canvas: canvas,
+    dimensions: {width: 800, height: 600},
+    backgroundColor: "#166088"
+});</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Static Background Image</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">const camera = new Camera({
+    canvas: canvas,
+    dimensions: {width: 800, height: 600},
+    backgroundImage: "./assets/background.png"
+});</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Animated Background Image (Parallax)</h3>
+                    <p>Create a scrolling background effect by setting the velocity:</p>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">const camera = new Camera({
+    canvas: canvas,
+    dimensions: {width: 800, height: 600},
+    backgroundImage: "./assets/clouds.png",
+    backgroundImageVelocity: {x: 1, y: 0},  // Scrolls right at 1px/frame
+    backgroundImageLoop: true
+});
+
+// The background will automatically scroll</nfunction gameLoop() {
+    camera.clear();
+    // Draw your elements...
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Tiled Background</h3>
+                    <p>Create a seamless tiled background:</p>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">const camera = new Camera({
+    canvas: canvas,
+    dimensions: {width: 800, height: 600},
+    backgroundImage: "./assets/tile.png",
+    backgroundImageFillStyle: "imageSize",  // Use original image size
+    backgroundImageLoop: true  // Tile the image
+});</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Multi-Layer Parallax</h3>
+                    <p>Create depth with multiple cameras:</p>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">// Far background (slowest)
+const bgFar = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600},
+    backgroundImage: "./assets/mountains.png",
+    backgroundImageVelocity: {x: 0.1, y: 0}
+});
+
+// Mid background
+const bgMid = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600},
+    backgroundImage: "./assets/trees.png",
+    backgroundImageVelocity: {x: 0.5, y: 0}
+});
+
+// Near background (fastest)
+const bgNear = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600},
+    backgroundImage: "./assets/grass.png",
+    backgroundImageVelocity: {x: 1, y: 0}
+});
+
+function gameLoop() {
+    // Clear and draw each layer
+    bgFar.clear();
+    bgMid.clear();
+    bgNear.clear();
+    
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                 </section>
 
@@ -230,7 +406,7 @@ entity.drawEntity(mainCam);</code></pre>
                             </p>
                         </div>
                         <div class="code-block">
-                            <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+                            <pre><code class="language-javascript">import { Camera } from "./jsge.js";
 
 const canvas = document.querySelector("#gameCanvas");
 const mainCam = new Camera({
@@ -271,7 +447,7 @@ gameLoop();</code></pre>
 
                     <h3>Example 2: Camera with Animated Background Image</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+                        <pre><code class="language-javascript">import { Camera } from "./jsge.js";
 
 const canvas = document.querySelector("#gameCanvas");
 const mainCam = new Camera({
@@ -296,7 +472,7 @@ gameLoop();</code></pre>
 
                     <h3>Example 3: Multiple Cameras on the Same Canvas</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+                        <pre><code class="language-javascript">import { Camera } from "./jsge.js";
 
 const canvas = document.querySelector("#gameCanvas");
 
@@ -332,17 +508,44 @@ function gameLoop() {
 gameLoop();</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
+
+                    <h3>Example 4: Frame Rate Stabilization</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Camera } from "./jsge.js";
+
+const canvas = document.querySelector("#gameCanvas");
+
+// Create a camera with 30 FPS target for smoother rendering
+const mainCam = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600},
+    backgroundColor: "#222"
+}, 30); // 30 FPS target
+
+// The camera will automatically stabilize to 30 FPS
+// Note: This doesn't limit the actual FPS, but ensures consistent frame timing
+function gameLoop() {
+    mainCam.clear();
+    // Draw your entities here...
+    requestAnimationFrame(gameLoop);
+}
+gameLoop();</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
                 </section>
 
                 <section class="section">
                     <h2>💡 Tips and Best Practices</h2>
                     <ul class="tips-list">
-                        <li>🔹 <strong>Always clear the camera</strong> every frame with <code>clear()</code> to avoid visual artifacts.</li>
-                        <li>🔹 Use <strong>multiple cameras</strong> to create split-screen effects or separate game from UI.</li>
-                        <li>🔹 For a game with scrolling, adjust the camera's <code>position</code> property directly to follow the player. Note: a dedicated scrolling method is planned but not yet implemented.</li>
-                        <li>🔹 The <code>backgroundImageVelocity</code> and <code>backgroundImageLoop</code> properties allow you to create animated backgrounds without additional code.</li>
-                        <li>🔹 Use <code>drawCameraBorder()</code> during development to visualize camera boundaries.</li>
-                        <li>🔹 For better performance, avoid creating too many active cameras simultaneously.</li>
+                        <li>🎯 <strong>Always clear the camera</strong> every frame with <code>clear()</code> to avoid visual artifacts.</li>
+                        <li>🎯 Use <strong>multiple cameras</strong> to create split-screen effects or separate game from UI.</li>
+                        <li>🎯 For a game with scrolling, adjust the camera's <code>position</code> property directly to follow the player. Note: a dedicated scrolling method is planned but not yet implemented.</li>
+                        <li>🎯 Use <code>backgroundImageVelocity</code> and <code>backgroundImageLoop</code> to create animated backgrounds without additional code.</li>
+                        <li>🎯 Use <code>drawCameraBorder()</code> during development to visualize camera boundaries.</li>
+                        <li>🎯 For better performance, avoid creating too many active cameras simultaneously.</li>
+                        <li>🎯 The <code>targetFPS</code> parameter helps stabilize frame timing but doesn't limit the actual frame rate.</li>
+                        <li>🎯 Use <code>backgroundImageFillStyle: "imageSize"</code> for seamless tiling with the original image dimensions.</li>
                     </ul>
                 </section>
 
@@ -350,9 +553,11 @@ gameLoop();</code></pre>
                     <h2>🔗 See Also</h2>
                     <p>The Camera class works closely with:</p>
                     <ul class="tips-list">
-                        <li>🔹 <a href="../pages/entity.html">Entity</a> - To draw entities in the camera</li>
-                        <li>🔹 <a href="../pages/element.html">Element</a> - To draw static elements</li>
-                        <li>🔹 <a href="../pages/sprite.html">Sprite</a> - To load and manage images</li>
+                        <li>🎯 <a href="../pages/scene.html">Scene</a> - To organize elements for drawing through the camera</li>
+                        <li>🎯 <a href="../pages/entity.html">Entity</a> - To draw entities in the camera</li>
+                        <li>🎯 <a href="../pages/element.html">Element</a> - To draw static elements</li>
+                        <li>🎯 <a href="../pages/sprite.html">Sprite</a> - To load and manage images</li>
+                        <li>🎯 <a href="../pages/jsge.html">JSGE Central Import</a> - To import Camera and other classes from a single file</li>
                     </ul>
                 </section>
             </article>

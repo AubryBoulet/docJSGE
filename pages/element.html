@@ -17,18 +17,20 @@
         </div>
         <ul class="nav-list">
             <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
-            <li class="nav-section">🎮 Rendering</li>
+            <li class="nav-section">🎨 Rendering</li>
             <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
             <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
             <li><a href="../pages/animation.html" class="nav-link">Animation</a></li>
-            <li class="nav-section">🎭 Entities</li>
+            <li class="nav-section">🎭 Scenes & Organization</li>
+            <li><a href="../pages/scene.html" class="nav-link">Scene</a></li>
+            <li class="nav-section">🌲 Entities</li>
             <li><a href="../pages/entity.html" class="nav-link">Entity</a></li>
             <li><a href="../pages/element.html" class="nav-link active">Element</a></li>
-            <li class="nav-section">⚡ UI</li>
+            <li class="nav-section">🪟 UI</li>
             <li><a href="../pages/gadget.html" class="nav-link">Gadget</a></li>
             <li><a href="../pages/button.html" class="nav-link">Button</a></li>
             <li><a href="../pages/text.html" class="nav-link">Text</a></li>
-            <li class="nav-section">🔄 Transitions</li>
+            <li class="nav-section">🎯 Transitions</li>
             <li><a href="../pages/transition.html" class="nav-link">Transition</a></li>
             <li><a href="../pages/bezier.html" class="nav-link">Bezier</a></li>
         </ul>
@@ -49,14 +51,22 @@
             <!-- Documentation Content -->
             <article class="doc-content">
                 <section class="section">
-                    <h2>📌 Description</h2>
+                    <h2>📝 Description</h2>
                     <p>
                         The <code>Element</code> class represents a static game element. Unlike <code>Entity</code>,
                         elements do not have physics, animations, or dynamic properties. They are perfect for
                         scenery, backgrounds, or any element that does not require updating every frame.
                     </p>
+                    <p>
+                        <strong>New Features:</strong>
+                        <ul>
+                            <li>Elements can now be added to and removed from the global <code>displayedElement</code> list automatically when added/removed from scenes</li>
+                            <li>Gravity contact callback support for interaction with entities</li>
+                            <li>Flip support (horizontal and vertical) for mirroring sprites</li>
+                        </ul>
+                    </p>
                     <div class="info-box">
-                        <strong>⚠️ Important:</strong> Elements cannot be animated. Use <code>Entity</code> if you need animations or physics.
+                        <strong>ℹ️ Important:</strong> Elements cannot be animated. Use <code>Entity</code> if you need animations or physics.
                     </div>
                     <div class="warning-box">
                         <strong>⚠️ Warning:</strong> The <code>drawElement()</code> method does not work with animated sprites. Use <code>draw()</code> for more fine-grained control.
@@ -68,8 +78,8 @@
 
                     <h3>Create a Simple Element</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Element } from "../classes/element.js";
-import { Sprite } from "../classes/sprites.js";
+                        <pre><code class="language-javascript">import { Element } from "./jsge.js";
+import { Sprite } from "./jsge.js";
 
 // Create a sprite for the element
 const treeSprite = await Sprite.load("./assets/tree.png", false);
@@ -84,7 +94,7 @@ const tree = new Element({
 // Draw the element in a camera
 function gameLoop() {
     mainCam.clear();
-    tree.drawElement(mainCam);
+    tree.draw(mainCam);
     requestAnimationFrame(gameLoop);
 }</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -92,38 +102,55 @@ function gameLoop() {
 
                     <h3>Create an Element with a Generated Sprite</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Element } from "../classes/element.js";
-import { Sprite } from "../classes/sprites.js";
+                        <pre><code class="language-javascript">import { Element } from "./jsge.js";
+import { Sprite } from "./jsge.js";
 
 // Create an empty sprite
 const wallSprite = Sprite.create(100, 50, false);
 const ctx = wallSprite.ctx;
-
-// Draw a wall
-ctx.fillStyle = "#8B4513"; // Brown
+ctx.fillStyle = "#8B4513";
 ctx.fillRect(0, 0, 100, 50);
 
-// Add details
-ctx.fillStyle = "#A0522D";
-for (let i = 0; i < 100; i += 10) {
-    ctx.fillRect(i, 0, 5, 50);
-}
-
-// Create an element with the sprite
+// Create an element with the generated sprite
 const wall = new Element({
     sprite: wallSprite,
-    position: {x: 100, y: 200},
+    position: {x: 300, y: 200},
     scale: 1
 });
 
 // Draw the element
-wall.drawElement(mainCam);</code></pre>
+wall.draw(mainCam);</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Create an Element Using the Static Factory Method</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Element } from "./jsge.js";
+
+// Create an element with custom properties
+const customElement = Element.create(
+    {
+        sprite: mySprite,
+        position: {x: 100, y: 100},
+        scale: 2
+    },
+    [
+        {
+            customProperty: "value",
+            customMethod: () => { console.log("Hello!"); }
+        }
+    ]
+);
+
+// Access custom properties
+console.log(customElement.customProperty); // "value"
+customElement.customMethod(); // "Hello!"</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                 </section>
 
                 <section class="section">
-                    <h2>🔧 Constructor</h2>
+                    <h2>📥 Constructor</h2>
                     <p>The <code>Element</code> class accepts the following parameters:</p>
                     <div class="constructor-table">
                         <table>
@@ -137,28 +164,57 @@ wall.drawElement(mainCam);</code></pre>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><code>sprite</code></td>
-                                    <td><code>Sprite</code></td>
-                                    <td>-</td>
-                                    <td>The element's sprite.</td>
+                                    <td><code>options</code></td>
+                                    <td><code>Object</code></td>
+                                    <td><code>{}</code></td>
+                                    <td>Configuration object for the element.</td>
                                 </tr>
                                 <tr>
-                                    <td><code>position</code></td>
+                                    <td><code>options.sprite</code></td>
+                                    <td><code>Sprite</code></td>
+                                    <td><code>null</code></td>
+                                    <td>The sprite to display for this element.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>options.position</code></td>
                                     <td><code>{x: number, y: number}</code></td>
                                     <td><code>{x: 0, y: 0}</code></td>
                                     <td>Initial position of the element.</td>
                                 </tr>
                                 <tr>
-                                    <td><code>scale</code></td>
+                                    <td><code>options.scale</code></td>
                                     <td><code>number</code></td>
                                     <td><code>1</code></td>
-                                    <td>Scale of the element.</td>
+                                    <td>Scale factor for the element (1 = normal size).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>Static Factory Method</h3>
+                    <p>The <code>Element.create()</code> method allows creating elements with custom properties:</p>
+                    <div class="constructor-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>datas</code></td>
+                                    <td><code>Object</code></td>
+                                    <td><code>null</code></td>
+                                    <td>Base configuration for the element (sprite, position, scale).</td>
                                 </tr>
                                 <tr>
-                                    <td><code>targetFPS</code></td>
-                                    <td><code>number</code></td>
-                                    <td><code>60</code></td>
-                                    <td>Target FPS (rarely used for static elements).</td>
+                                    <td><code>assigns</code></td>
+                                    <td><code>Array&lt;Object&gt;</code></td>
+                                    <td><code>null</code></td>
+                                    <td>Array of objects containing custom properties and methods to assign to the element.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -166,12 +222,12 @@ wall.drawElement(mainCam);</code></pre>
                 </section>
 
                 <section class="section">
-                    <h2>📜 Properties</h2>
+                    <h2>📊 Properties</h2>
                     <div class="properties-grid">
                         <div class="property-card">
                             <h3><code>sprite</code></h3>
                             <p><strong>Type:</strong> <code>Sprite</code></p>
-                            <p><strong>Description:</strong> The element's sprite.</p>
+                            <p><strong>Description:</strong> The sprite displayed by this element.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>position</code></h3>
@@ -181,12 +237,27 @@ wall.drawElement(mainCam);</code></pre>
                         <div class="property-card">
                             <h3><code>scale</code></h3>
                             <p><strong>Type:</strong> <code>number</code></p>
-                            <p><strong>Description:</strong> Scale of the element.</p>
+                            <p><strong>Description:</strong> Scale factor of the element.</p>
                         </div>
                         <div class="property-card">
-                            <h3><code>targetFPS</code></h3>
-                            <p><strong>Type:</strong> <code>number</code></p>
-                            <p><strong>Description:</strong> Target FPS for the element.</p>
+                            <h3><code>flippedX</code></h3>
+                            <p><strong>Type:</strong> <code>boolean</code></p>
+                            <p><strong>Description:</strong> If true, the element is flipped horizontally (mirrored on X-axis).</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>flippedY</code></h3>
+                            <p><strong>Type:</strong> <code>boolean</code></p>
+                            <p><strong>Description:</strong> If true, the element is flipped vertically (mirrored on Y-axis).</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>onGravityContact</code></h3>
+                            <p><strong>Type:</strong> <code>Function | null</code></p>
+                            <p><strong>Description:</strong> Callback function called when an entity with gravity comes into contact with this element.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>displayedElement</code> (static)</h3>
+                            <p><strong>Type:</strong> <code>Array&lt;Element&gt;</code></p>
+                            <p><strong>Description:</strong> Static array containing all currently displayed elements. Elements are automatically added/removed when added/removed from scenes.</p>
                         </div>
                     </div>
                 </section>
@@ -195,23 +266,73 @@ wall.drawElement(mainCam);</code></pre>
                     <h2>⚙️ Methods</h2>
                     <div class="methods-list">
                         <div class="method-card">
-                            <h3><code>drawElement(camera)</code></h3>
+                            <h3><code>draw(cam, zOrder)</code></h3>
                             <p><strong>Parameters:</strong></p>
                             <ul>
-                                <li><code>camera: Camera</code> - The camera to draw the element in.</li>
+                                <li><code>cam: Camera</code> - The camera to draw through.</li>
+                                <li><code>zOrder: number</code> - The z-order for rendering (default: 0).</li>
                             </ul>
-                            <p><strong>Description:</strong> Draws the element in the specified camera. This method automatically handles clipping if the element is partially outside the camera.</p>
+                            <p><strong>Description:</strong> Draws the element through the specified camera with the given z-order.</p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                         <div class="method-card">
-                            <h3><code>draw(camera, dimension, position)</code></h3>
+                            <h3><code>_processDraw(cam)</code></h3>
                             <p><strong>Parameters:</strong></p>
                             <ul>
-                                <li><code>camera: Camera</code> - The camera to draw in.</li>
-                                <li><code>dimension: object</code> - The source dimensions to draw.</li>
-                                <li><code>position: object</code> - The destination position and size.</li>
+                                <li><code>cam: Camera</code> - The camera to draw through.</li>
                             </ul>
-                            <p><strong>Description:</strong> Low-level drawing method for finer control. Used internally by <code>drawElement()</code>.</p>
+                            <p><strong>Description:</strong> Internal method called by the camera to process drawing. Handles clipping and positioning.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>assign(assigns, options)</code></h3>
+                            <p><strong>Parameters:</strong></p>
+                            <ul>
+                                <li><code>assigns: Array&lt;Object&gt;</code> - Array of objects with properties to assign.</li>
+                                <li><code>options: { overwrite: boolean }</code> - Options object. Set <code>overwrite: true</code> to force overwrite existing properties.</li>
+                            </ul>
+                            <p><strong>Description:</strong> Assigns custom properties and methods to the element. Warns if properties already exist unless <code>overwrite: true</code> is specified.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// Add custom properties
+const element = new Element({ sprite: mySprite, position: {x: 0, y: 0} });
+
+element.assign([
+    { health: 100 },
+    { damage: (amount) => { this.health -= amount; } }
+]);
+
+// With overwrite
+element.assign([{ health: 50 }], { overwrite: true });</code></pre>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>create(datas, assigns)</code> (static)</h3>
+                            <p><strong>Parameters:</strong></p>
+                            <ul>
+                                <li><code>datas: Object</code> - Base configuration for the element.</li>
+                                <li><code>assigns: Array&lt;Object&gt;</code> - Custom properties and methods to assign.</li>
+                            </ul>
+                            <p><strong>Description:</strong> Static factory method to create an element with custom properties.</p>
+                            <p><strong>Returns:</strong> <code>Element</code> - The newly created element.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>_addToDisplayedElement(element)</code> (static)</h3>
+                            <p><strong>Parameters:</strong></p>
+                            <ul>
+                                <li><code>element: Element</code> - The element to add.</li>
+                            </ul>
+                            <p><strong>Description:</strong> Internal static method to add an element to the displayed elements list.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>_removeFromDisplayedElement(element)</code> (static)</h3>
+                            <p><strong>Parameters:</strong></p>
+                            <ul>
+                                <li><code>element: Element</code> - The element to remove.</li>
+                            </ul>
+                            <p><strong>Description:</strong> Internal static method to remove an element from the displayed elements list.</p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                     </div>
@@ -220,166 +341,156 @@ wall.drawElement(mainCam);</code></pre>
                 <section class="section">
                     <h2>🎯 Examples</h2>
 
-                    <h3>Example 1: Create Scenery with Elements</h3>
+                    <h3>Example 1: Creating Background Elements</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Element } from "../classes/element.js";
-import { Sprite } from "../classes/sprites.js";
-import { Camera } from "../classes/camera.js";
+                        <pre><code class="language-javascript">import { Element, Sprite } from "./jsge.js";
 
-// Load sprites for the scenery
-const groundSprite = await Sprite.load("./assets/ground.png", false);
+// Load background sprites
+const mountainSprite = await Sprite.load("./assets/mountain.png", false);
 const treeSprite = await Sprite.load("./assets/tree.png", false);
-const rockSprite = await Sprite.load("./assets/rock.png", false);
+const bushSprite = await Sprite.load("./assets/bush.png", false);
 
-// Create scenery elements
-const ground = new Element({
-    sprite: groundSprite,
-    position: {x: 0, y: 500},
+// Create background elements
+const mountain = new Element({
+    sprite: mountainSprite,
+    position: {x: 0, y: 400},
     scale: 1
 });
 
 const tree1 = new Element({
     sprite: treeSprite,
-    position: {x: 200, y: 300},
-    scale: 1.5
+    position: {x: 200, y: 350},
+    scale: 1
 });
 
 const tree2 = new Element({
     sprite: treeSprite,
     position: {x: 400, y: 350},
-    scale: 1.2
-});
-
-const rock1 = new Element({
-    sprite: rockSprite,
-    position: {x: 100, y: 450},
     scale: 1
 });
 
-const rock2 = new Element({
-    sprite: rockSprite,
+const bush = new Element({
+    sprite: bushSprite,
     position: {x: 300, y: 400},
     scale: 0.8
 });
 
-// Create a camera
-const canvas = document.querySelector("#gameCanvas");
-const mainCam = new Camera({
-    canvas: canvas,
-    position: {x: 0, y: 0},
-    dimensions: {width: 800, height: 600},
-    backgroundColor: "#87CEEB" // Sky blue
-});
-
+// Draw all elements
 function gameLoop() {
     mainCam.clear();
     
-    // Draw scenery
-    ground.drawElement(mainCam);
-    tree1.drawElement(mainCam);
-    tree2.drawElement(mainCam);
-    rock1.drawElement(mainCam);
-    rock2.drawElement(mainCam);
-    
-    // Draw dynamic entities...
+    mountain.draw(mainCam, 0);
+    tree1.draw(mainCam, 0);
+    tree2.draw(mainCam, 0);
+    bush.draw(mainCam, 1);
     
     requestAnimationFrame(gameLoop);
 }</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
 
-                    <h3>Example 2: Tiled Background</h3>
+                    <h3>Example 2: Using Flipped Elements</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Element } from "../classes/element.js";
-import { Sprite } from "../classes/sprites.js";
+                        <pre><code class="language-javascript">import { Element } from "./jsge.js";
 
-// Create a sprite for a tile
-const tileSprite = Sprite.create(32, 32, false);
-const ctx = tileSprite.ctx;
-ctx.fillStyle = "#4CAF50"; // Green
-ctx.fillRect(0, 0, 32, 32);
+const treeSprite = await Sprite.load("./assets/tree.png", false);
 
-// Create an array of elements for the background
-const tiles = [];
-const tileSize = 32;
-const mapWidth = 20;
-const mapHeight = 15;
+// Create a normal tree
+const treeLeft = new Element({
+    sprite: treeSprite,
+    position: {x: 200, y: 300},
+    scale: 1
+});
 
-for (let y = 0; y < mapHeight; y++) {
-    for (let x = 0; x < mapWidth; x++) {
-        const tile = new Element({
-            sprite: tileSprite,
-            position: {x: x * tileSize, y: y * tileSize},
-            scale: 1
-        });
-        tiles.push(tile);
-    }
-}
+// Create a flipped tree (mirrored)
+const treeRight = new Element({
+    sprite: treeSprite,
+    position: {x: 400, y: 300},
+    scale: 1
+});
+treeRight.flippedX = true; // Flip horizontally
 
-// Draw all tiles
-function drawTiles() {
-    tiles.forEach(tile => {
-        tile.drawElement(mainCam);
-    });
+// Draw both trees
+function gameLoop() {
+    mainCam.clear();
+    treeLeft.draw(mainCam);
+    treeRight.draw(mainCam);
+    requestAnimationFrame(gameLoop);
 }</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
 
-                    <h3>Example 3: Elements with Different Sprites</h3>
+                    <h3>Example 3: Gravity Contact with Elements</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Element } from "../classes/element.js";
-import { Sprite } from "../classes/sprites.js";
+                        <pre><code class="language-javascript">import { Element, Entity } from "./jsge.js";
 
-// Create different types of elements
-const elements = [];
+// Create a platform element
+const platform = new Element({
+    sprite: platformSprite,
+    position: {x: 300, y: 400},
+    scale: 1
+});
 
-// Ground elements
-for (let i = 0; i < 10; i++) {
-    const groundSprite = Sprite.create(50, 20, false);
-    groundSprite.ctx.fillStyle = "#8B4513";
-    groundSprite.ctx.fillRect(0, 0, 50, 20);
+// Set up gravity contact callback
+platform.onGravityContact = (element, entity) => {
+    console.log(`Entity ${entity} landed on platform ${element}`);
+    // Play landing sound, trigger animations, etc.
+};
+
+// Create a player entity with gravity
+const player = Entity.create({
+    sprite: playerSprite,
+    position: {x: 300, y: 200},
+    gravity: 0.5,
+    gravityAcceleration: 1
+});
+
+// Add elements to the displayed list
+Element._addToDisplayedElement(platform);
+
+// Update and draw
+function gameLoop() {
+    mainCam.clear();
     
-    const ground = new Element({
-        sprite: groundSprite,
-        position: {x: i * 50, y: 500},
-        scale: 1
-    });
-    elements.push(ground);
-}
-
-// Platform elements
-for (let i = 0; i < 5; i++) {
-    const platformSprite = Sprite.create(80, 15, false);
-    platformSprite.ctx.fillStyle = "#654321";
-    platformSprite.ctx.fillRect(0, 0, 80, 15);
+    player.update();
+    player.draw(mainCam, 1);
+    platform.draw(mainCam, 0);
     
-    const platform = new Element({
-        sprite: platformSprite,
-        position: {x: 100 + i * 150, y: 400 - i * 50},
-        scale: 1
-    });
-    elements.push(platform);
-}
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
 
-// Trap elements
-for (let i = 0; i < 3; i++) {
-    const trapSprite = Sprite.create(30, 30, false);
-    trapSprite.ctx.fillStyle = "#FF0000";
-    trapSprite.ctx.fillRect(0, 0, 30, 30);
-    
-    const trap = new Element({
-        sprite: trapSprite,
-        position: {x: 200 + i * 100, y: 500},
-        scale: 1
-    });
-    elements.push(trap);
-}
+                    <h3>Example 4: Using Elements with Scenes</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Element, Scene, Sprite } from "./jsge.js";
 
-// Draw all elements
-function drawElements() {
-    elements.forEach(element => {
-        element.drawElement(mainCam);
-    });
+// Create a scene
+const levelScene = new Scene();
+
+// Create background elements
+const background = new Element({
+    sprite: bgSprite,
+    position: {x: 0, y: 0}
+});
+
+const foreground = new Element({
+    sprite: fgSprite,
+    position: {x: 0, y: 0}
+});
+
+// Add elements to the scene with z-orders
+levelScene.add(background, 0);
+levelScene.add(foreground, 2);
+
+// Elements are automatically added to the displayed elements list
+// when added to a scene
+
+// Draw the entire scene
+function gameLoop() {
+    mainCam.clear();
+    levelScene.draw(mainCam);
+    requestAnimationFrame(gameLoop);
 }</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
@@ -388,22 +499,25 @@ function drawElements() {
                 <section class="section">
                     <h2>💡 Tips and Best Practices</h2>
                     <ul class="tips-list">
-                        <li>🔹 Use <code>Element</code> for <strong>static elements</strong> that don't change (scenery, backgrounds, platforms).</li>
-                        <li>🔹 Use <code>Entity</code> for <strong>dynamic objects</strong> that require animations or physics.</li>
-                        <li>🔹 For large scenery, consider <strong>grouping elements</strong> into larger sprites to reduce the number of draw calls.</li>
-                        <li>🔹 You can <strong>change the sprite</strong> of an element at any time to create visual effects.</li>
-                        <li>🔹 Use the <code>scale</code> property to resize elements without modifying the original sprite.</li>
-                        <li>🔹 For scrolling games, static elements can be <strong>optimized</strong> as they don't require updates every frame.</li>
+                        <li>🎯 <strong>Use Elements for static content</strong>: Elements are perfect for backgrounds, scenery, and any visual elements that don't need to move or change.</li>
+                        <li>🎯 <strong>Use Entity for dynamic content</strong>: If you need physics, animations, or collision detection, use <code>Entity</code> instead.</li>
+                        <li>🎯 <strong>Leverage flipping</strong>: Use the <code>flippedX</code> and <code>flippedY</code> properties to mirror elements without creating separate sprites.</li>
+                        <li>🎯 <strong>Use z-order effectively</strong>: When drawing multiple elements, use the z-order parameter to control which elements appear in front of others.</li>
+                        <li>🎯 <strong>Gravity contact callbacks</strong>: Use the <code>onGravityContact</code> property to create interactive elements that respond when entities land on them.</li>
+                        <li>🎯 <strong>Scene integration</strong>: When using scenes, elements are automatically managed in the displayed elements list, simplifying element management.</li>
+                        <li>🎯 <strong>Custom properties</strong>: Use the <code>assign()</code> method or <code>create()</code> factory to add custom properties and methods to elements for game-specific functionality.</li>
                     </ul>
                 </section>
 
                 <section class="section">
                     <h2>🔗 See Also</h2>
-                    <p>The Element class is related to:</p>
+                    <p>The Element class works closely with:</p>
                     <ul class="tips-list">
-                        <li>🔹 <a href="../pages/entity.html">Entity</a> - For dynamic objects with physics and animations</li>
-                        <li>🔹 <a href="../pages/sprite.html">Sprite</a> - To create and manage images</li>
-                        <li>🔹 <a href="../pages/camera.html">Camera</a> - To display elements on screen</li>
+                        <li>🎯 <a href="../pages/entity.html">Entity</a> - For elements with physics and animations</li>
+                        <li>🎯 <a href="../pages/scene.html">Scene</a> - For organizing elements with z-order</li>
+                        <li>🎯 <a href="../pages/sprite.html">Sprite</a> - For creating and managing sprites</li>
+                        <li>🎯 <a href="../pages/camera.html">Camera</a> - For rendering elements</li>
+                        <li>🎯 <a href="../pages/jsge.html">JSGE Central Import</a> - For simplified imports</li>
                     </ul>
                 </section>
             </article>

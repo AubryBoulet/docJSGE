@@ -17,18 +17,20 @@
         </div>
         <ul class="nav-list">
             <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
-            <li class="nav-section">🎮 Rendering</li>
+            <li class="nav-section">🎨 Rendering</li>
             <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
             <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
             <li><a href="../pages/animation.html" class="nav-link">Animation</a></li>
-            <li class="nav-section">🎭 Entities</li>
+            <li class="nav-section">🎭 Scenes & Organization</li>
+            <li><a href="../pages/scene.html" class="nav-link">Scene</a></li>
+            <li class="nav-section">🌲 Entities</li>
             <li><a href="../pages/entity.html" class="nav-link active">Entity</a></li>
             <li><a href="../pages/element.html" class="nav-link">Element</a></li>
-            <li class="nav-section">⚡ UI</li>
+            <li class="nav-section">🪟 UI</li>
             <li><a href="../pages/gadget.html" class="nav-link">Gadget</a></li>
             <li><a href="../pages/button.html" class="nav-link">Button</a></li>
             <li><a href="../pages/text.html" class="nav-link">Text</a></li>
-            <li class="nav-section">🔄 Transitions</li>
+            <li class="nav-section">🎯 Transitions</li>
             <li><a href="../pages/transition.html" class="nav-link">Transition</a></li>
             <li><a href="../pages/bezier.html" class="nav-link">Bezier</a></li>
         </ul>
@@ -49,7 +51,7 @@
             <!-- Documentation Content -->
             <article class="doc-content">
                 <section class="section">
-                    <h2>📌 Description</h2>
+                    <h2>📝 Description</h2>
                     <p>
                         The <code>Entity</code> class represents a game object. It combines a sprite (or multiple), a position,
                         velocity, and physical properties. Entities can be drawn in a camera and updated every frame
@@ -59,8 +61,18 @@
                         This is the central class of JSGE for everything related to game objects: players, enemies,
                         interactive objects, etc.
                     </p>
+                    <p>
+                        <strong>New Features:</strong>
+                        <ul>
+                            <li>Enhanced collision detection with hitbox support</li>
+                            <li>Gravity system with acceleration and contact detection</li>
+                            <li>Improved entity-to-entity collision handling</li>
+                            <li>Auto-update toggle for manual control</li>
+                            <li>Frame hitbox support for precise collision detection</li>
+                        </ul>
+                    </p>
                     <div class="info-box">
-                        <strong>⚠️ Important:</strong> To draw an entity, you must call <code>drawEntity()</code> with a valid camera.
+                        <strong>ℹ️ Important:</strong> To draw an entity, you must call <code>draw()</code> with a valid camera. The entity will be automatically updated if <code>autoUpdate</code> is true (default).
                     </div>
                 </section>
 
@@ -69,8 +81,8 @@
 
                     <h3>Create a Simple Entity</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Entity } from "../classes/entity.js";
-import { Sprite } from "../classes/sprites.js";
+                        <pre><code class="language-javascript">import { Entity } from "./jsge.js";
+import { Sprite } from "./jsge.js";
 
 // Create a sprite
 const playerSprite = await Sprite.load("./assets/player.png", false);
@@ -85,7 +97,7 @@ const player = Entity.create({
 // Draw the entity in a camera
 function gameLoop() {
     mainCam.clear();
-    player.drawEntity(mainCam);
+    player.draw(mainCam);
     requestAnimationFrame(gameLoop);
 }</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -93,19 +105,13 @@ function gameLoop() {
 
                     <h3>Create an Entity with Additional Properties</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Entity } from "../classes/entity.js";
+                        <pre><code class="language-javascript">import { Entity } from "./jsge.js";
 
 // Define custom properties
 const playerStats = {
     life: 100,
-    mana: 50,
-    takeDamage: function(damage) {
-        this.life -= damage;
-        console.log(`Life: ${this.life}`);
-    },
-    heal: function(amount) {
-        this.life = Math.min(100, this.life + amount);
-    }
+    score: 0,
+    canJump: true
 };
 
 // Create an entity with custom properties
@@ -114,22 +120,117 @@ const player = Entity.create(
         sprite: playerSprite,
         position: {x: 100, y: 100},
         scale: 1,
-        physic: true,
-        gravity: 0.5
+        physic: true
     },
-    [playerStats]  // Array of additional properties
+    [playerStats]
 );
 
-// Use custom methods
-player.takeDamage(10);  // Logs "Life: 90"
-player.heal(15);       // Heals 15 points</code></pre>
+// Access custom properties
+console.log(player.life); // 100
+player.score += 10;</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Create an Entity with Physics</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Entity } from "./jsge.js";
+
+const player = Entity.create({
+    sprite: playerSprite,
+    position: {x: 100, y: 100},
+    scale: 1,
+    physic: true,           // Enable physics
+    gravity: 0.5,           // Gravity strength
+    gravityAcceleration: 1, // How quickly gravity accelerates
+    acceleration: {x: 0, y: 0}, // Acceleration for movement
+    velocity: {x: 0, y: 0}     // Initial velocity
+});
+
+// In game loop, just call update()
+function gameLoop() {
+    mainCam.clear();
+    player.update();  // Updates position based on velocity, gravity, etc.
+    player.draw(mainCam);
+    requestAnimationFrame(gameLoop);
+}</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                 </section>
 
                 <section class="section">
-                    <h2>🔧 Constructor</h2>
-                    <p>The <code>Entity</code> class can be instantiated directly, but it's recommended to use the static <code>create()</code> method:</p>
+                    <h2>📥 Constructor</h2>
+                    <p>The <code>Entity</code> class accepts the following parameters:</p>
+                    <div class="constructor-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>options</code></td>
+                                    <td><code>Object</code></td>
+                                    <td><code>{}</code></td>
+                                    <td>Configuration object for the entity.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>options.sprite</code></td>
+                                    <td><code>Sprite</code></td>
+                                    <td><code>null</code></td>
+                                    <td>The sprite to display for this entity.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>options.position</code></td>
+                                    <td><code>{x: number, y: number}</code></td>
+                                    <td><code>{x: 0, y: 0}</code></td>
+                                    <td>Initial position of the entity.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>options.scale</code></td>
+                                    <td><code>number</code></td>
+                                    <td><code>1</code></td>
+                                    <td>Scale factor for the entity.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>options.physic</code></td>
+                                    <td><code>boolean</code></td>
+                                    <td><code>false</code></td>
+                                    <td>Whether physics are enabled for this entity.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>options.gravity</code></td>
+                                    <td><code>number</code></td>
+                                    <td><code>0</code></td>
+                                    <td>Gravity strength applied to the entity.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>options.gravityAcceleration</code></td>
+                                    <td><code>number</code></td>
+                                    <td><code>1</code></td>
+                                    <td>How quickly gravity accelerates (increase for faster falling).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>options.acceleration</code></td>
+                                    <td><code>{x: number, y: number}</code></td>
+                                    <td><code>{x: 0, y: 0}</code></td>
+                                    <td>Acceleration applied to velocity.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>options.velocity</code></td>
+                                    <td><code>{x: number, y: number}</code></td>
+                                    <td><code>{x: 0, y: 0}</code></td>
+                                    <td>Initial velocity of the entity.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>Static Factory Method</h3>
+                    <p>The <code>Entity.create()</code> method allows creating entities with custom properties:</p>
                     <div class="constructor-table">
                         <table>
                             <thead>
@@ -143,78 +244,15 @@ player.heal(15);       // Heals 15 points</code></pre>
                             <tbody>
                                 <tr>
                                     <td><code>datas</code></td>
-                                    <td><code>object</code></td>
-                                    <td>-</td>
-                                    <td>Object containing the entity properties.</td>
+                                    <td><code>Object</code></td>
+                                    <td><code>null</code></td>
+                                    <td>Base configuration for the entity (sprite, position, scale, physics, etc.).</td>
                                 </tr>
                                 <tr>
                                     <td><code>assigns</code></td>
-                                    <td><code>Array</code></td>
+                                    <td><code>Array&lt;Object&gt;</code></td>
                                     <td><code>null</code></td>
-                                    <td>Array of objects containing additional properties to add to the entity.</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <p>The <code>datas</code> object can contain the following properties:</p>
-                    <div class="constructor-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Property</th>
-                                    <th>Type</th>
-                                    <th>Default</th>
-                                    <th>Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><code>sprite</code></td>
-                                    <td><code>Sprite</code></td>
-                                    <td>-</td>
-                                    <td>The entity's sprite.</td>
-                                </tr>
-                                <tr>
-                                    <td><code>position</code></td>
-                                    <td><code>{x: number, y: number}</code></td>
-                                    <td><code>{x: 0, y: 0}</code></td>
-                                    <td>Initial position of the entity.</td>
-                                </tr>
-                                <tr>
-                                    <td><code>scale</code></td>
-                                    <td><code>number</code></td>
-                                    <td><code>1</code></td>
-                                    <td>Scale of the entity.</td>
-                                </tr>
-                                <tr>
-                                    <td><code>physic</code></td>
-                                    <td><code>boolean</code></td>
-                                    <td><code>false</code></td>
-                                    <td>If true, enables basic physics (gravity, velocity).</td>
-                                </tr>
-                                <tr>
-                                    <td><code>gravity</code></td>
-                                    <td><code>number</code></td>
-                                    <td><code>0</code></td>
-                                    <td>Gravity force applied to the entity.</td>
-                                </tr>
-                                <tr>
-                                    <td><code>acceleration</code></td>
-                                    <td><code>{x: number, y: number}</code></td>
-                                    <td><code>{x: 0, y: 0}</code></td>
-                                    <td>Initial acceleration of the entity.</td>
-                                </tr>
-                                <tr>
-                                    <td><code>velocity</code></td>
-                                    <td><code>{x: number, y: number}</code></td>
-                                    <td><code>{x: 0, y: 0}</code></td>
-                                    <td>Initial velocity of the entity.</td>
-                                </tr>
-                                <tr>
-                                    <td><code>targetFPS</code></td>
-                                    <td><code>number</code></td>
-                                    <td><code>60</code></td>
-                                    <td>Target FPS for updates.</td>
+                                    <td>Array of objects containing custom properties and methods to assign to the entity.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -222,37 +260,42 @@ player.heal(15);       // Heals 15 points</code></pre>
                 </section>
 
                 <section class="section">
-                    <h2>📜 Properties</h2>
+                    <h2>📊 Properties</h2>
                     <div class="properties-grid">
                         <div class="property-card">
                             <h3><code>sprite</code></h3>
                             <p><strong>Type:</strong> <code>Sprite</code></p>
-                            <p><strong>Description:</strong> The entity's sprite.</p>
+                            <p><strong>Description:</strong> The sprite displayed by this entity.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>position</code></h3>
                             <p><strong>Type:</strong> <code>{x: number, y: number}</code></p>
-                            <p><strong>Description:</strong> Position of the entity in the scene.</p>
+                            <p><strong>Description:</strong> Current position of the entity.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>scale</code></h3>
                             <p><strong>Type:</strong> <code>number</code></p>
-                            <p><strong>Description:</strong> Scale of the entity.</p>
+                            <p><strong>Description:</strong> Scale factor of the entity.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>physic</code></h3>
                             <p><strong>Type:</strong> <code>boolean</code></p>
-                            <p><strong>Description:</strong> Indicates if physics is enabled.</p>
+                            <p><strong>Description:</strong> Whether physics are enabled for this entity.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>gravity</code></h3>
                             <p><strong>Type:</strong> <code>number</code></p>
-                            <p><strong>Description:</strong> Gravity force applied to the entity.</p>
+                            <p><strong>Description:</strong> Gravity strength applied to the entity.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>gravityAcceleration</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> Rate at which gravity accelerates.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>acceleration</code></h3>
                             <p><strong>Type:</strong> <code>{x: number, y: number}</code></p>
-                            <p><strong>Description:</strong> Acceleration of the entity.</p>
+                            <p><strong>Description:</strong> Acceleration applied to velocity.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>velocity</code></h3>
@@ -260,29 +303,39 @@ player.heal(15);       // Heals 15 points</code></pre>
                             <p><strong>Description:</strong> Current velocity of the entity.</p>
                         </div>
                         <div class="property-card">
-                            <h3><code>targetFPS</code></h3>
-                            <p><strong>Type:</strong> <code>number</code></p>
-                            <p><strong>Description:</strong> Target FPS for updates.</p>
-                        </div>
-                        <div class="property-card">
                             <h3><code>currentAnimation</code></h3>
-                            <p><strong>Type:</strong> <code>string</code></p>
-                            <p><strong>Description:</strong> Name of the current animation.</p>
+                            <p><strong>Type:</strong> <code>AnimationFrame | null</code></p>
+                            <p><strong>Description:</strong> The currently playing animation.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>frameRate</code></h3>
                             <p><strong>Type:</strong> <code>number</code></p>
-                            <p><strong>Description:</strong> Playback speed of animations.</p>
+                            <p><strong>Description:</strong> Frame rate for the current animation.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>flippedX</code></h3>
                             <p><strong>Type:</strong> <code>boolean</code></p>
-                            <p><strong>Description:</strong> If true, the sprite is flipped horizontally.</p>
+                            <p><strong>Description:</strong> If true, the entity is flipped horizontally.</p>
                         </div>
                         <div class="property-card">
                             <h3><code>flippedY</code></h3>
                             <p><strong>Type:</strong> <code>boolean</code></p>
-                            <p><strong>Description:</strong> If true, the sprite is flipped vertically.</p>
+                            <p><strong>Description:</strong> If true, the entity is flipped vertically.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>autoUpdate</code></h3>
+                            <p><strong>Type:</strong> <code>boolean</code></p>
+                            <p><strong>Description:</strong> If true, the entity automatically calls <code>update()</code> when drawn. Set to false for manual control.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>physics</code></h3>
+                            <p><strong>Type:</strong> <code>Array</code></p>
+                            <p><strong>Description:</strong> Array of collision physics objects. Each contains an entity and a collision callback.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>cliped</code></h3>
+                            <p><strong>Type:</strong> <code>undefined | object</code></p>
+                            <p><strong>Description:</strong> Internal property for clipping calculations.</p>
                         </div>
                     </div>
                 </section>
@@ -291,166 +344,138 @@ player.heal(15);       // Heals 15 points</code></pre>
                     <h2>⚙️ Methods</h2>
                     <div class="methods-list">
                         <div class="method-card">
-                            <h3><code>update()</code></h3>
-                            <p><strong>Description:</strong> Updates the entity (position, animations, physics). Must be called every frame.</p>
-                            <p><strong>Returns:</strong> <code>void</code></p>
-                        </div>
-                        <div class="method-card">
-                            <h3><code>drawEntity(camera)</code></h3>
+                            <h3><code>draw(cam, zOrder)</code></h3>
                             <p><strong>Parameters:</strong></p>
                             <ul>
-                                <li><code>camera: Camera</code> - The camera to draw the entity in.</li>
+                                <li><code>cam: Camera</code> - The camera to draw through.</li>
+                                <li><code>zOrder: number</code> - The z-order for rendering (default: 0).</li>
                             </ul>
-                            <p><strong>Description:</strong> Draws the entity in the specified camera.</p>
+                            <p><strong>Description:</strong> Draws the entity through the specified camera. If <code>autoUpdate</code> is true, automatically calls <code>update()</code> before drawing.</p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                         <div class="method-card">
-                            <h3><code>addColisionWithEntity(entity, callback)</code></h3>
+                            <h3><code>update()</code></h3>
+                            <p><strong>Description:</strong> Updates the entity's position based on velocity, acceleration, and gravity. Also updates animation frames and checks for collisions if physics are enabled.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>resetAcceleration()</code></h3>
+                            <p><strong>Description:</strong> Resets the current acceleration to zero.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>addColisionWithEntity(entity, onCollision)</code></h3>
                             <p><strong>Parameters:</strong></p>
                             <ul>
                                 <li><code>entity: Entity</code> - The entity to detect collisions with.</li>
-                                <li><code>callback: function</code> - Function called when a collision occurs.</li>
+                                <li><code>onCollision: Function</code> - Callback function called when collision is detected.</li>
                             </ul>
-                            <p><strong>Description:</strong> Adds collision detection with another entity.</p>
+                            <p><strong>Description:</strong> Sets up collision detection between this entity and another entity. The callback is called when the two entities' hitboxes overlap.</p>
                             <p><strong>Returns:</strong> <code>void</code></p>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// Set up collision between player and enemy
+player.addColisionWithEntity(enemy, (collidedEntity) => {
+    console.log("Player collided with:", collidedEntity);
+    // Handle collision (damage, bounce, etc.)
+});</code></pre>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>assign(assigns, options)</code></h3>
+                            <p><strong>Parameters:</strong></p>
+                            <ul>
+                                <li><code>assigns: Array&lt;Object&gt;</code> - Array of objects with properties to assign.</li>
+                                <li><code>options: { overwrite: boolean }</code> - Options object.</li>
+                            </ul>
+                            <p><strong>Description:</strong> Assigns custom properties and methods to the entity. By default, warns if properties already exist. Use <code>{ overwrite: true }</code> to force overwrite.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>_processDraw(cam)</code></h3>
+                            <p><strong>Parameters:</strong></p>
+                            <ul>
+                                <li><code>cam: Camera</code> - The camera to draw through.</li>
+                            </ul>
+                            <p><strong>Description:</strong> Internal method called by the camera to process drawing. Handles clipping, positioning, and animation frames.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>create(datas, assigns)</code> (static)</h3>
+                            <p><strong>Parameters:</strong></p>
+                            <ul>
+                                <li><code>datas: Object</code> - Base configuration for the entity.</li>
+                                <li><code>assigns: Array&lt;Object&gt;</code> - Custom properties and methods to assign.</li>
+                            </ul>
+                            <p><strong>Description:</strong> Static factory method to create an entity with custom properties.</p>
+                            <p><strong>Returns:</strong> <code>Entity</code> - The newly created entity.</p>
                         </div>
                     </div>
                 </section>
 
                 <section class="section">
-                    <h2>🎯 Examples</h2>
+                    <h2>🎯 Physics and Collision</h2>
+                    <p>The Entity class provides a complete physics system:</p>
 
-                    <h3>Example 1: Entity with Simple Physics</h3>
-                    <div class="example-block">
-                        <div class="example-demo">
-                            <canvas id="entity-demo" width="600" height="400"></canvas>
-                            <p style="text-align: center; margin-top: 10px; color: #666;">
-                                Arrows: Move | Space: Jump
-                            </p>
-                        </div>
-                        <div class="code-block">
-                            <pre><code class="language-javascript">import { Entity } from "../classes/entity.js";
-import { Sprite } from "../classes/sprites.js";
-import { Camera } from "../classes/camera.js";
-
-// Create a sprite for the entity
-const entitySprite = Sprite.create(40, 40, false);
-const ctx = entitySprite.ctx;
-ctx.fillStyle = "#e74c3c";
-ctx.fillRect(0, 0, 40, 40);
-
-// Create an entity with physics
-const player = Entity.create({
-    sprite: entitySprite,
+                    <h3>Gravity System</h3>
+                    <p>Entities can have gravity applied, with configurable acceleration:</p>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">const player = Entity.create({
+    sprite: playerSprite,
     position: {x: 100, y: 100},
-    physic: true,
-    gravity: 0.5
+    gravity: 0.5,           // Gravity strength
+    gravityAcceleration: 1, // How fast gravity increases
+    velocity: {x: 0, y: 0}
 });
 
-// Create a camera
-const canvas = document.querySelector("#gameCanvas");
-const mainCam = new Camera({
-    canvas: canvas,
-    position: {x: 0, y: 0},
-    dimensions: {width: 800, height: 600}
-});
-
-// Keyboard input handling
-document.addEventListener("keydown", (e) => {
-    const force = 5;
-    switch(e.key) {
-        case 'ArrowRight':
-            player.velocity.x = force;
-            break;
-        case 'ArrowLeft':
-            player.velocity.x = -force;
-            break;
-        case ' ':
-            player.velocity.y = -12; // Jump
-            break;
-    }
-});
-
-function gameLoop() {
-    mainCam.clear();
-    
-    // Update entity (applies gravity and physics)
-    player.update();
-    
-    // Draw entity
-    player.drawEntity(mainCam);
-    
-    requestAnimationFrame(gameLoop);
-}
-gameLoop();</code></pre>
-                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
+// Gravity will automatically pull the entity down
+// The entity will accelerate until reaching maximum gravity speed</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
 
-                    <h3>Example 2: Entity with Animations</h3>
+                    <h3>Platform Collision</h3>
+                    <p>Entities with gravity can land on Elements that have <code>onGravityContact</code> callbacks:</p>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Entity } from "../classes/entity.js";
-import { Sprite } from "../classes/sprites.js";
+                        <pre><code class="language-javascript">import { Entity, Element } from "./jsge.js";
 
-// Load an animated sprite
-const characterSprite = await Sprite.load("./assets/character_sheet.png", true);
-
-// Configure the sprite sheet
-characterSprite.animations.column = 10;
-characterSprite.animations.row = 5;
-characterSprite.animations.frameRate = 12;
-
-// Create animations
-characterSprite.animations.createAnimationFrames(0, 3, "idle", 12);
-characterSprite.animations.createAnimationFrames(10, 17, "walk", 12);
-
-// Create an entity
-const character = Entity.create({
-    sprite: characterSprite,
-    position: {x: 200, y: 200},
-    physic: true
+// Create a platform element
+const platform = new Element({
+    sprite: platformSprite,
+    position: {x: 200, y: 400}
 });
 
-// Set default animation
-character.currentAnimation = "idle";
+// Set up gravity contact callback
+platform.onGravityContact = (element, entity) => {
+    console.log("Entity landed on platform!");
+    // Play landing sound, trigger effects, etc.
+};
 
-// Change animation based on state
-function updateCharacter() {
-    if (Math.abs(character.velocity.x) > 0.1 || Math.abs(character.velocity.y) > 0.1) {
-        character.currentAnimation = "walk";
-    } else {
-        character.currentAnimation = "idle";
-    }
-}
+// Create a player with gravity
+const player = Entity.create({
+    sprite: playerSprite,
+    position: {x: 200, y: 100},
+    gravity: 0.5,
+    gravityAcceleration: 1
+});
 
+// Don't forget to add the platform to displayed elements
+Element._addToDisplayedElement(platform);
+
+// Update and draw
 function gameLoop() {
     mainCam.clear();
-    
-    updateCharacter();
-    character.update();
-    character.drawEntity(mainCam);
-    
+    player.update(); // This will check for gravity contact
+    player.draw(mainCam);
+    platform.draw(mainCam);
     requestAnimationFrame(gameLoop);
 }</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
 
-                    <h3>Example 3: Collision Detection Between Entities</h3>
+                    <h3>Entity-to-Entity Collision</h3>
+                    <p>Set up collision detection between entities:</p>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Entity } from "../classes/entity.js";
-import { Sprite } from "../classes/sprites.js";
-
-// Create two sprites
-const playerSprite = Sprite.create(30, 30, false);
-playerSprite.ctx.fillStyle = "#3498db";
-playerSprite.ctx.fillRect(0, 0, 30, 30);
-
-const enemySprite = Sprite.create(30, 30, false);
-enemySprite.ctx.fillStyle = "#e74c3c";
-enemySprite.ctx.fillRect(0, 0, 30, 30);
-
-// Create entities
-const player = Entity.create({
+                        <pre><code class="language-javascript">const player = Entity.create({
     sprite: playerSprite,
     position: {x: 100, y: 100},
     physic: true
@@ -458,109 +483,331 @@ const player = Entity.create({
 
 const enemy = Entity.create({
     sprite: enemySprite,
-    position: {x: 200, y: 200},
+    position: {x: 300, y: 100},
     physic: true
 });
 
-// Add collision detection
-player.addColisionWithEntity(enemy, (collisionResult) => {
-    console.log("Collision detected!", collisionResult);
+// Set up collision detection
+player.addColisionWithEntity(enemy, (collidedEntity) => {
+    console.log("Player collided with enemy!");
+    // Handle damage, bounce, etc.
+    player.velocity.x = -5; // Bounce back
+});
+
+// The collision will be checked automatically during update()
+function gameLoop() {
+    mainCam.clear();
+    player.update();
+    enemy.update();
+    player.draw(mainCam);
+    enemy.draw(mainCam);
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Acceleration and Velocity</h3>
+                    <p>Control movement with acceleration and velocity:</p>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">const player = Entity.create({
+    sprite: playerSprite,
+    position: {x: 100, y: 100},
+    acceleration: {x: 0.5, y: 0.5}, // Acceleration rate
+    velocity: {x: 0, y: 0}
+});
+
+// Set velocity to move
+document.addEventListener("keydown", (e) => {
+    const speed = 5;
+    switch(e.key) {
+        case 'ArrowRight':
+            player.velocity.x = speed;
+            break;
+        case 'ArrowLeft':
+            player.velocity.x = -speed;
+            break;
+        case 'ArrowUp':
+            player.velocity.y = -speed;
+            break;
+        case 'ArrowDown':
+            player.velocity.y = speed;
+            break;
+    }
+});
+
+// The entity will gradually accelerate to the target velocity
+// due to the acceleration property
+function gameLoop() {
+    mainCam.clear();
+    player.update(); // Updates position based on velocity and acceleration
+    player.draw(mainCam);
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🎬 Animations</h2>
+                    <p>Entities support animated sprites with frame-based animations:</p>
+
+                    <h3>Setting Up Animations</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Entity, Sprite } from "./jsge.js";
+
+// Create a sprite with animations
+const playerSprite = await Sprite.load("./assets/player-sheet.png", true);
+
+// Add animations to the sprite
+playerSprite.animations.addAnimation("walk", {
+    frames: [
+        { row: 0, column: 0 },
+        { row: 0, column: 1 },
+        { row: 0, column: 2 },
+        { row: 0, column: 3 }
+    ],
+    frameWidth: 32,
+    frameHeight: 48,
+    frameRate: 10 // Frames per second
+});
+
+// Create an entity
+const player = Entity.create({
+    sprite: playerSprite,
+    position: {x: 100, y: 100}
+});
+
+// Set the current animation
+player.currentAnimation = "walk";
+
+// The animation will play automatically during update()</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Controlling Animation Frame Rate</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">// Change the frame rate of the current animation
+player.frameRate = 15; // 15 frames per second
+
+// Or change to a different animation
+player.currentAnimation = "jump";
+player.frameRate = 8; // Slower frame rate for jump animation</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🎯 Examples</h2>
+
+                    <h3>Example 1: Simple Player Entity</h3>
+                    <div class="example-block">
+                        <div class="example-demo">
+                            <canvas id="entity-demo" width="600" height="400"></canvas>
+                            <p style="text-align: center; margin-top: 10px; color: #666;">
+                                Use arrow keys to move the entity.
+                            </p>
+                        </div>
+                        <div class="code-block">
+                            <pre><code class="language-javascript">import { Entity, Sprite } from "./jsge.js";
+
+const canvas = document.querySelector("#gameCanvas");
+const mainCam = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600},
+    backgroundColor: "#222"
+});
+
+const playerSprite = await Sprite.load("./assets/player.png", false);
+
+const player = Entity.create({
+    sprite: playerSprite,
+    position: {x: 400, y: 300},
+    velocity: {x: 0, y: 0}
+});
+
+// Keyboard controls
+document.addEventListener("keydown", (e) => {
+    const speed = 5;
+    switch(e.key) {
+        case 'ArrowRight': player.velocity.x = speed; break;
+        case 'ArrowLeft': player.velocity.x = -speed; break;
+        case 'ArrowUp': player.velocity.y = -speed; break;
+        case 'ArrowDown': player.velocity.y = speed; break;
+    }
+});
+
+document.addEventListener("keyup", (e) => {
+    switch(e.key) {
+        case 'ArrowRight':
+        case 'ArrowLeft': player.velocity.x = 0; break;
+        case 'ArrowUp':
+        case 'ArrowDown': player.velocity.y = 0; break;
+    }
+});
+
+function gameLoop() {
+    mainCam.clear();
+    player.update();
+    player.draw(mainCam);
+    requestAnimationFrame(gameLoop);
+}
+gameLoop();</code></pre>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                    </div>
+
+                    <h3>Example 2: Entity with Gravity</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Entity, Sprite, Element } from "./jsge.js";
+
+const canvas = document.querySelector("#gameCanvas");
+const mainCam = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600},
+    backgroundColor: "#87CEEB" // Sky blue
+});
+
+// Create player with gravity
+const playerSprite = await Sprite.load("./assets/player.png", false);
+const player = Entity.create({
+    sprite: playerSprite,
+    position: {x: 400, y: 100},
+    gravity: 0.5,
+    gravityAcceleration: 1
+});
+
+// Create a platform
+const platformSprite = Sprite.create(200, 20, false);
+const platform = new Element({
+    sprite: platformSprite,
+    position: {x: 300, y: 500}
+});
+platform.onGravityContact = (elem, entity) => {
+    console.log("Player landed on platform!");
+};
+
+// Add platform to displayed elements
+Element._addToDisplayedElement(platform);
+
+// Jump with spacebar
+document.addEventListener("keydown", (e) => {
+    if (e.key === ' ' && player.velocity.y === 0) {
+        player.velocity.y = -12; // Jump
+    }
+    if (e.key === 'ArrowRight') player.velocity.x = 5;
+    if (e.key === 'ArrowLeft') player.velocity.x = -5;
+});
+
+document.addEventListener("keyup", (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        player.velocity.x = 0;
+    }
+});
+
+function gameLoop() {
+    mainCam.clear();
+    player.update();
+    player.draw(mainCam);
+    platform.draw(mainCam);
+    requestAnimationFrame(gameLoop);
+}
+gameLoop();</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Example 3: Entity with Collision Detection</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Entity, Sprite } from "./jsge.js";
+
+const canvas = document.querySelector("#gameCanvas");
+const mainCam = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600},
+    backgroundColor: "#222"
+});
+
+// Create player
+const playerSprite = await Sprite.load("./assets/player.png", false);
+const player = Entity.create({
+    sprite: playerSprite,
+    position: {x: 200, y: 300},
+    physic: true
+});
+
+// Create collectible items
+const coinSprite = await Sprite.load("./assets/coin.png", false);
+const coins = [];
+for (let i = 0; i < 10; i++) {
+    const coin = Entity.create({
+        sprite: coinSprite,
+        position: {x: Math.random() * 600 + 100, y: Math.random() * 400 + 100},
+        physic: true
+    });
     
-    // Reverse player velocity
-    player.velocity.x *= -1;
-    player.velocity.y *= -1;
+    // Set up collision with player
+    player.addColisionWithEntity(coin, (collidedEntity) => {
+        console.log("Collected coin!");
+        // Remove coin from scene
+        // Increment score
+    });
     
-    // Visual effect: make player flash
-    player.sprite.ctx.fillStyle = "#f1c40f";
-    player.sprite.ctx.fillRect(0, 0, 30, 30);
-    
-    setTimeout(() => {
-        player.sprite.ctx.fillStyle = "#3498db";
-        player.sprite.ctx.fillRect(0, 0, 30, 30);
-    }, 200);
+    coins.push(coin);
+}
+
+// Movement controls
+document.addEventListener("keydown", (e) => {
+    const speed = 5;
+    switch(e.key) {
+        case 'ArrowRight': player.velocity.x = speed; break;
+        case 'ArrowLeft': player.velocity.x = -speed; break;
+        case 'ArrowUp': player.velocity.y = -speed; break;
+        case 'ArrowDown': player.velocity.y = speed; break;
+    }
 });
 
 function gameLoop() {
     mainCam.clear();
     
     player.update();
-    enemy.update();
+    coins.forEach(coin => coin.update());
     
-    player.drawEntity(mainCam);
-    enemy.drawEntity(mainCam);
+    player.draw(mainCam);
+    coins.forEach(coin => coin.draw(mainCam));
     
     requestAnimationFrame(gameLoop);
-}</code></pre>
+}
+gameLoop();</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
 
-                    <h3>Example 4: Entity with Custom Properties</h3>
+                    <h3>Example 4: Manual Update Control</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Entity } from "../classes/entity.js";
+                        <pre><code class="language-javascript">import { Entity } from "./jsge.js";
 
-// Define player properties
-const playerStats = {
-    life: 100,
-    mana: 50,
-    maxLife: 100,
-    maxMana: 100,
-    level: 1,
-    experience: 0,
+const player = Entity.create({
+    sprite: playerSprite,
+    position: {x: 100, y: 100},
+    autoUpdate: false // Disable auto-update
+});
+
+// Now you have full control over when to update
+function gameLoop() {
+    mainCam.clear();
     
-    // Methods
-    takeDamage: function(damage) {
-        this.life -= damage;
-        if (this.life <= 0) {
-            this.die();
-        }
-    },
-    
-    heal: function(amount) {
-        this.life = Math.min(this.maxLife, this.life + amount);
-    },
-    
-    addExperience: function(exp) {
-        this.experience += exp;
-        if (this.experience >= this.level * 100) {
-            this.levelUp();
-        }
-    },
-    
-    levelUp: function() {
-        this.level++;
-        this.experience = 0;
-        this.maxLife += 20;
-        this.maxMana += 10;
-        this.life = this.maxLife;
-        this.mana = this.maxMana;
-        console.log(`Level up! Level ${this.level}`);
-    },
-    
-    die: function() {
-        console.log("Game Over!");
-        // Reset position
-        this.position.x = 100;
-        this.position.y = 100;
-        this.life = this.maxLife;
+    // Only update every other frame for performance
+    if (frameCount % 2 === 0) {
+        player.update();
     }
-};
-
-// Create an entity with player properties
-const player = Entity.create(
-    {
-        sprite: playerSprite,
-        position: {x: 100, y: 100},
-        scale: 1.5,
-        physic: true,
-        gravity: 0.5
-    },
-    [playerStats]
-);
-
-// Use the methods
-player.takeDamage(20);  // Reduces life by 20
-player.heal(10);       // Heals 10 points
-player.addExperience(50); // Adds experience</code></pre>
+    
+    // But still draw every frame
+    player.draw(mainCam);
+    
+    frameCount++;
+    requestAnimationFrame(gameLoop);
+}</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                 </section>
@@ -568,13 +815,15 @@ player.addExperience(50); // Adds experience</code></pre>
                 <section class="section">
                     <h2>💡 Tips and Best Practices</h2>
                     <ul class="tips-list">
-                        <li>🔹 <strong>Always call <code>update()</code></strong> every frame to update position and animations.</li>
-                        <li>🔹 Use <code>drawEntity()</code> with a camera to display the entity on screen.</li>
-                        <li>🔹 For platform games, enable <strong>physics</strong> and set appropriate <strong>gravity</strong>.</li>
-                        <li>🔹 Use custom properties (<code>assigns</code>) to add specific statistics and methods to your entities.</li>
-                        <li>🔹 For collisions, use <code>addColisionWithEntity()</code> to detect interactions between entities.</li>
-                        <li>🔹 The <code>flippedX</code> and <code>flippedY</code> properties are useful for flipping sprites (e.g., character facing left).</li>
-                        <li>🔹 For better performance, avoid creating too many active entities simultaneously.</li>
+                        <li>🎯 <strong>Use Entity for dynamic objects</strong>: Entities are perfect for players, enemies, collectibles, and any game objects that move or change.</li>
+                        <li>🎯 <strong>Use Element for static objects</strong>: For backgrounds, platforms, and scenery that don't need physics or animations, use <code>Element</code> instead.</li>
+                        <li>🎯 <strong>Enable physics when needed</strong>: Set <code>physic: true</code> only for entities that need collision detection to improve performance.</li>
+                        <li>🎯 <strong>Configure gravity properly</strong>: Adjust <code>gravity</code> and <code>gravityAcceleration</code> to achieve the desired falling speed and feel.</li>
+                        <li>🎯 <strong>Use acceleration for smooth movement</strong>: The acceleration property creates smooth acceleration/deceleration effects.</li>
+                        <li>🎯 <strong>Manage collision callbacks</strong>: Use <code>addColisionWithEntity()</code> to set up interactions between game objects.</li>
+                        <li>🎯 <strong>Leverage auto-update</strong>: By default, entities auto-update when drawn. Set <code>autoUpdate: false</code> for manual control when needed.</li>
+                        <li>🎯 <strong>Use flipped properties for direction</strong>: Instead of loading separate sprites for left/right facing, use <code>flippedX = true</code> to mirror the sprite.</li>
+                        <li>🎯 <strong>Custom properties with assign()</strong>: Add game-specific properties (health, score, etc.) using the <code>assign()</code> method or factory pattern.</li>
                     </ul>
                 </section>
 
@@ -582,10 +831,12 @@ player.addExperience(50); // Adds experience</code></pre>
                     <h2>🔗 See Also</h2>
                     <p>The Entity class works closely with:</p>
                     <ul class="tips-list">
-                        <li>🔹 <a href="../pages/sprite.html">Sprite</a> - To provide images to entities</li>
-                        <li>🔹 <a href="../pages/animation.html">Animation</a> - To animate entities</li>
-                        <li>🔹 <a href="../pages/camera.html">Camera</a> - To display entities on screen</li>
-                        <li>🔹 <a href="../pages/element.html">Element</a> - For static elements (alternative)</li>
+                        <li>🎯 <a href="../pages/element.html">Element</a> - For static elements without physics</li>
+                        <li>🎯 <a href="../pages/sprite.html">Sprite</a> - For creating and managing sprites</li>
+                        <li>🎯 <a href="../pages/animation.html">Animation</a> - For sprite sheet animations</li>
+                        <li>🎯 <a href="../pages/camera.html">Camera</a> - For rendering entities</li>
+                        <li>🎯 <a href="../pages/scene.html">Scene</a> - For organizing entities with z-order</li>
+                        <li>🎯 <a href="../pages/jsge.html">JSGE Central Import</a> - For simplified imports</li>
                     </ul>
                 </section>
             </article>
