@@ -254,27 +254,79 @@ const entity = Entity.create({
 
                     <h3>Example 3: Load Multiple Sprites</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Sprite } from "../classes/sprites.js";
+                        <pre><code class="language-javascript">import { Sprite, Entity, Camera, Scene } from "./jsge.js";
 
-// Load multiple sprites in parallel
-const spritePromises = [
-    Sprite.load("./assets/player.png", true),
-    Sprite.load("./assets/enemy.png", true),
-    Sprite.load("./assets/background.png", false)
-];
+// Game state management
+const gameState = {
+    current: "loading", // loading, running
+    sprites: {},
+    camera: null,
+    scene: null
+};
 
-// Wait for all sprites to load
-Promise.all(spritePromises)
-    .then(([playerSprite, enemySprite, bgSprite]) => {
-        // All sprites are ready
+// Initialize game
+async function initGame() {
+    // Create camera and scene
+    gameState.camera = new Camera(800, 600);
+    gameState.scene = new Scene();
+    
+    // Load multiple sprites in parallel
+    const spritePromises = [
+        Sprite.load("./assets/player.png", true),
+        Sprite.load("./assets/enemy.png", true),
+        Sprite.load("./assets/background.png", false)
+    ];
+    
+    try {
+        // Wait for all sprites to load
+        const [playerSprite, enemySprite, bgSprite] = await Promise.all(spritePromises);
+        
+        // Store loaded sprites
+        gameState.sprites.player = playerSprite;
+        gameState.sprites.enemy = enemySprite;
+        gameState.sprites.background = bgSprite;
+        
+        // Create entities
         const player = Entity.create({ sprite: playerSprite });
         const enemy = Entity.create({ sprite: enemySprite });
         
-        // Use the sprites...
-    })
-    .catch(error => {
+        // Add to scene
+        gameState.scene.add(player);
+        gameState.scene.add(enemy);
+        
+        // Transition to running state
+        gameState.current = "running";
+        
+    } catch (error) {
         console.error("Loading error:", error);
-    });</code></pre>
+    }
+}
+
+// Game loop
+function gameLoop() {
+    if (gameState.current === "loading") {
+        // Display loading screen
+        gameState.camera.clear();
+        gameState.camera.ctx.fillStyle = "#222";
+        gameState.camera.ctx.fillRect(0, 0, 800, 600);
+        gameState.camera.ctx.fillStyle = "#fff";
+        gameState.camera.ctx.font = "24px Arial";
+        gameState.camera.ctx.textAlign = "center";
+        gameState.camera.ctx.fillText("Loading...", 400, 300);
+        gameState.camera.flipBuffer();
+    } else if (gameState.current === "running") {
+        // Main game rendering
+        gameState.camera.clear();
+        gameState.scene.draw(gameState.camera);
+        gameState.camera.flipBuffer();
+    }
+    
+    requestAnimationFrame(gameLoop);
+}
+
+// Start the game
+initGame();
+gameLoop();</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                 </section>
