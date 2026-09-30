@@ -104,10 +104,6 @@ function highlightCode() {
     });
 }
 
-        lastScrollTop = scrollTop;
-    });
-
-    // Add smooth scroll for anchors
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
