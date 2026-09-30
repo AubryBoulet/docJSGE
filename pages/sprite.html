@@ -307,12 +307,7 @@ function gameLoop() {
     if (gameState.current === "loading") {
         // Display loading screen
         gameState.camera.clear();
-        gameState.camera.ctx.fillStyle = "#222";
-        gameState.camera.ctx.fillRect(0, 0, 800, 600);
-        gameState.camera.ctx.fillStyle = "#fff";
-        gameState.camera.ctx.font = "24px Arial";
-        gameState.camera.ctx.textAlign = "center";
-        gameState.camera.ctx.fillText("Loading...", 400, 300);
+        // Display loading methode...
         gameState.camera.flipBuffer();
     } else if (gameState.current === "running") {
         // Main game rendering
