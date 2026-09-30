@@ -104,19 +104,6 @@ function highlightCode() {
     });
 }
 
-    // Sidebar scroll handling
-    let lastScrollTop = 0;
-    const sidebar = document.querySelector('.sidebar');
-    
-    window.addEventListener('scroll', () => {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        if (scrollTop > lastScrollTop) {
-            // Scroll down
-            if (window.innerWidth > 768) {
-                sidebar.style.transform = 'translateY(-20px)';
-            }
-        } else {
             // Scroll up
             sidebar.style.transform = 'translateY(0)';
         }
