@@ -104,10 +104,6 @@ function highlightCode() {
     });
 }
 
-            // Scroll up
-            sidebar.style.transform = 'translateY(0)';
-        }
-        
         lastScrollTop = scrollTop;
     });
 
