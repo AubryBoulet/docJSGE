@@ -17,6 +17,8 @@
         </div>
         <ul class="nav-list">
             <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+            <li class="nav-section">📦 Core</li>
+            <li><a href="../pages/jsge.html" class="nav-link">JSGE Central Import</a></li>
             <li class="nav-section">🎨 Rendering</li>
             <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
             <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
@@ -35,7 +37,7 @@
             <li><a href="../pages/bezier.html" class="nav-link">Bezier</a></li>
         </ul>
         <div class="sidebar-footer">
-            <p><small>v1.0.0</small></p>
+            <p><small>v0.1</small></p>
         </div>
     </nav>
 
@@ -72,7 +74,10 @@
                         </ul>
                     </p>
                     <div class="info-box">
-                        <strong>ℹ️ Important:</strong> To draw an entity, you must call <code>draw()</code> with a valid camera. The entity will be automatically updated if <code>autoUpdate</code> is true (default).
+                        <strong>ℹ️ Important:</strong> To draw an entity, you must add it to a Scene and call <code>scene.draw(camera)</code> followed by <code>camera.flipBuffer()</code>. The entity will be automatically updated if <code>autoUpdate</code> is true (default).
+                    </div>
+                    <div class="warning-box">
+                        <strong>⚠️ IMPORTANT:</strong> Entities do NOT have their own drawing functions. <strong>You MUST add entities to a Scene and use <code>scene.draw(camera)</code> to render them.</strong> Direct drawing is not supported.
                     </div>
                 </section>
 
@@ -81,7 +86,7 @@
 
                     <h3>Create a Simple Entity</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Entity } from "./jsge.js";
+                        <pre><code class="language-javascript">import { Entity, Scene } from "./jsge.js";
 import { Sprite } from "./jsge.js";
 
 // Create a sprite
@@ -94,10 +99,15 @@ const player = Entity.create({
     scale: 1
 });
 
-// Draw the entity in a camera
+// Create a scene - MANDATORY
+const gameScene = new Scene();
+gameScene.add(player, 1);
+
+// Draw through scene - ONLY way to draw
 function gameLoop() {
     mainCam.clear();
-    player.draw(mainCam);
+    gameScene.draw(mainCam);
+    mainCam.flipBuffer(); // MUST be called
     requestAnimationFrame(gameLoop);
 }</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -105,7 +115,7 @@ function gameLoop() {
 
                     <h3>Create an Entity with Additional Properties</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Entity } from "./jsge.js";
+                        <pre><code class="language-javascript">import { Entity, Scene } from "./jsge.js";
 
 // Define custom properties
 const playerStats = {
@@ -125,6 +135,10 @@ const player = Entity.create(
     [playerStats]
 );
 
+// Add to scene
+const gameScene = new Scene();
+gameScene.add(player, 1);
+
 // Access custom properties
 console.log(player.life); // 100
 player.score += 10;</code></pre>
@@ -133,7 +147,7 @@ player.score += 10;</code></pre>
 
                     <h3>Create an Entity with Physics</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Entity } from "./jsge.js";
+                        <pre><code class="language-javascript">import { Entity, Scene } from "./jsge.js";
 
 const player = Entity.create({
     sprite: playerSprite,
@@ -146,11 +160,16 @@ const player = Entity.create({
     velocity: {x: 0, y: 0}     // Initial velocity
 });
 
-// In game loop, just call update()
+// Add to scene
+const gameScene = new Scene();
+gameScene.add(player, 1);
+
+// In game loop
 function gameLoop() {
     mainCam.clear();
     player.update();  // Updates position based on velocity, gravity, etc.
-    player.draw(mainCam);
+    gameScene.draw(mainCam);
+    mainCam.flipBuffer();
     requestAnimationFrame(gameLoop);
 }</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -332,16 +351,12 @@ function gameLoop() {
                             <p><strong>Type:</strong> <code>Array</code></p>
                             <p><strong>Description:</strong> Array of collision physics objects. Each contains an entity and a collision callback.</p>
                         </div>
-                        <div class="property-card">
-                            <h3><code>cliped</code></h3>
-                            <p><strong>Type:</strong> <code>undefined | object</code></p>
-                            <p><strong>Description:</strong> Internal property for clipping calculations.</p>
-                        </div>
                     </div>
                 </section>
 
                 <section class="section">
                     <h2>⚙️ Methods</h2>
+                    <p><strong>⚠️ IMPORTANT:</strong> Entities do NOT have public drawing methods. All rendering MUST be done through a Scene. The methods below are for internal use or advanced scenarios only.</p>
                     <div class="methods-list">
                         <div class="method-card">
                             <h3><code>draw(cam, zOrder)</code></h3>
@@ -350,7 +365,7 @@ function gameLoop() {
                                 <li><code>cam: Camera</code> - The camera to draw through.</li>
                                 <li><code>zOrder: number</code> - The z-order for rendering (default: 0).</li>
                             </ul>
-                            <p><strong>Description:</strong> Draws the entity through the specified camera. If <code>autoUpdate</code> is true, automatically calls <code>update()</code> before drawing.</p>
+                            <p><strong>Description:</strong> <strong>⚠️ NOT RECOMMENDED:</strong> While this method exists, you should NOT use it directly. Always use <code>scene.draw(camera)</code> instead for proper rendering with z-order sorting and collision detection.</p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                         <div class="method-card">
@@ -392,15 +407,6 @@ player.addColisionWithEntity(enemy, (collidedEntity) => {
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                         <div class="method-card">
-                            <h3><code>_processDraw(cam)</code></h3>
-                            <p><strong>Parameters:</strong></p>
-                            <ul>
-                                <li><code>cam: Camera</code> - The camera to draw through.</li>
-                            </ul>
-                            <p><strong>Description:</strong> Internal method called by the camera to process drawing. Handles clipping, positioning, and animation frames.</p>
-                            <p><strong>Returns:</strong> <code>void</code></p>
-                        </div>
-                        <div class="method-card">
                             <h3><code>create(datas, assigns)</code> (static)</h3>
                             <p><strong>Parameters:</strong></p>
                             <ul>
@@ -409,6 +415,15 @@ player.addColisionWithEntity(enemy, (collidedEntity) => {
                             </ul>
                             <p><strong>Description:</strong> Static factory method to create an entity with custom properties.</p>
                             <p><strong>Returns:</strong> <code>Entity</code> - The newly created entity.</p>
+                        </div>
+                        <div class="method-card private-method">
+                            <h3><code>_processDraw(cam)</code></h3>
+                            <p><strong>Parameters:</strong></p>
+                            <ul>
+                                <li><code>cam: Camera</code> - The camera to draw through.</li>
+                            </ul>
+                            <p><strong>Description:</strong> ⚠️ <strong>PRIVATE METHOD:</strong> Internal method called by the camera to process drawing. Handles clipping, positioning, and animation frames. <strong>Not intended for direct use.</strong> Incorrect usage can cause engine crashes.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                     </div>
                 </section>
@@ -436,7 +451,10 @@ player.addColisionWithEntity(enemy, (collidedEntity) => {
                     <h3>Platform Collision</h3>
                     <p>Entities with gravity can land on Elements that have <code>onGravityContact</code> callbacks:</p>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Entity, Element } from "./jsge.js";
+                        <pre><code class="language-javascript">import { Entity, Element, Scene } from "./jsge.js";
+
+// Create a scene
+const gameScene = new Scene();
 
 // Create a platform element
 const platform = new Element({
@@ -458,15 +476,16 @@ const player = Entity.create({
     gravityAcceleration: 1
 });
 
-// Don't forget to add the platform to displayed elements
-Element._addToDisplayedElement(platform);
+// Add to scene
+gameScene.add(platform, 0);
+gameScene.add(player, 1);
 
 // Update and draw
 function gameLoop() {
     mainCam.clear();
     player.update(); // This will check for gravity contact
-    player.draw(mainCam);
-    platform.draw(mainCam);
+    gameScene.draw(mainCam);
+    mainCam.flipBuffer();
     requestAnimationFrame(gameLoop);
 }</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -494,13 +513,18 @@ player.addColisionWithEntity(enemy, (collidedEntity) => {
     player.velocity.x = -5; // Bounce back
 });
 
+// Create scene and add entities
+const gameScene = new Scene();
+gameScene.add(player, 1);
+gameScene.add(enemy, 1);
+
 // The collision will be checked automatically during update()
 function gameLoop() {
     mainCam.clear();
     player.update();
     enemy.update();
-    player.draw(mainCam);
-    enemy.draw(mainCam);
+    gameScene.draw(mainCam);
+    mainCam.flipBuffer();
     requestAnimationFrame(gameLoop);
 }</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -520,27 +544,24 @@ function gameLoop() {
 document.addEventListener("keydown", (e) => {
     const speed = 5;
     switch(e.key) {
-        case 'ArrowRight':
-            player.velocity.x = speed;
-            break;
-        case 'ArrowLeft':
-            player.velocity.x = -speed;
-            break;
-        case 'ArrowUp':
-            player.velocity.y = -speed;
-            break;
-        case 'ArrowDown':
-            player.velocity.y = speed;
-            break;
+        case 'ArrowRight': player.velocity.x = speed; break;
+        case 'ArrowLeft': player.velocity.x = -speed; break;
+        case 'ArrowUp': player.velocity.y = -speed; break;
+        case 'ArrowDown': player.velocity.y = speed; break;
     }
 });
+
+// Create scene
+const gameScene = new Scene();
+gameScene.add(player, 1);
 
 // The entity will gradually accelerate to the target velocity
 // due to the acceleration property
 function gameLoop() {
     mainCam.clear();
     player.update(); // Updates position based on velocity and acceleration
-    player.draw(mainCam);
+    gameScene.draw(mainCam);
+    mainCam.flipBuffer();
     requestAnimationFrame(gameLoop);
 }</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -553,7 +574,7 @@ function gameLoop() {
 
                     <h3>Setting Up Animations</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Entity, Sprite } from "./jsge.js";
+                        <pre><code class="language-javascript">import { Entity, Sprite, Scene } from "./jsge.js";
 
 // Create a sprite with animations
 const playerSprite = await Sprite.load("./assets/player-sheet.png", true);
@@ -580,7 +601,18 @@ const player = Entity.create({
 // Set the current animation
 player.currentAnimation = "walk";
 
-// The animation will play automatically during update()</code></pre>
+// Create scene and add
+const gameScene = new Scene();
+gameScene.add(player, 1);
+
+// The animation will play automatically during update()
+function gameLoop() {
+    mainCam.clear();
+    player.update();
+    gameScene.draw(mainCam);
+    mainCam.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
 
@@ -608,7 +640,7 @@ player.frameRate = 8; // Slower frame rate for jump animation</code></pre>
                             </p>
                         </div>
                         <div class="code-block">
-                            <pre><code class="language-javascript">import { Entity, Sprite } from "./jsge.js";
+                            <pre><code class="language-javascript">import { Entity, Sprite, Scene } from "./jsge.js";
 
 const canvas = document.querySelector("#gameCanvas");
 const mainCam = new Camera({
@@ -625,6 +657,10 @@ const player = Entity.create({
     position: {x: 400, y: 300},
     velocity: {x: 0, y: 0}
 });
+
+// Create scene - MANDATORY
+const gameScene = new Scene();
+gameScene.add(player, 1);
 
 // Keyboard controls
 document.addEventListener("keydown", (e) => {
@@ -649,7 +685,8 @@ document.addEventListener("keyup", (e) => {
 function gameLoop() {
     mainCam.clear();
     player.update();
-    player.draw(mainCam);
+    gameScene.draw(mainCam);
+    mainCam.flipBuffer();
     requestAnimationFrame(gameLoop);
 }
 gameLoop();</code></pre>
@@ -659,7 +696,7 @@ gameLoop();</code></pre>
 
                     <h3>Example 2: Entity with Gravity</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Entity, Sprite, Element } from "./jsge.js";
+                        <pre><code class="language-javascript">import { Entity, Sprite, Element, Scene } from "./jsge.js";
 
 const canvas = document.querySelector("#gameCanvas");
 const mainCam = new Camera({
@@ -668,6 +705,9 @@ const mainCam = new Camera({
     dimensions: {width: 800, height: 600},
     backgroundColor: "#87CEEB" // Sky blue
 });
+
+// Create scene
+const gameScene = new Scene();
 
 // Create player with gravity
 const playerSprite = await Sprite.load("./assets/player.png", false);
@@ -688,8 +728,9 @@ platform.onGravityContact = (elem, entity) => {
     console.log("Player landed on platform!");
 };
 
-// Add platform to displayed elements
-Element._addToDisplayedElement(platform);
+// Add to scene
+gameScene.add(platform, 0);
+gameScene.add(player, 1);
 
 // Jump with spacebar
 document.addEventListener("keydown", (e) => {
@@ -709,8 +750,8 @@ document.addEventListener("keyup", (e) => {
 function gameLoop() {
     mainCam.clear();
     player.update();
-    player.draw(mainCam);
-    platform.draw(mainCam);
+    gameScene.draw(mainCam);
+    mainCam.flipBuffer();
     requestAnimationFrame(gameLoop);
 }
 gameLoop();</code></pre>
@@ -719,7 +760,7 @@ gameLoop();</code></pre>
 
                     <h3>Example 3: Entity with Collision Detection</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Entity, Sprite } from "./jsge.js";
+                        <pre><code class="language-javascript">import { Entity, Sprite, Scene } from "./jsge.js";
 
 const canvas = document.querySelector("#gameCanvas");
 const mainCam = new Camera({
@@ -728,6 +769,9 @@ const mainCam = new Camera({
     dimensions: {width: 800, height: 600},
     backgroundColor: "#222"
 });
+
+// Create scene
+const gameScene = new Scene();
 
 // Create player
 const playerSprite = await Sprite.load("./assets/player.png", false);
@@ -751,11 +795,15 @@ for (let i = 0; i < 10; i++) {
     player.addColisionWithEntity(coin, (collidedEntity) => {
         console.log("Collected coin!");
         // Remove coin from scene
+        gameScene.remove(coin);
         // Increment score
     });
     
     coins.push(coin);
+    gameScene.add(coin, 1);
 }
+
+gameScene.add(player, 2);
 
 // Movement controls
 document.addEventListener("keydown", (e) => {
@@ -774,8 +822,8 @@ function gameLoop() {
     player.update();
     coins.forEach(coin => coin.update());
     
-    player.draw(mainCam);
-    coins.forEach(coin => coin.draw(mainCam));
+    gameScene.draw(mainCam);
+    mainCam.flipBuffer();
     
     requestAnimationFrame(gameLoop);
 }
@@ -785,7 +833,7 @@ gameLoop();</code></pre>
 
                     <h3>Example 4: Manual Update Control</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Entity } from "./jsge.js";
+                        <pre><code class="language-javascript">import { Entity, Scene } from "./jsge.js";
 
 const player = Entity.create({
     sprite: playerSprite,
@@ -793,7 +841,12 @@ const player = Entity.create({
     autoUpdate: false // Disable auto-update
 });
 
+// Create scene
+const gameScene = new Scene();
+gameScene.add(player, 1);
+
 // Now you have full control over when to update
+let frameCount = 0;
 function gameLoop() {
     mainCam.clear();
     
@@ -803,7 +856,8 @@ function gameLoop() {
     }
     
     // But still draw every frame
-    player.draw(mainCam);
+    gameScene.draw(mainCam);
+    mainCam.flipBuffer();
     
     frameCount++;
     requestAnimationFrame(gameLoop);
@@ -817,6 +871,7 @@ function gameLoop() {
                     <ul class="tips-list">
                         <li>🎯 <strong>Use Entity for dynamic objects</strong>: Entities are perfect for players, enemies, collectibles, and any game objects that move or change.</li>
                         <li>🎯 <strong>Use Element for static objects</strong>: For backgrounds, platforms, and scenery that don't need physics or animations, use <code>Element</code> instead.</li>
+                        <li>🎯 <strong>ALWAYS use Scene for rendering</strong>: Entities MUST be added to a Scene. Direct drawing is not supported.</li>
                         <li>🎯 <strong>Enable physics when needed</strong>: Set <code>physic: true</code> only for entities that need collision detection to improve performance.</li>
                         <li>🎯 <strong>Configure gravity properly</strong>: Adjust <code>gravity</code> and <code>gravityAcceleration</code> to achieve the desired falling speed and feel.</li>
                         <li>🎯 <strong>Use acceleration for smooth movement</strong>: The acceleration property creates smooth acceleration/deceleration effects.</li>
@@ -824,6 +879,7 @@ function gameLoop() {
                         <li>🎯 <strong>Leverage auto-update</strong>: By default, entities auto-update when drawn. Set <code>autoUpdate: false</code> for manual control when needed.</li>
                         <li>🎯 <strong>Use flipped properties for direction</strong>: Instead of loading separate sprites for left/right facing, use <code>flippedX = true</code> to mirror the sprite.</li>
                         <li>🎯 <strong>Custom properties with assign()</strong>: Add game-specific properties (health, score, etc.) using the <code>assign()</code> method or factory pattern.</li>
+                        <li>⚠️ <strong>Avoid using _ methods</strong>: Methods starting with underscore are private and not intended for direct use. Incorrect usage can cause engine crashes.</li>
                     </ul>
                 </section>
 
@@ -832,10 +888,10 @@ function gameLoop() {
                     <p>The Entity class works closely with:</p>
                     <ul class="tips-list">
                         <li>🎯 <a href="../pages/element.html">Element</a> - For static elements without physics</li>
+                        <li>🎯 <a href="../pages/scene.html">Scene</a> - MANDATORY for rendering entities</li>
                         <li>🎯 <a href="../pages/sprite.html">Sprite</a> - For creating and managing sprites</li>
                         <li>🎯 <a href="../pages/animation.html">Animation</a> - For sprite sheet animations</li>
-                        <li>🎯 <a href="../pages/camera.html">Camera</a> - For rendering entities</li>
-                        <li>🎯 <a href="../pages/scene.html">Scene</a> - For organizing entities with z-order</li>
+                        <li>🎯 <a href="../pages/camera.html">Camera</a> - For rendering scenes</li>
                         <li>🎯 <a href="../pages/jsge.html">JSGE Central Import</a> - For simplified imports</li>
                     </ul>
                 </section>

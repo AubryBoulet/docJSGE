@@ -17,6 +17,8 @@
         </div>
         <ul class="nav-list">
             <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+            <li class="nav-section">📦 Core</li>
+            <li><a href="../pages/jsge.html" class="nav-link">JSGE Central Import</a></li>
             <li class="nav-section">🎨 Rendering</li>
             <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
             <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
@@ -35,7 +37,7 @@
             <li><a href="../pages/bezier.html" class="nav-link">Bezier</a></li>
         </ul>
         <div class="sidebar-footer">
-            <p><small>v1.0.0</small></p>
+            <p><small>v0.1</small></p>
         </div>
     </nav>
 
@@ -69,7 +71,10 @@
                         <strong>ℹ️ Important:</strong> Elements cannot be animated. Use <code>Entity</code> if you need animations or physics.
                     </div>
                     <div class="warning-box">
-                        <strong>⚠️ Warning:</strong> The <code>drawElement()</code> method does not work with animated sprites. Use <code>draw()</code> for more fine-grained control.
+                        <strong>⚠️ IMPORTANT:</strong> Elements do NOT have their own drawing functions. <strong>You MUST add elements to a Scene and use <code>scene.draw(camera)</code> to render them.</strong> Direct drawing is not supported.
+                    </div>
+                    <div class="warning-box">
+                        <strong>⚠️ Warning:</strong> The <code>drawElement()</code> method does not work with animated sprites. Use <code>Scene</code> for proper rendering.
                     </div>
                 </section>
 
@@ -78,7 +83,7 @@
 
                     <h3>Create a Simple Element</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Element } from "./jsge.js";
+                        <pre><code class="language-javascript">import { Element, Scene } from "./jsge.js";
 import { Sprite } from "./jsge.js";
 
 // Create a sprite for the element
@@ -91,10 +96,17 @@ const tree = new Element({
     scale: 1
 });
 
-// Draw the element in a camera
+// Create a scene - MANDATORY
+const gameScene = new Scene();
+
+// Add element to scene
+gameScene.add(tree, 1);
+
+// Draw through scene - ONLY way to draw
 function gameLoop() {
     mainCam.clear();
-    tree.draw(mainCam);
+    gameScene.draw(mainCam);
+    mainCam.flipBuffer(); // MUST be called
     requestAnimationFrame(gameLoop);
 }</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -102,7 +114,7 @@ function gameLoop() {
 
                     <h3>Create an Element with a Generated Sprite</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Element } from "./jsge.js";
+                        <pre><code class="language-javascript">import { Element, Scene } from "./jsge.js";
 import { Sprite } from "./jsge.js";
 
 // Create an empty sprite
@@ -118,14 +130,22 @@ const wall = new Element({
     scale: 1
 });
 
-// Draw the element
-wall.draw(mainCam);</code></pre>
+// Add to scene and draw
+const gameScene = new Scene();
+gameScene.add(wall, 0);
+
+function gameLoop() {
+    mainCam.clear();
+    gameScene.draw(mainCam);
+    mainCam.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
 
                     <h3>Create an Element Using the Static Factory Method</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Element } from "./jsge.js";
+                        <pre><code class="language-javascript">import { Element, Scene } from "./jsge.js";
 
 // Create an element with custom properties
 const customElement = Element.create(
@@ -141,6 +161,10 @@ const customElement = Element.create(
         }
     ]
 );
+
+// Add to scene
+const gameScene = new Scene();
+gameScene.add(customElement, 1);
 
 // Access custom properties
 console.log(customElement.customProperty); // "value"
@@ -264,6 +288,7 @@ customElement.customMethod(); // "Hello!"</code></pre>
 
                 <section class="section">
                     <h2>⚙️ Methods</h2>
+                    <p><strong>⚠️ IMPORTANT:</strong> Elements do NOT have public drawing methods. All rendering MUST be done through a Scene. The methods below are for internal use or advanced scenarios only.</p>
                     <div class="methods-list">
                         <div class="method-card">
                             <h3><code>draw(cam, zOrder)</code></h3>
@@ -272,16 +297,7 @@ customElement.customMethod(); // "Hello!"</code></pre>
                                 <li><code>cam: Camera</code> - The camera to draw through.</li>
                                 <li><code>zOrder: number</code> - The z-order for rendering (default: 0).</li>
                             </ul>
-                            <p><strong>Description:</strong> Draws the element through the specified camera with the given z-order.</p>
-                            <p><strong>Returns:</strong> <code>void</code></p>
-                        </div>
-                        <div class="method-card">
-                            <h3><code>_processDraw(cam)</code></h3>
-                            <p><strong>Parameters:</strong></p>
-                            <ul>
-                                <li><code>cam: Camera</code> - The camera to draw through.</li>
-                            </ul>
-                            <p><strong>Description:</strong> Internal method called by the camera to process drawing. Handles clipping and positioning.</p>
+                            <p><strong>Description:</strong> <strong>⚠️ NOT RECOMMENDED:</strong> While this method exists, you should NOT use it directly. Always use <code>scene.draw(camera)</code> instead for proper rendering with z-order sorting.</p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                         <div class="method-card">
@@ -317,22 +333,31 @@ element.assign([{ health: 50 }], { overwrite: true });</code></pre>
                             <p><strong>Description:</strong> Static factory method to create an element with custom properties.</p>
                             <p><strong>Returns:</strong> <code>Element</code> - The newly created element.</p>
                         </div>
-                        <div class="method-card">
+                        <div class="method-card private-method">
+                            <h3><code>_processDraw(cam)</code></h3>
+                            <p><strong>Parameters:</strong></p>
+                            <ul>
+                                <li><code>cam: Camera</code> - The camera to draw through.</li>
+                            </ul>
+                            <p><strong>Description:</strong> ⚠️ <strong>PRIVATE METHOD:</strong> Internal method called by the camera to process drawing. Handles clipping and positioning. <strong>Not intended for direct use.</strong> Incorrect usage can cause engine crashes.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
+                        </div>
+                        <div class="method-card private-method">
                             <h3><code>_addToDisplayedElement(element)</code> (static)</h3>
                             <p><strong>Parameters:</strong></p>
                             <ul>
                                 <li><code>element: Element</code> - The element to add.</li>
                             </ul>
-                            <p><strong>Description:</strong> Internal static method to add an element to the displayed elements list.</p>
+                            <p><strong>Description:</strong> ⚠️ <strong>PRIVATE METHOD:</strong> Internal static method to add an element to the displayed elements list. <strong>Not intended for direct use.</strong></p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
-                        <div class="method-card">
+                        <div class="method-card private-method">
                             <h3><code>_removeFromDisplayedElement(element)</code> (static)</h3>
                             <p><strong>Parameters:</strong></p>
                             <ul>
                                 <li><code>element: Element</code> - The element to remove.</li>
                             </ul>
-                            <p><strong>Description:</strong> Internal static method to remove an element from the displayed elements list.</p>
+                            <p><strong>Description:</strong> ⚠️ <strong>PRIVATE METHOD:</strong> Internal static method to remove an element from the displayed elements list. <strong>Not intended for direct use.</strong></p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                     </div>
@@ -343,12 +368,15 @@ element.assign([{ health: 50 }], { overwrite: true });</code></pre>
 
                     <h3>Example 1: Creating Background Elements</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Element, Sprite } from "./jsge.js";
+                        <pre><code class="language-javascript">import { Element, Scene, Sprite } from "./jsge.js";
 
 // Load background sprites
 const mountainSprite = await Sprite.load("./assets/mountain.png", false);
 const treeSprite = await Sprite.load("./assets/tree.png", false);
 const bushSprite = await Sprite.load("./assets/bush.png", false);
+
+// Create a scene
+const levelScene = new Scene();
 
 // Create background elements
 const mountain = new Element({
@@ -375,15 +403,17 @@ const bush = new Element({
     scale: 0.8
 });
 
-// Draw all elements
+// Add all elements to scene
+levelScene.add(mountain, 0);
+levelScene.add(tree1, 0);
+levelScene.add(tree2, 0);
+levelScene.add(bush, 1);
+
+// Draw all elements through scene
 function gameLoop() {
     mainCam.clear();
-    
-    mountain.draw(mainCam, 0);
-    tree1.draw(mainCam, 0);
-    tree2.draw(mainCam, 0);
-    bush.draw(mainCam, 1);
-    
+    levelScene.draw(mainCam);
+    mainCam.flipBuffer(); // MUST be called
     requestAnimationFrame(gameLoop);
 }</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -391,9 +421,12 @@ function gameLoop() {
 
                     <h3>Example 2: Using Flipped Elements</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Element } from "./jsge.js";
+                        <pre><code class="language-javascript">import { Element, Scene } from "./jsge.js";
 
 const treeSprite = await Sprite.load("./assets/tree.png", false);
+
+// Create a scene
+const gameScene = new Scene();
 
 // Create a normal tree
 const treeLeft = new Element({
@@ -410,11 +443,15 @@ const treeRight = new Element({
 });
 treeRight.flippedX = true; // Flip horizontally
 
-// Draw both trees
+// Add to scene
+gameScene.add(treeLeft, 1);
+gameScene.add(treeRight, 1);
+
+// Draw through scene
 function gameLoop() {
     mainCam.clear();
-    treeLeft.draw(mainCam);
-    treeRight.draw(mainCam);
+    gameScene.draw(mainCam);
+    mainCam.flipBuffer();
     requestAnimationFrame(gameLoop);
 }</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -422,7 +459,10 @@ function gameLoop() {
 
                     <h3>Example 3: Gravity Contact with Elements</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Element, Entity } from "./jsge.js";
+                        <pre><code class="language-javascript">import { Element, Entity, Scene } from "./jsge.js";
+
+// Create a scene
+const gameScene = new Scene();
 
 // Create a platform element
 const platform = new Element({
@@ -433,7 +473,7 @@ const platform = new Element({
 
 // Set up gravity contact callback
 platform.onGravityContact = (element, entity) => {
-    console.log(`Entity ${entity} landed on platform ${element}`);
+    console.log(`Entity landed on platform!`);
     // Play landing sound, trigger animations, etc.
 };
 
@@ -445,17 +485,16 @@ const player = Entity.create({
     gravityAcceleration: 1
 });
 
-// Add elements to the displayed list
-Element._addToDisplayedElement(platform);
+// Add to scene
+gameScene.add(platform, 0);
+gameScene.add(player, 1);
 
 // Update and draw
 function gameLoop() {
     mainCam.clear();
-    
     player.update();
-    player.draw(mainCam, 1);
-    platform.draw(mainCam, 0);
-    
+    gameScene.draw(mainCam);
+    mainCam.flipBuffer();
     requestAnimationFrame(gameLoop);
 }</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -490,6 +529,7 @@ levelScene.add(foreground, 2);
 function gameLoop() {
     mainCam.clear();
     levelScene.draw(mainCam);
+    mainCam.flipBuffer();
     requestAnimationFrame(gameLoop);
 }</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -501,11 +541,13 @@ function gameLoop() {
                     <ul class="tips-list">
                         <li>🎯 <strong>Use Elements for static content</strong>: Elements are perfect for backgrounds, scenery, and any visual elements that don't need to move or change.</li>
                         <li>🎯 <strong>Use Entity for dynamic content</strong>: If you need physics, animations, or collision detection, use <code>Entity</code> instead.</li>
+                        <li>🎯 <strong>ALWAYS use Scene for rendering</strong>: Elements MUST be added to a Scene. Direct drawing is not supported.</li>
                         <li>🎯 <strong>Leverage flipping</strong>: Use the <code>flippedX</code> and <code>flippedY</code> properties to mirror elements without creating separate sprites.</li>
-                        <li>🎯 <strong>Use z-order effectively</strong>: When drawing multiple elements, use the z-order parameter to control which elements appear in front of others.</li>
+                        <li>🎯 <strong>Use z-order effectively</strong>: When adding elements to a scene, use the z-order parameter to control which elements appear in front of others.</li>
                         <li>🎯 <strong>Gravity contact callbacks</strong>: Use the <code>onGravityContact</code> property to create interactive elements that respond when entities land on them.</li>
                         <li>🎯 <strong>Scene integration</strong>: When using scenes, elements are automatically managed in the displayed elements list, simplifying element management.</li>
                         <li>🎯 <strong>Custom properties</strong>: Use the <code>assign()</code> method or <code>create()</code> factory to add custom properties and methods to elements for game-specific functionality.</li>
+                        <li>⚠️ <strong>Avoid using _ methods</strong>: Methods starting with underscore are private and not intended for direct use. Incorrect usage can cause engine crashes.</li>
                     </ul>
                 </section>
 
@@ -514,9 +556,9 @@ function gameLoop() {
                     <p>The Element class works closely with:</p>
                     <ul class="tips-list">
                         <li>🎯 <a href="../pages/entity.html">Entity</a> - For elements with physics and animations</li>
-                        <li>🎯 <a href="../pages/scene.html">Scene</a> - For organizing elements with z-order</li>
+                        <li>🎯 <a href="../pages/scene.html">Scene</a> - MANDATORY for rendering elements</li>
                         <li>🎯 <a href="../pages/sprite.html">Sprite</a> - For creating and managing sprites</li>
-                        <li>🎯 <a href="../pages/camera.html">Camera</a> - For rendering elements</li>
+                        <li>🎯 <a href="../pages/camera.html">Camera</a> - For rendering scenes</li>
                         <li>🎯 <a href="../pages/jsge.html">JSGE Central Import</a> - For simplified imports</li>
                     </ul>
                 </section>

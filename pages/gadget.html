@@ -17,6 +17,8 @@
         </div>
         <ul class="nav-list">
             <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+            <li class="nav-section">📦 Core</li>
+            <li><a href="../pages/jsge.html" class="nav-link">JSGE Central Import</a></li>
             <li class="nav-section">🎨 Rendering</li>
             <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
             <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
@@ -35,7 +37,7 @@
             <li><a href="../pages/bezier.html" class="nav-link">Bezier</a></li>
         </ul>
         <div class="sidebar-footer">
-            <p><small>v1.0.0</small></p>
+            <p><small>v0.1</small></p>
         </div>
     </nav>
 
@@ -73,7 +75,7 @@
                         </ul>
                     </p>
                     <div class="info-box">
-                        <strong>ℹ️ Important:</strong> Gadget is designed to be extended. You should not instantiate it directly, but rather use its subclasses like <code>Button</code> or create your own custom gadgets.
+                        <strong>ℹ️ Important:</strong> Gadget is designed to be extended. You should not instantiate it directly, but rather use its subclasses like <code>Button</code> or create your own custom gadgets. <strong>Gadgets MUST be added to a Scene for rendering.</strong>
                     </div>
                 </section>
 
@@ -82,7 +84,7 @@
 
                     <h3>Create a Custom Gadget</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Gadget } from "./jsge.js";
+                        <pre><code class="language-javascript">import { Gadget, Scene } from "./jsge.js";
 import { Camera } from "./jsge.js";
 
 // Create a subclass of Gadget
@@ -99,6 +101,9 @@ class CustomGadget extends Gadget {
     }
 }
 
+// Create a scene - MANDATORY
+const gameScene = new Scene();
+
 // Use the custom gadget
 const myGadget = new CustomGadget({
     position: {x: 100, y: 100},
@@ -106,14 +111,22 @@ const myGadget = new CustomGadget({
     value: "My Gadget"
 });
 
-// Draw the gadget
-myGadget.draw(mainCam);</code></pre>
+// Add to scene
+gameScene.add(myGadget, 1);
+
+// Draw the gadget through scene
+function gameLoop() {
+    mainCam.clear();
+    gameScene.draw(mainCam);
+    mainCam.flipBuffer(); // MUST be called
+    requestAnimationFrame(gameLoop);
+}</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
 
                     <h3>Create a Simple Gadget Directly</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Gadget } from "./jsge.js";
+                        <pre><code class="language-javascript">import { Gadget, Scene } from "./jsge.js";
 
 // Create a gadget with text
 const panel = new Gadget({
@@ -122,13 +135,22 @@ const panel = new Gadget({
     value: "Hello, JSGE!"
 });
 
+// Create scene
+const gameScene = new Scene();
+gameScene.add(panel, 1);
+
 // Customize appearance
 panel.backgroundColor = "#3498db";
 panel.color = "#fff";
 panel.border = { lineWidth: 2, color: "#2980b9" };
 
-// Draw the gadget
-panel.draw(mainCam);</code></pre>
+// Draw through scene
+function gameLoop() {
+    mainCam.clear();
+    gameScene.draw(mainCam);
+    mainCam.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                 </section>
@@ -250,11 +272,6 @@ panel.draw(mainCam);</code></pre>
                             <p><strong>Description:</strong> Text direction: 'ltr', 'rtl', or 'inherit'.</p>
                         </div>
                         <div class="property-card">
-                            <h3><code>transitions</code></h3>
-                            <p><strong>Type:</strong> <code>Array</code></p>
-                            <p><strong>Description:</strong> Array of transition definitions for animations.</p>
-                        </div>
-                        <div class="property-card">
                             <h3><code>onMouseOver</code></h3>
                             <p><strong>Type:</strong> <code>Function | null</code></p>
                             <p><strong>Description:</strong> Callback called when mouse is over the gadget.</p>
@@ -274,36 +291,12 @@ panel.draw(mainCam);</code></pre>
                             <p><strong>Type:</strong> <code>Function | null</code></p>
                             <p><strong>Description:</strong> Callback called when the gadget is clicked.</p>
                         </div>
-                        <div class="property-card">
-                            <h3><code>mouseEvent</code> (static)</h3>
-                            <p><strong>Type:</strong> <code>boolean</code></p>
-                            <p><strong>Description:</strong> Whether mouse events have been initialized for gadgets.</p>
-                        </div>
-                        <div class="property-card">
-                            <h3><code>mousePosition</code> (static)</h3>
-                            <p><strong>Type:</strong> <code>{x: number, y: number}</code></p>
-                            <p><strong>Description:</strong> Current mouse position relative to the document.</p>
-                        </div>
-                        <div class="property-card">
-                            <h3><code>gadgets</code> (static)</h3>
-                            <p><strong>Type:</strong> <code>Array&lt;Gadget&gt;</code></p>
-                            <p><strong>Description:</strong> Array of all registered gadgets for mouse event management.</p>
-                        </div>
-                        <div class="property-card">
-                            <h3><code>shadowCanvas</code> (static)</h3>
-                            <p><strong>Type:</strong> <code>HTMLCanvasElement</code></p>
-                            <p><strong>Description:</strong> Static canvas used for shadow rendering.</p>
-                        </div>
-                        <div class="property-card">
-                            <h3><code>shadowCtx</code> (static)</h3>
-                            <p><strong>Type:</strong> <code>CanvasRenderingContext2D</code></p>
-                            <p><strong>Description:</strong> Context for the shadow canvas.</p>
-                        </div>
                     </div>
                 </section>
 
                 <section class="section">
                     <h2>⚙️ Methods</h2>
+                    <p><strong>⚠️ IMPORTANT:</strong> Gadgets do NOT have public drawing methods. All rendering MUST be done through a Scene. The methods below are for internal use or advanced scenarios only.</p>
                     <div class="methods-list">
                         <div class="method-card">
                             <h3><code>draw(cam, zOrder)</code></h3>
@@ -312,7 +305,7 @@ panel.draw(mainCam);</code></pre>
                                 <li><code>cam: Camera</code> - The camera to draw through.</li>
                                 <li><code>zOrder: number</code> - The z-order for rendering (default: 0).</li>
                             </ul>
-                            <p><strong>Description:</strong> Draws the gadget through the specified camera. The gadget is automatically checked for mouse interactions.</p>
+                            <p><strong>Description:</strong> <strong>⚠️ NOT RECOMMENDED:</strong> While this method exists, you should NOT use it directly. Always use <code>scene.draw(camera)</code> instead for proper rendering with z-order sorting.</p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                         <div class="method-card">
@@ -330,42 +323,42 @@ panel.draw(mainCam);</code></pre>
                             <p><strong>Description:</strong> Forces the text value to update its effects. Useful when changing properties that affect text rendering.</p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
-                        <div class="method-card">
+                        <div class="method-card private-method">
                             <h3><code>_processDraw(cam)</code></h3>
                             <p><strong>Parameters:</strong></p>
                             <ul>
                                 <li><code>cam: Camera</code> - The camera to draw through.</li>
                             </ul>
-                            <p><strong>Description:</strong> Internal method called by the camera to process drawing. Handles clipping, positioning, and mouse interaction updates.</p>
+                            <p><strong>Description:</strong> ⚠️ <strong>PRIVATE METHOD:</strong> Internal method called by the camera to process drawing. Handles clipping, positioning, and mouse interaction updates. <strong>Not intended for direct use.</strong> Incorrect usage can cause engine crashes.</p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
-                        <div class="method-card">
+                        <div class="method-card private-method">
                             <h3><code>#setListeners()</code></h3>
-                            <p><strong>Description:</strong> Private method that sets up mouse event listeners for all gadgets. Called automatically when the first gadget is created.</p>
+                            <p><strong>Description:</strong> ⚠️ <strong>PRIVATE METHOD:</strong> Private method that sets up mouse event listeners for all gadgets. Called automatically when the first gadget is created. <strong>Not intended for direct use.</strong></p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
-                        <div class="method-card">
+                        <div class="method-card private-method">
                             <h3><code>#update(displayedPosition, cam)</code></h3>
-                            <p><strong>Description:</strong> Private method that updates mouse interaction state. Checks if mouse is over the gadget and triggers appropriate callbacks.</p>
+                            <p><strong>Description:</strong> ⚠️ <strong>PRIVATE METHOD:</strong> Private method that updates mouse interaction state. Checks if mouse is over the gadget and triggers appropriate callbacks. <strong>Not intended for direct use.</strong></p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
-                        <div class="method-card">
+                        <div class="method-card private-method">
                             <h3><code>#updateCachCanvas()</code></h3>
-                            <p><strong>Description:</strong> Private method that updates the cache canvas. Called when appearance properties change.</p>
+                            <p><strong>Description:</strong> ⚠️ <strong>PRIVATE METHOD:</strong> Private method that updates the cache canvas. Called when appearance properties change. <strong>Not intended for direct use.</strong></p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
-                        <div class="method-card">
+                        <div class="method-card private-method">
                             <h3><code>#drawCachCanvas()</code></h3>
-                            <p><strong>Description:</strong> Private method that draws to the cache canvas. Handles background, border, shadows, and text rendering.</p>
+                            <p><strong>Description:</strong> ⚠️ <strong>PRIVATE METHOD:</strong> Private method that draws to the cache canvas. Handles background, border, shadows, and text rendering. <strong>Not intended for direct use.</strong></p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
-                        <div class="method-card">
+                        <div class="method-card private-method">
                             <h3><code>#isMouseOutOfCamera(cam)</code></h3>
                             <p><strong>Parameters:</strong></p>
                             <ul>
                                 <li><code>cam: Camera</code> - The camera to check against.</li>
                             </ul>
-                            <p><strong>Description:</strong> Private method that checks if the mouse is outside the camera's view.</p>
+                            <p><strong>Description:</strong> ⚠️ <strong>PRIVATE METHOD:</strong> Private method that checks if the mouse is outside the camera's view. <strong>Not intended for direct use.</strong></p>
                             <p><strong>Returns:</strong> <code>boolean</code> - True if mouse is outside the camera.</p>
                         </div>
                     </div>
@@ -377,13 +370,19 @@ panel.draw(mainCam);</code></pre>
 
                     <h3>Mouse Event Callbacks</h3>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Gadget } from "./jsge.js";
+                        <pre><code class="language-javascript">import { Gadget, Scene } from "./jsge.js";
+
+// Create scene
+const gameScene = new Scene();
 
 const button = new Gadget({
     position: {x: 100, y: 100},
     dimension: {width: 200, height: 50},
     value: "Click Me"
 });
+
+// Add to scene
+gameScene.add(button, 1);
 
 // Set up mouse event callbacks
 button.onMouseOver = (camera) => {
@@ -406,29 +405,38 @@ button.onClick = (camera) => {
 };
 
 // The mouse events are automatically managed
-button.draw(mainCam);</code></pre>
+function gameLoop() {
+    mainCam.clear();
+    gameScene.draw(mainCam);
+    mainCam.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
 
                     <h3>Hitbox Configuration</h3>
                     <p>Gadgets have a configurable hitbox for mouse interaction detection:</p>
                     <div class="code-block">
-                        <pre><code class="language-javascript">const gadget = new Gadget({
-    position: {x: 100, y: 100},
-    dimension: {width: 200, height: 50}
-});
-
-// The hitbox extends beyond the gadget's dimensions
-// Default hitbox: {width: 8, height: 8}
-// This means the hitbox extends 8px in all directions
+                        <pre><code class="language-javascript">// Gadgets have a default hitbox that extends beyond their dimensions
+// This makes it easier for users to interact with small elements
+// The default hitbox is {width: 8, height: 8}, extending 8px in all directions
 
 // To create a gadget with a custom hitbox, you would need to extend Gadget
 class CustomGadget extends Gadget {
     constructor(options) {
         super(options);
-        this.#hitbox = {width: 15, height: 15}; // Larger hitbox
+        // Note: hitbox is a private property, modifying it requires caution
     }
-}</code></pre>
+}
+
+// Then add to scene and use normally
+const gadget = new CustomGadget({
+    position: {x: 100, y: 100},
+    dimension: {width: 200, height: 50}
+});
+
+const gameScene = new Scene();
+gameScene.add(gadget, 1);</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                 </section>
@@ -526,181 +534,11 @@ gadget.textBaseline = "middle";
 // Set text direction
 gadget.textDirection = "ltr";
 
-// Add text gradient
-gadget.addTextGradient("rainbow", gadget.shadowCtx.createLinearGradient(0, 0, 200, 0));
-gadget.shadowCtx.gradient.addColorStop(0, "#e74c3c");
-gadget.shadowCtx.gradient.addColorStop(1, "#f1c40f");</code></pre>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                </section>
-
-                <section class="section">
-                    <h2>🎬 Transitions</h2>
-                    <p>Gadgets support CSS-like transitions for animations:</p>
-                    <div class="code-block">
-                        <pre><code class="language-javascript">const gadget = new Gadget({
-    position: {x: 100, y: 100},
-    dimension: {width: 200, height: 50},
-    value: "Animated Gadget"
-});
-
-// Add a transition
-gadget.transition = [
-    "opacity",       // Property to transition (note: custom implementation needed)
-    500,            // Duration in ms
-    "ease-in-out",  // Timing function
-    0               // Delay in ms
-];
-
-// Multiple transitions
-gadget.transition = [
-    ["opacity", 300, "ease", 0],
-    ["backgroundColor", 500, "linear", 100]
-];</code></pre>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                </section>
-
-                <section class="section">
-                    <h2>🎯 Examples</h2>
-
-                    <h3>Example 1: Interactive Panel</h3>
-                    <div class="code-block">
-                        <pre><code class="language-javascript">import { Gadget } from "./jsge.js";
-
-const panel = new Gadget({
-    position: {x: 50, y: 50},
-    dimension: {width: 300, height: 200},
-    value: "Info Panel"
-});
-
-// Style the panel
-panel.backgroundColor = "#f8f9fa";
-panel.color = "#2c3e50";
-panel.border = { lineWidth: 2, color: "#dee2e6" };
-panel.borderRadius = [5];
-panel.boxShadow = [
-    { offsetX: 2, offsetY: 2, color: "rgba(0,0,0,0.1)", blur: 5, inset: false }
-];
-
-// Add mouse interactions
-panel.onMouseOver = (cam) => {
-    panel.boxShadow = [
-        { offsetX: 4, offsetY: 4, color: "rgba(0,0,0,0.2)", blur: 8, inset: false }
-    ];
-    panel._updateCachCanvas();
-};
-
-panel.onMouseLeave = (cam) => {
-    panel.boxShadow = [
-        { offsetX: 2, offsetY: 2, color: "rgba(0,0,0,0.1)", blur: 5, inset: false }
-    ];
-    panel._updateCachCanvas();
-};
-
-// Draw
-panel.draw(mainCam);</code></pre>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-
-                    <h3>Example 2: Custom Gadget with Image</h3>
-                    <div class="code-block">
-                        <pre><code class="language-javascript">import { Gadget } from "./jsge.js";
-
-class ImageGadget extends Gadget {
-    constructor({position, dimension, imagePath}) {
-        super({position, dimension, value: ""});
-        this.imagePath = imagePath;
-        this.image = new Image();
-        this.image.src = imagePath;
-    }
-    
-    _drawCachCanvas() {
-        const ctx = this._cachCanvas.getContext('2d');
-        ctx.clearRect(0, 0, this._cachCanvas.width, this._cachCanvas.height);
-        
-        // Draw background
-        if (this.#drawInfos.backgroundColor) {
-            ctx.fillStyle = this.#drawInfos.backgroundColor;
-            ctx.fillRect(0, 0, this.#cachCanvas.width, this.#cachCanvas.height);
-        }
-        
-        // Draw image
-        if (this.image.complete) {
-            ctx.drawImage(
-                this.image,
-                0, 0,
-                this.#cachCanvas.width, this.#cachCanvas.height
-            );
-        }
-        
-        // Draw border
-        if (this.#drawInfos.border) {
-            ctx.strokeStyle = this.#drawInfos.border.color;
-            ctx.lineWidth = this.#drawInfos.border.lineWidth;
-            ctx.strokeRect(0, 0, this.#cachCanvas.width, this.#cachCanvas.height);
-        }
-    }
-}
-
-const imageGadget = new ImageGadget({
-    position: {x: 100, y: 100},
-    dimension: {width: 200, height: 200},
-    imagePath: "./assets/my-image.png"
-});
-
-imageGadget.onClick = (cam) => {
-    console.log("Image gadget clicked!");
-};
-
-imageGadget.draw(mainCam);</code></pre>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-
-                    <h3>Example 3: Tooltip Gadget</h3>
-                    <div class="code-block">
-                        <pre><code class="language-javascript">import { Gadget } from "./jsge.js";
-
-class Tooltip extends Gadget {
-    constructor({position, text}) {
-        super({
-            position: position,
-            dimension: {width: 200, height: 60},
-            value: text
-        });
-        
-        this.backgroundColor = "#333";
-        this.color = "#fff";
-        this.borderRadius = [5];
-        this.font = "14px Arial";
-    }
-}
-
-const tooltip = new Tooltip({
-    position: {x: 100, y: 100},
-    text: "This is a tooltip!"
-});
-
-// Show/hide based on mouse
-let isVisible = false;
-
-tooltip.onMouseEnter = () => {
-    isVisible = true;
-};
-
-tooltip.onMouseLeave = () => {
-    isVisible = false;
-};
-
-function gameLoop() {
-    mainCam.clear();
-    
-    if (isVisible) {
-        tooltip.draw(mainCam);
-    }
-    
-    requestAnimationFrame(gameLoop);
-}</code></pre>
+// Add text gradient (requires canvas context)
+const gradient = gadget._cachCanvas.getContext('2d').createLinearGradient(0, 0, 200, 0);
+gradient.addColorStop(0, "#e74c3c");
+gradient.addColorStop(1, "#f1c40f");
+gadget.addTextGradient("rainbow", gradient);</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                 </section>
@@ -710,12 +548,13 @@ function gameLoop() {
                     <ul class="tips-list">
                         <li>🎯 <strong>Extend Gadget for custom UI</strong>: Create subclasses of Gadget for custom UI elements like panels, tooltips, sliders, etc.</li>
                         <li>🎯 <strong>Use Button for standard buttons</strong>: The Button class extends Gadget and provides additional button-specific features.</li>
+                        <li>🎯 <strong>ALWAYS use Scene for rendering</strong>: Gadgets MUST be added to a Scene. Direct drawing is not supported.</li>
                         <li>🎯 <strong>Optimize with cache canvas</strong>: Gadgets use a cache canvas for rendering, which improves performance. Only update the cache when necessary.</li>
-                        <li>🎯 <strong>Mouse events are automatic</strong>: Once a gadget is created, mouse events are automatically tracked. No need to manually add event listeners.</li>
+                        <li>🎯 <strong>Mouse events are automatic</strong>: Once a gadget is created and added to a scene, mouse events are automatically tracked. No need to manually add event listeners.</li>
                         <li>🎯 <strong>Use hitbox for better UX</strong>: The hitbox extends beyond the gadget's dimensions, making it easier for users to interact with small elements.</li>
                         <li>🎯 <strong>Style with shadows and borders</strong>: Use boxShadow and border properties to create visually appealing UI elements.</li>
                         <li>🎯 <strong>Consider z-order</strong>: When drawing multiple gadgets, use the zOrder parameter to ensure proper layering.</li>
-                        <li>🎯 <strong>Update cache when styling changes</strong>: After changing appearance properties, call <code>_updateCachCanvas()</code> to update the visual representation.</li>
+                        <li>⚠️ <strong>Avoid using _ and # methods</strong>: Methods starting with underscore or hash are private and not intended for direct use. Incorrect usage can cause engine crashes.</li>
                     </ul>
                 </section>
 
@@ -725,7 +564,8 @@ function gameLoop() {
                     <ul class="tips-list">
                         <li>🎯 <a href="../pages/button.html">Button</a> - Extends Gadget for interactive buttons</li>
                         <li>🎯 <a href="../pages/text.html">Text</a> - Extends Gadget for text rendering</li>
-                        <li>🎯 <a href="../pages/camera.html">Camera</a> - For rendering gadgets</li>
+                        <li>🎯 <a href="../pages/scene.html">Scene</a> - MANDATORY for rendering gadgets</li>
+                        <li>🎯 <a href="../pages/camera.html">Camera</a> - For rendering scenes</li>
                         <li>🎯 <a href="../pages/jsge.html">JSGE Central Import</a> - For simplified imports</li>
                     </ul>
                 </section>

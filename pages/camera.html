@@ -35,7 +35,7 @@
             <li><a href="../pages/bezier.html" class="nav-link">Bezier</a></li>
         </ul>
         <div class="sidebar-footer">
-            <p><small>v1.0.0</small></p>
+            <p><small>v0.1</small></p>
         </div>
     </nav>
 
@@ -247,7 +247,7 @@ entity.draw(mainCam);</code></pre>
                     <div class="methods-list">
                         <div class="method-card">
                             <h3><code>clear()</code></h3>
-                            <p><strong>Description:</strong> Clears the camera content by calling clearRect on the context. If a background is defined, it will be redrawn. This method respects the target FPS and only clears when a new frame is needed.</p>
+                            <p><strong>Description:</strong> Clears the camera content by calling clearRect on the context. If a background is defined, it will be redrawn. <strong>This method also initiates a new frame for rendering.</strong> This method respects the target FPS and only clears when a new frame is needed.</p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                         <div class="method-card">
@@ -271,26 +271,35 @@ entity.draw(mainCam);</code></pre>
                         </div>
                         <div class="method-card">
                             <h3><code>flipBuffer()</code></h3>
-                            <p><strong>Description:</strong> Processes the draw list and renders all queued elements. This is called internally by the engine and should typically not be called directly.</p>
+                            <p><strong>Description:</strong> Processes the draw list and renders all queued elements. <strong>⚠️ IMPORTANT: This method is NOT called automatically. You MUST call it manually after establishing the list of entities to draw.</strong> It sorts elements by z-order and renders them to the camera.</p>
                             <p><strong>Returns:</strong> <code>boolean</code> - Returns true if a new frame was rendered.</p>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// Proper usage: call flipBuffer() after adding all elements
+mainCam.clear();
+// Add entities to draw list
+entity.draw(mainCam);
+// Process and render the draw list
+mainCam.flipBuffer();</code></pre>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
                         </div>
-                        <div class="method-card">
+                        <div class="method-card private-method">
                             <h3><code>_addToDrawList(elem, zOrder)</code></h3>
                             <p><strong>Parameters:</strong></p>
                             <ul>
                                 <li><code>elem: Entity | Element</code> - The element to add to the draw list.</li>
                                 <li><code>zOrder: number</code> - The z-order for rendering.</li>
                             </ul>
-                            <p><strong>Description:</strong> Internal method to add elements to the draw list. Elements are automatically sorted by z-order when rendered.</p>
+                            <p><strong>Description:</strong> ⚠️ <strong>PRIVATE METHOD:</strong> Internal method to add elements to the draw list. <strong>Not intended for direct use.</strong> Incorrect usage can cause engine crashes. Use public methods instead.</p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
-                        <div class="method-card">
+                        <div class="method-card private-method">
                             <h3><code>_addToDrawScene(scene)</code></h3>
                             <p><strong>Parameters:</strong></p>
                             <ul>
                                 <li><code>scene: Scene</code> - The scene to add to the draw queue.</li>
                             </ul>
-                            <p><strong>Description:</strong> Internal method used by Scene class to register scenes for drawing.</p>
+                            <p><strong>Description:</strong> ⚠️ <strong>PRIVATE METHOD:</strong> Internal method used by Scene class to register scenes for drawing. <strong>Not intended for direct use.</strong> Incorrect usage can cause engine crashes.</p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                         </div>
                     </div>
@@ -538,7 +547,8 @@ gameLoop();</code></pre>
                 <section class="section">
                     <h2>💡 Tips and Best Practices</h2>
                     <ul class="tips-list">
-                        <li>🎯 <strong>Always clear the camera</strong> every frame with <code>clear()</code> to avoid visual artifacts.</li>
+                        <li>🎯 <strong>Always clear the camera</strong> every frame with <code>clear()</code> to avoid visual artifacts. This also initiates a new frame.</li>
+                        <li>🎯 <strong>Always call flipBuffer()</strong> after adding all elements to the draw list. This processes and renders all queued elements.</li>
                         <li>🎯 Use <strong>multiple cameras</strong> to create split-screen effects or separate game from UI.</li>
                         <li>🎯 For a game with scrolling, adjust the camera's <code>position</code> property directly to follow the player. Note: a dedicated scrolling method is planned but not yet implemented.</li>
                         <li>🎯 Use <code>backgroundImageVelocity</code> and <code>backgroundImageLoop</code> to create animated backgrounds without additional code.</li>
@@ -546,6 +556,7 @@ gameLoop();</code></pre>
                         <li>🎯 For better performance, avoid creating too many active cameras simultaneously.</li>
                         <li>🎯 The <code>targetFPS</code> parameter helps stabilize frame timing but doesn't limit the actual frame rate.</li>
                         <li>🎯 Use <code>backgroundImageFillStyle: "imageSize"</code> for seamless tiling with the original image dimensions.</li>
+                        <li>⚠️ <strong>Avoid using methods starting with _</strong> (underscore). These are private methods not intended for direct use. Incorrect usage can cause engine crashes.</li>
                     </ul>
                 </section>
 

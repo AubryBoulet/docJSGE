@@ -17,6 +17,8 @@
         </div>
         <ul class="nav-list">
             <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+            <li class="nav-section">📦 Core</li>
+            <li><a href="../pages/jsge.html" class="nav-link">JSGE Central Import</a></li>
             <li class="nav-section">🎨 Rendering</li>
             <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
             <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
@@ -35,7 +37,7 @@
             <li><a href="../pages/bezier.html" class="nav-link">Bezier</a></li>
         </ul>
         <div class="sidebar-footer">
-            <p><small>v1.0.0</small></p>
+            <p><small>v0.1</small></p>
         </div>
     </nav>
 
@@ -45,7 +47,7 @@
             <!-- Page Header -->
             <header class="page-header">
                 <h1 id="page-title">Scene</h1>
-                <p id="page-description">Class for organizing and managing groups of elements with z-order rendering.</p>
+                <p id="page-description">Mandatory class for organizing and managing groups of elements with z-order rendering.</p>
             </header>
 
             <!-- Documentation Content -->
@@ -53,10 +55,15 @@
                 <section class="section">
                     <h2>📝 Description</h2>
                     <p>
-                        The <code>Scene</code> class provides a way to organize and manage groups of elements 
-                        with z-order (depth) rendering. Scenes allow you to group related elements together 
+                        The <code>Scene</code> class is the <strong>mandatory and preferred way</strong> to organize and manage groups of elements 
+                        with z-order (depth) rendering in JSGE. Scenes allow you to group related elements together 
                         and control their rendering order, making it easier to manage complex game worlds 
                         with multiple layers of elements.
+                    </p>
+                    <p>
+                        <strong>⚠️ IMPORTANT:</strong> Scenes are NOT optional. They are the <strong>required</strong> way to render elements in JSGE. 
+                        Using scenes avoids recalculating z-order every frame, which significantly optimizes rendering performance. 
+                        <strong>Elements and Entities do not have their own drawing functions - you MUST use a Scene to draw them.</strong>
                     </p>
                     <p>
                         When a scene is drawn through a camera, all its elements are automatically sorted 
@@ -72,25 +79,34 @@
                     <h2>🚀 Basic Usage</h2>
                     <p>To create a scene and add elements to it:</p>
                     <div class="code-block">
-                        <pre><code class="language-javascript">import { Scene } from "./classes/scene.js";
-import { Element } from "./classes/element.js";
+                        <pre><code class="language-javascript">import { Scene, Entity, Element } from "./jsge.js";
 
-// Create a scene
+// Create a scene - THIS IS MANDATORY for rendering
 const gameScene = new Scene();
 
-// Create elements
-const background = Element.create({/* ... */});
-const player = Element.create({/* ... */});
-const foreground = Element.create({/* ... */});
+// Create elements and entities
+const background = Element.create({ sprite: bgSprite, position: {x: 0, y: 0} });
+const player = Entity.create({ sprite: playerSprite, position: {x: 200, y: 300} });
+const foreground = Element.create({ sprite: fgSprite, position: {x: 0, y: 0} });
 
 // Add elements to the scene with different z-orders
+// Lower z-order = drawn first (behind)
+// Higher z-order = drawn last (on top)
 gameScene.add(background, 0);    // Background (lowest z-order)
 gameScene.add(player, 1);        // Player (middle z-order)
 gameScene.add(foreground, 2);    // Foreground (highest z-order)
 
-// Draw the scene through a camera
-gameScene.draw(mainCam);</code></pre>
+// Draw the scene through a camera - THIS IS THE ONLY WAY TO DRAW
+function gameLoop() {
+    mainCam.clear();
+    gameScene.draw(mainCam);  // Scene handles all drawing and z-order sorting
+    mainCam.flipBuffer();      // MUST be called to process the draw list
+    requestAnimationFrame(gameLoop);
+}</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <div class="warning-box">
+                        <strong>⚠️ WARNING:</strong> Do NOT call <code>element.draw()</code> or <code>entity.draw()</code> directly. Always use <code>scene.draw(camera)</code> followed by <code>camera.flipBuffer()</code>.
                     </div>
                 </section>
 
@@ -116,16 +132,6 @@ gameScene.draw(mainCam);</code></pre>
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
-                </section>
-
-                <section class="section">
-                    <h2>📊 Properties</h2>
-                    <div class="properties-grid">
-                        <div class="property-card">
-                            <h3><code>No public properties</code></h3>
-                            <p><strong>Description:</strong> The Scene class does not expose public properties. All element management is done through methods.</p>
-                        </div>
                     </div>
                 </section>
 
@@ -184,11 +190,12 @@ scene.zOrder(player, 3); // Move player to the front</code></pre>
                             <ul>
                                 <li><code>cam: Camera</code> - The camera through which to draw the scene.</li>
                             </ul>
-                            <p><strong>Description:</strong> Draws all elements in the scene through the specified camera. Elements are automatically sorted by z-order before drawing.</p>
+                            <p><strong>Description:</strong> Draws all elements in the scene through the specified camera. Elements are automatically sorted by z-order before drawing. <strong>After calling this, you MUST call <code>cam.flipBuffer()</code> to process and render the elements.</strong></p>
                             <p><strong>Returns:</strong> <code>void</code></p>
                             <div class="code-block">
                                 <pre><code class="language-javascript">// Draw the scene
-scene.draw(mainCam);</code></pre>
+scene.draw(mainCam);
+mainCam.flipBuffer(); // MUST be called after draw()</code></pre>
                                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                             </div>
                         </div>
@@ -203,13 +210,11 @@ scene.draw(mainCam);</code></pre>
                         <div class="example-demo">
                             <canvas id="scene-demo" width="600" height="400"></canvas>
                             <p style="text-align: center; margin-top: 10px; color: #666;">
-                                Scene with background, player, and foreground elements.
+                                Scene with background, player, and foreground elements. Use arrows to move camera.
                             </p>
                         </div>
                         <div class="code-block">
-                            <pre><code class="language-javascript">import { Scene } from "./classes/scene.js";
-import { Element } from "./classes/element.js";
-import { Camera } from "./classes/camera.js";
+                            <pre><code class="language-javascript">import { Scene, Element, Camera } from "./jsge.js";
 
 // Create a camera
 const canvas = document.querySelector("#gameCanvas");
@@ -220,7 +225,7 @@ const mainCam = new Camera({
     backgroundColor: "#222"
 });
 
-// Create a scene
+// Create a scene - MANDATORY for rendering
 const gameScene = new Scene();
 
 // Create elements for different layers
@@ -248,8 +253,9 @@ scene.add(foreground, 2);
 function gameLoop() {
     mainCam.clear();
     
-    // Draw the entire scene
+    // Draw the entire scene - ONLY way to draw elements
     scene.draw(mainCam);
+    mainCam.flipBuffer(); // MUST be called
     
     requestAnimationFrame(gameLoop);
 }
@@ -262,9 +268,9 @@ gameLoop();</code></pre>
                     <div class="code-block">
                         <pre><code class="language-javascript">// Create a scene with multiple entities
 const scene = new Scene();
-const player = Entity.create({/* ... */});
-const enemy1 = Entity.create({/* ... */});
-const enemy2 = Entity.create({/* ... */});
+const player = Entity.create({ sprite: playerSprite, position: {x: 200, y: 200} });
+const enemy1 = Entity.create({ sprite: enemySprite, position: {x: 300, y: 200} });
+const enemy2 = Entity.create({ sprite: enemySprite, position: {x: 400, y: 200} });
 
 // Add entities with default z-orders
 scene.add(player, 1);
@@ -278,7 +284,15 @@ scene.zOrder(enemy1, 2);
 scene.zOrder(player, 0);
 
 // Remove an entity when it's defeated
-scene.remove(enemy2);</code></pre>
+scene.remove(enemy2);
+
+// In game loop
+function gameLoop() {
+    mainCam.clear();
+    scene.draw(mainCam);
+    mainCam.flipBuffer(); // Always call this
+    requestAnimationFrame(gameLoop);
+}</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
 
@@ -301,6 +315,7 @@ function gameLoop() {
     
     // Draw the current scene
     currentScene.draw(mainCam);
+    mainCam.flipBuffer(); // Always call this
     
     // Handle scene transitions
     if (gameStarted) {
@@ -322,12 +337,13 @@ function gameLoop() {
                 <section class="section">
                     <h2>💡 Tips and Best Practices</h2>
                     <ul class="tips-list">
+                        <li>🎯 <strong>Scenes are MANDATORY</strong>: You MUST use scenes to render elements. Direct drawing of elements/entities is not supported.</li>
+                        <li>🎯 <strong>Always call flipBuffer()</strong>: After calling <code>scene.draw(camera)</code>, you MUST call <code>camera.flipBuffer()</code> to process and render the elements.</li>
                         <li>🎯 <strong>Use scenes for organization</strong>: Group related elements together (e.g., all UI elements in one scene, all background elements in another).</li>
                         <li>🎯 <strong>Manage z-orders carefully</strong>: Lower z-order values are drawn first (appear behind), while higher values are drawn last (appear on top).</li>
                         <li>🎯 <strong>Dynamic z-order updates</strong>: Use the <code>zOrder()</code> method to bring elements to the front or push them to the back as needed during gameplay.</li>
                         <li>🎯 <strong>Scene transitions</strong>: For complex games, consider using multiple scenes for different game states (menu, gameplay, pause, game over).</li>
-                        <li>🎯 <strong>Performance consideration</strong>: Scenes automatically sort elements by z-order when needed, but avoid changing z-orders every frame for best performance.</li>
-                        <li>🎯 <strong>Element management</strong>: When you add an Element to a scene, it's automatically added to the global displayed elements list. When removed, it's automatically removed from that list.</li>
+                        <li>🎯 <strong>Performance optimization</strong>: Scenes automatically sort elements by z-order only when needed, providing optimal performance.</li>
                     </ul>
                 </section>
 
@@ -336,8 +352,9 @@ function gameLoop() {
                     <p>The Scene class works closely with:</p>
                     <ul class="tips-list">
                         <li>🎯 <a href="../pages/camera.html">Camera</a> - To render scenes through a camera</li>
-                        <li>🎯 <a href="../pages/element.html">Element</a> - To create elements that can be added to scenes</li>
-                        <li>🎯 <a href="../pages/entity.html">Entity</a> - To create entities that can be added to scenes</li>
+                        <li>🎯 <a href="../pages/element.html">Element</a> - Elements must be added to scenes for rendering</li>
+                        <li>🎯 <a href="../pages/entity.html">Entity</a> - Entities must be added to scenes for rendering</li>
+                        <li>🎯 <a href="../pages/jsge.html">JSGE Central Import</a> - To import Scene and other classes</li>
                     </ul>
                 </section>
             </article>
