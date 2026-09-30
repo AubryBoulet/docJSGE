@@ -73,7 +73,7 @@ function highlightCode() {
         html = html.replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="comment">$1</span>');
         
         // Operators
-        html = html.replace(/([+\-*/%=<>!&|^~?:]|\(\)|\{\}|\\[\]|\\.)/g, '<span class="operator">$1</span>');
+        html = html.replace(/([+\-*/%=<>!&|^~?:]|\\(\\)|\\{\\}|\\[\\]|\\.)/g, '<span class="operator">$1</span>');
         
         // JSGE Types
         jsgeTypes.forEach(type => {
