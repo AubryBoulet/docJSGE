@@ -25,16 +25,10 @@ function highlightCode() {
     const codeBlocks = document.querySelectorAll('.code-block code');
     
     codeBlocks.forEach(block => {
-        // Get the raw text content
-        const text = block.textContent;
-        let html = text;
+        let html = block.innerHTML;
         
-        // First, escape all HTML special characters to prevent XSS and double-encoding
-        html = html.replace(/&/g, '&amp;')
-                   .replace(/</g, '&lt;')
-                   .replace(/>/g, '&gt;')
-                   .replace(/"/g, '&quot;')
-                   .replace(/'/g, '&#39;');
+        // Escape HTML to avoid issues
+        const text = block.textContent;
         
         // JavaScript keywords
         const keywords = [
@@ -56,7 +50,7 @@ function highlightCode() {
             'create', 'load', 'update', 'draw', 'drawEntity', 'drawElement',
             'clear', 'moveCamera', 'flipBuffer', 'addColisionWithEntity',
             'onMouseEnter', 'onMouseLeave', 'onMouseOver', 'onClick', 'addTextGradient',
-            'updateText', 'zOrder', 'remove', 'assign', 'JSGE'
+            'updateText', 'zOrder', 'remove', 'assign', 'Scene', 'JSGE'
         ];
         
         // Functions and methods
@@ -68,41 +62,61 @@ function highlightCode() {
             'stroke', 'fill', 'save', 'restore', 'translate', 'rotate', 'scale'
         ];
         
-        // Comments (multi-line first, then single-line)
-        html = html.replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="comment">$1</span>');
-        html = html.replace(/(\/\/[^\n]*)/g, '<span class="comment">$1</span>');
-        
         // Strings
-        html = html.replace(/("[^"]*")/g, '<span class="string">$1</span>');
-        html = html.replace(/('(?:[^'\\]|\\.)*')/g, '<span class="string">$1</span>');
+        html = html.replace(/("[^"]*"|'[^']*')/g, '<span class="string">$1</span>');
         
         // Numbers
         html = html.replace(/\b(\d+(\.\d+)?)\b/g, '<span class="number">$1</span>');
         
-        // Operators
-        html = html.replace(/([+\-*/%=<>!&|^~?:]|\.|\()|(\))|(\{)|(\})|(\[)|(\])/g, '<span class="operator">$1</span>');
+        // Comments
+        html = html.replace(/(\/\/[^\n]*)/g, '<span class="comment">$1</span>');
+        html = html.replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="comment">$1</span>');
         
-        // JSGE Types (case-sensitive, word boundaries)
+        // Operators
+        html = html.replace(/([+\-*/%=<>!&|^~?:]|\\(\\)|\\{\\}|\\[\\]|\\.)/g, '<span class="operator">$1</span>');
+        
+        // JSGE Types
         jsgeTypes.forEach(type => {
-            const regex = new RegExp('\\b(' + type.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')\\b', 'g');
+            const regex = new RegExp(`\\b(${type})\\b`, 'g');
             html = html.replace(regex, '<span class="jsge-type">$1</span>');
         });
         
         // JavaScript keywords
         keywords.forEach(keyword => {
-            const regex = new RegExp('\\b(' + keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')\\b', 'g');
+            const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
             html = html.replace(regex, '<span class="keyword">$1</span>');
         });
         
         // Functions
         functions.forEach(func => {
-            const regex = new RegExp('\\b(' + func.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')\\b', 'g');
+            const regex = new RegExp(`\\b(${func})\\b`, 'g');
             html = html.replace(regex, '<span class="function">$1</span>');
         });
         
         block.innerHTML = html;
     });
 }
+
+// ===== Page Initialization =====
+document.addEventListener('DOMContentLoaded', () => {
+    // Add active class to current page in navbar
+    const currentPath = window.location.pathname.split('/').pop();
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    navLinks.forEach(link => {
+        const linkPath = link.getAttribute('href').split('/').pop();
+        if (linkPath === currentPath) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+
+    // Initialize demos
+    initDemos();
+
+    // Highlight code
+    highlightCode();
 
     // Sidebar scroll handling
     let lastScrollTop = 0;
