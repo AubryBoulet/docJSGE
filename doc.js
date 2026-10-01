@@ -1095,3 +1095,9 @@ function initBezierDemo() {
     
     drawDemo();
 }
+
+// ===== Initialize on page load =====
+document.addEventListener('DOMContentLoaded', function() {
+    highlightCode();
+    initDemos();
+});
