@@ -625,6 +625,10 @@ body {
     color: #61afef;
 }
 
+.code-block code .jsge-type {
+    color: #e5c07b;
+}
+
 .code-block code .operator {
     color: #bb80b3;
 }
