@@ -28,13 +28,23 @@ function highlightCode() {
         // Get the raw text content
         const text = block.textContent;
         let html = text;
-        
-        // First, escape all HTML special characters to prevent XSS and double-encoding
-        html = html.replace(/&/g, '&amp;')
-                   .replace(/</g, '&lt;')
-                   .replace(/>/g, '&gt;')
-                   .replace(/"/g, '&quot;')
-                   .replace(/'/g, '&#39;');
+
+        const escapeHtml = value => value.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+
+        const highlighted = [];
+        const highlight = (regex, className) => {
+            html = html.replace(regex, match => {
+                const index = highlighted.length;
+                const token = String.fromCharCode(0xE000 + Math.floor(index / 0x1000)) +
+                    String.fromCharCode(0xE000 + (index % 0x1000));
+                highlighted.push(`<span class="${className}">${escapeHtml(match)}</span>`);
+                return `\uE000${token}\uE001`;
+            });
+        };
         
         // JavaScript keywords
         const keywords = [
@@ -69,35 +79,41 @@ function highlightCode() {
         ];
         
         // Comments (multi-line first, then single-line)
-        html = html.replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="comment">$1</span>');
-        html = html.replace(/(\/\/[^\n]*)/g, '<span class="comment">$1</span>');
+        highlight(/\/\*[\s\S]*?\*\//g, 'comment');
+        highlight(/\/\/[^\n]*/g, 'comment');
         
         // Strings
-        html = html.replace(/("[^"]*")/g, '<span class="string">$1</span>');
-        html = html.replace(/('(?:[^'\\]|\\.)*')/g, '<span class="string">$1</span>');
+        highlight(/"[^"]*"/g, 'string');
+        highlight(/'(?:[^'\\]|\\.)*'/g, 'string');
         
         // Numbers
-        html = html.replace(/\b(\d+(\.\d+)?)\b/g, '<span class="number">$1</span>');
+        highlight(/\b\d+(\.\d+)?\b/g, 'number');
         
         // Operators
-        html = html.replace(/([+\-*/%=<>!&|^~?:]|\.|\()|(\))|(\{)|(\})|(\[)|(\])/g, '<span class="operator">$1</span>');
+        highlight(/[+\-*/%=<>!&|^~?:.]|[(){}[\]]/g, 'operator');
         
         // JSGE Types (case-sensitive, word boundaries)
         jsgeTypes.forEach(type => {
             const regex = new RegExp('\\b(' + type.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')\\b', 'g');
-            html = html.replace(regex, '<span class="jsge-type">$1</span>');
+            highlight(regex, 'jsge-type');
         });
         
         // JavaScript keywords
         keywords.forEach(keyword => {
             const regex = new RegExp('\\b(' + keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')\\b', 'g');
-            html = html.replace(regex, '<span class="keyword">$1</span>');
+            highlight(regex, 'keyword');
         });
         
         // Functions
         functions.forEach(func => {
             const regex = new RegExp('\\b(' + func.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')\\b', 'g');
-            html = html.replace(regex, '<span class="function">$1</span>');
+            highlight(regex, 'function');
+        });
+
+        html = escapeHtml(html).replace(/\uE000([\uE000-\uEFFF]{2})\uE001/g, (_, token) => {
+            const index = (token.charCodeAt(0) - 0xE000) * 0x1000 +
+                token.charCodeAt(1) - 0xE000;
+            return highlighted[index];
         });
         
         block.innerHTML = html;
@@ -1096,8 +1112,3 @@ function initBezierDemo() {
     drawDemo();
 }
 
-// ===== Initialize on page load =====
-document.addEventListener('DOMContentLoaded', function() {
-    highlightCode();
-    initDemos();
-});
