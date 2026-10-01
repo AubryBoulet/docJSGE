@@ -102,7 +102,6 @@ function highlightCode() {
         
         block.innerHTML = html;
     });
-}
 
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
@@ -116,7 +115,7 @@ function highlightCode() {
             }
         });
     });
-});
+};
 
 // ===== Initialize Demos =====
 function initDemos() {
