@@ -164,9 +164,9 @@ const bouncyTransition = Transition.create([
                                 <tr>
                                     <td>2</td>
                                     <td><code>timingFunction</code></td>
-                                    <td><code>string</code></td>
+                                    <td><code>string</code> or <code>function</code></td>
                                     <td><code>"linear"</code></td>
-                                    <td>Name of the interpolation function (see <a href="../pages/bezier.html">Bezier</a>).</td>
+                                    <td>Name of the interpolation function (see <a href="../pages/bezier.html">Bezier</a>) or a custom function.</td>
                                 </tr>
                                 <tr>
                                     <td>3</td>
@@ -442,9 +442,57 @@ const transitionId = Transition.create([
                 </section>
 
                 <section class="section">
+                    <h3>Example 6: Custom Timing Function</h3>
+                    <p>
+                        Instead of using a predefined easing function name, you can provide your own custom function
+                        for complete control over the animation behavior. The custom function receives four parameters:
+                    </p>
+                    <ul class="tips-list">
+                        <li><code>t</code>: Current time (in milliseconds)</li>
+                        <li><code>b</code>: Beginning value (initial value)</li>
+                        <li><code>c</code>: Change in value (target value - initial value)</li>
+                        <li><code>d</code>: Duration (in milliseconds)</li>
+                    </ul>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Transition } from "../classes/transition.js";
+
+// Example: Create a custom oscillation transition
+const button2 = /* your button */;
+const x = button2.position.x;
+
+Transition.create([
+    x,                    // Initial value
+    x + 5,               // Target value
+    (t, b, c, d) => {    // Custom timing function
+        const normalizedTime = t / d;
+        const amplitude = c * Math.pow(0.9, normalizedTime * d / 1000);
+        const oscillation = Math.sin(2 * Math.PI * 10 * (t / 1000));
+        return b + amplitude * oscillation;
+    },
+    (value) => {         // Callback: apply the computed value
+        button2.position.x = x + value;
+    },
+    2,                   // Duration: 2 seconds
+    0,                   // Delay: 0 seconds
+    () => {              // End callback
+        button2.position.x = x;
+    }
+]);</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <div class="info-box">
+                        <strong>️ Note:</strong> When using a custom function, you have full control over the interpolation logic.
+                        This allows you to create complex effects like oscillations, custom bounces, or any mathematical
+                        animation pattern you can imagine.
+                    </div>
+
+
+
+                <section class="section">
                     <h2>💡 Tips and Best Practices</h2>
                     <ul class="tips-list">
                         <li>🔹 Use appropriate <strong>interpolation functions</strong> for the desired effect (e.g., <code>easeOutElastic</code> for a bounce effect).</li>
+                        <li>🔹 You can use <strong>custom functions</strong> for the timing parameter to create unique animation effects.</li>
                         <li>🔹 Don't forget to <strong>delete unused transitions</strong> with <code>Transition.delete()</code> to avoid memory leaks.</li>
                         <li>🔹 Use <code>Transition.clear()</code> to remove all transitions if needed.</li>
                         <li>🔹 Transitions are <strong>automatically updated</strong> via <code>requestAnimationFrame</code>, you don't need to update them manually.</li>
