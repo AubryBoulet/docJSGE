@@ -90,7 +90,7 @@ myText._updateCanvas(); // Update text rendering</code></pre>
 
 // Create text with effects
 const animatedText = new Text(
-    "${wave(2,5,5)} Text ${blink(0,20)} animated",
+    "${wave(2,5,5) Text} ${blink(0,20) animated}",
     300,
     60
 );
@@ -223,7 +223,7 @@ import { Camera } from "../classes/camera.js";
 
 // Create text with multiple effects
 const fancyText = new Text(
-    "${wave(2,5,5)} JSGE ${shake(3,5,3)} is ${blink(0,20)} awesome!",
+    "${wave(2,5,5) JSGE} ${shake(3,5,3) is} ${blink(0,20) awesome!}",
     400,
     100
 );
@@ -255,6 +255,22 @@ function gameLoop() {
 gameLoop();</code></pre>
                             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         </div>
+                    </div>
+                    <div class="info-box">
+                        <strong>💁️ Important:</strong> 
+                        In effect syntax, the text to be affected must be <strong>inside</strong> the effect tags: 
+                        <code>${effectName params}text to affect</code>. 
+                        For example: <code>${wave(2,5,5) JSGE}</code> applies the wave effect to "JSGE".
+                        <br><br>
+                        You can <strong>nest effects</strong> to combine them: 
+                        <code>${wave(2,5,5) ${shake(3,5,3) is awesome!}}</code> applies both wave and shake to "is awesome!".
+                        <br><br>
+                        You can also <strong>change text color</strong> using HEX or color names: 
+                        <code>${wave(2,5,5) ${red JSGE} ${#00FF00 is}}</code>.
+                        <br><br>
+                        <strong>→ Note:</strong> Always put a <strong>space</strong> between two effects!
+                    </div>
+
                     </div>
 
                     <h3>Example 2: Text with Gradient</h3>
@@ -319,9 +335,9 @@ const dynamicText = new Text("Dynamic text", 300, 50);
 // Change text dynamically
 function updateTextContent() {
     const effects = [
-        "${wave(2,5,5)} Waving",
-        "${shake(3,5,3)} Shaking",
-        "${blink(0,20)} Blinking",
+        "${wave(2,5,5) Waving}",
+        "${shake(3,5,3) Shaking}",
+        "${blink(0,20) Blinking}",
         "${wave(1,10,2)${shake(2,8,4)}} Combination"
     ];
     
@@ -415,7 +431,7 @@ function gameLoop() {
                         </table>
                     </div>
                     <div class="info-box">
-                        <strong>ℹ️ Info:</strong> You can nest effect tags to create complex combinations: <code>${wave(2,5,5)${shake(1,3,2)}}</code>
+                        <strong>ℹ️ Info:</strong> You can nest effect tags to create complex combinations: <code>${wave(2,5,5) ${shake(1,3,2) nested effects}}</code>
                     </div>
                 </section>
 
