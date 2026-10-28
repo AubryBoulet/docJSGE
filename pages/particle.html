@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Documentation for the Particle class in JSGE - Individual particle for particle systems.">
+    <title>Particle - JSGE Documentation</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" />
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="logo">
+            <h1>JSGE</h1>
+            <p>Lightweight 2D Game Engine</p>
+        </div>
+        <ul class="nav-list">
+            <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+            <li class="nav-section">🎨 Rendering</li>
+            <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
+            <li class="nav-section">✨ Effects</li>
+            <li><a href="../pages/particleEmitter.html" class="nav-link">ParticleEmitter</a></li>
+            <li><a href="../pages/particle.html" class="nav-link">Particle</a></li>
+            <li><a href="../pages/lightEmitter.html" class="nav-link">LightEmitter</a></li>
+            <li><a href="../pages/maskLightEngine.html" class="nav-link">maskLightEngine</a></li>
+            <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
+            <li><a href="../pages/animation.html" class="nav-link">Animation</a></li>
+                        <li class="nav-section">✨ Effects</li>
+            <li><a href="../pages/particleEmitter.html" class="nav-link">ParticleEmitter</a></li>
+            <li><a href="../pages/particle.html" class="nav-link">Particle</a></li>
+            <li><a href="../pages/lightEmitter.html" class="nav-link">LightEmitter</a></li>
+            <li><a href="../pages/maskLightEngine.html" class="nav-link">maskLightEngine</a></li>
+<li class="nav-section">✨ Effects</li>
+            <li><a href="../pages/particleEmitter.html" class="nav-link">ParticleEmitter</a></li>
+            <li><a href="../pages/particle.html" class="nav-link active">Particle</a></li>
+            <li><a href="../pages/lightEmitter.html" class="nav-link">LightEmitter</a></li>
+            <li><a href="../pages/maskLightEngine.html" class="nav-link">maskLightEngine</a></li>
+            <li class="nav-section">🎭 Entities</li>
+            <li><a href="../pages/entity.html" class="nav-link">Entity</a></li>
+            <li><a href="../pages/element.html" class="nav-link">Element</a></li>
+            <li class="nav-section">🎨 UI</li>
+            <li><a href="../pages/gadget.html" class="nav-link">Gadget</a></li>
+            <li><a href="../pages/button.html" class="nav-link">Button</a></li>
+            <li><a href="../pages/text.html" class="nav-link">Text</a></li>
+            <li class="nav-section">🏗️ Scenes & Organization</li>
+            <li><a href="../pages/scene.html" class="nav-link">Scene</a></li>
+            <li><a href="../pages/jsge.html" class="nav-link">JSGE</a></li>
+            <li class="nav-section">🔄 Transitions</li>
+            <li><a href="../pages/transition.html" class="nav-link">Transition</a></li>
+            <li><a href="../pages/bezier.html" class="nav-link">Bezier</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p><small>v0.1</small></p>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <!-- Page Header -->
+            <header class="page-header">
+                <h1 id="page-title">Particle</h1>
+                <p id="page-description">Class representing an individual particle in the particle system. Used internally by ParticleEmitter.</p>
+            </header>
+
+            <!-- Documentation Content -->
+            <article class="doc-content">
+                <section class="section">
+                    <h2>📝 Description</h2>
+                    <p>
+                        The <code>Particle</code> class represents an individual particle with position, velocity, size, color, and lifetime properties.
+                        This class is primarily used internally by <code>ParticleEmitter</code> and is not typically instantiated directly by developers.
+                    </p>
+                    <div class="warning-box">
+                        <strong>⚠️ Important:</strong> 
+                        This class is <strong>intended for internal use</strong> by <code>ParticleEmitter</code>.
+                        Developers can modify particle properties if they understand the implications, but this is not recommended for most use cases.
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>📦 Constructor</h2>
+                    <p>The <code>Particle</code> class accepts the following parameters:</p>
+                    <div class="constructor-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>x</code></td>
+                                    <td><code>number</code></td>
+                                    <td>Initial X coordinate of the particle.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>y</code></td>
+                                    <td><code>number</code></td>
+                                    <td>Initial Y coordinate of the particle.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>vx</code></td>
+                                    <td><code>number</code></td>
+                                    <td>Initial X velocity of the particle.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>vy</code></td>
+                                    <td><code>number</code></td>
+                                    <td>Initial Y velocity of the particle.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>size</code></td>
+                                    <td><code>object</code></td>
+                                    <td>Size of the particle (<code>{width: number, height: number}</code>).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>color</code></td>
+                                    <td><code>string</code></td>
+                                    <td>Color of the particle (HEX or RGB format).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>lifetime</code></td>
+                                    <td><code>number</code></td>
+                                    <td>Lifetime of the particle in milliseconds.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>📊 Properties</h2>
+                    <p>All properties have getter and setter methods.</p>
+                    <div class="properties-grid">
+                        <div class="property-card">
+                            <h3><code>x</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> X coordinate of the particle.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>y</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> Y coordinate of the particle.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>vx</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> X velocity of the particle (pixels per frame).</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>vy</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> Y velocity of the particle (pixels per frame).</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>size</code></h3>
+                            <p><strong>Type:</strong> <code>object</code></p>
+                            <p><strong>Description:</strong> Size of the particle (<code>{width: number, height: number}</code>).</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>color</code></h3>
+                            <p><strong>Type:</strong> <code>string</code></p>
+                            <p><strong>Description:</strong> Color of the particle (HEX or RGB format).</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>lifetime</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> Remaining lifetime of the particle in milliseconds.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>💡 Tips and Best Practices</h2>
+                    <ul class="tips-list">
+                        <li>🎯 This class is primarily for <strong>internal use</strong> by <code>ParticleEmitter</code>.</li>
+                        <li>🎯 Particles are automatically managed by <code>ParticleEmitter</code> including creation, updates, and cleanup.</li>
+                        <li>🎯 Particle properties (position, velocity, color) are updated every frame by the emitter.</li>
+                        <li>🎯 Particles with <code>lifetime <= 0</code> are automatically removed.</li>
+                        <li>🎯 Particles that go out of camera view are automatically removed for performance optimization.</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>📚 See Also</h2>
+                    <p>The Particle class is used by:</p>
+                    <ul class="tips-list">
+                        <li>🎯 <a href="../pages/particleEmitter.html">ParticleEmitter</a> - Manages particle systems</li>
+                    </ul>
+                </section>
+            </article>
+        </div>
+    </main>
+    <script src="../doc.js"></script>
+</body>
+</html>

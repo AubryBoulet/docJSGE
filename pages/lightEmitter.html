@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Documentation for the LightEmitter class in JSGE - Light source for the mask light engine.">
+    <title>LightEmitter - JSGE Documentation</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" />
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="logo">
+            <h1>JSGE</h1>
+            <p>Lightweight 2D Game Engine</p>
+        </div>
+        <ul class="nav-list">
+            <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+            <li class="nav-section">🎨 Rendering</li>
+            <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
+            <li class="nav-section">✨ Effects</li>
+            <li><a href="../pages/particleEmitter.html" class="nav-link">ParticleEmitter</a></li>
+            <li><a href="../pages/particle.html" class="nav-link">Particle</a></li>
+            <li><a href="../pages/lightEmitter.html" class="nav-link">LightEmitter</a></li>
+            <li><a href="../pages/maskLightEngine.html" class="nav-link">maskLightEngine</a></li>
+            <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
+            <li><a href="../pages/animation.html" class="nav-link">Animation</a></li>
+                        <li class="nav-section">✨ Effects</li>
+            <li><a href="../pages/particleEmitter.html" class="nav-link">ParticleEmitter</a></li>
+            <li><a href="../pages/particle.html" class="nav-link">Particle</a></li>
+            <li><a href="../pages/lightEmitter.html" class="nav-link">LightEmitter</a></li>
+            <li><a href="../pages/maskLightEngine.html" class="nav-link">maskLightEngine</a></li>
+<li class="nav-section">✨ Effects</li>
+            <li><a href="../pages/particleEmitter.html" class="nav-link">ParticleEmitter</a></li>
+            <li><a href="../pages/particle.html" class="nav-link">Particle</a></li>
+            <li><a href="../pages/lightEmitter.html" class="nav-link active">LightEmitter</a></li>
+            <li><a href="../pages/maskLightEngine.html" class="nav-link">maskLightEngine</a></li>
+            <li class="nav-section">🎭 Entities</li>
+            <li><a href="../pages/entity.html" class="nav-link">Entity</a></li>
+            <li><a href="../pages/element.html" class="nav-link">Element</a></li>
+            <li class="nav-section">🎨 UI</li>
+            <li><a href="../pages/gadget.html" class="nav-link">Gadget</a></li>
+            <li><a href="../pages/button.html" class="nav-link">Button</a></li>
+            <li><a href="../pages/text.html" class="nav-link">Text</a></li>
+            <li class="nav-section">🏗️ Scenes & Organization</li>
+            <li><a href="../pages/scene.html" class="nav-link">Scene</a></li>
+            <li><a href="../pages/jsge.html" class="nav-link">JSGE</a></li>
+            <li class="nav-section">🔄 Transitions</li>
+            <li><a href="../pages/transition.html" class="nav-link">Transition</a></li>
+            <li><a href="../pages/bezier.html" class="nav-link">Bezier</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p><small>v0.1</small></p>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <!-- Page Header -->
+            <header class="page-header">
+                <h1 id="page-title">LightEmitter</h1>
+                <p id="page-description">Class representing a light source for the mask light engine. Creates lighting effects with shadows.</p>
+            </header>
+
+            <!-- Documentation Content -->
+            <article class="doc-content">
+                <section class="section">
+                    <h2>📝 Description</h2>
+                    <p>
+                        The <code>LightEmitter</code> class creates a light source that works with the <code>maskLightEngine</code> to produce lighting effects with shadows.
+                        Lights can be omnidirectional (360 degrees) or directional (conical).
+                    </p>
+                    <div class="warning-box">
+                        <strong>⚠️ Important:</strong> 
+                        <ul>
+                            <li>The <code>lookAt</code> position uses <strong>absolute (world) coordinates</strong>, not relative to the light position.</li>
+                            <li>When <code>angleRange !== 360</code>, the light becomes directional. The <code>lookAt</code> parameter determines the central direction.</li>
+                            <li>The <code>color</code> parameter accepts HEX format (<code>#RRGGBB</code>) or RGB format (<code>rgb(r, g, b)</code>). Named colors like "red" are <strong>NOT</strong> supported.</li>
+                            <li>The cache canvas has dimensions of <code>radius*4 x radius*2</code> to accommodate the light shape and mask operations.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🚀 Basic Usage</h2>
+
+                    <h3>Create a Simple Light</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+
+// Create a camera
+const canvas = document.querySelector("#gameCanvas");
+const camera = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600}
+});
+
+// Initialize the light engine
+const lightEngine = camera.initMaskLightEngine();
+
+// Add a light emitter
+const light = lightEngine.addLightEmitter(400, 300, 200, "#ffff00");
+
+// In your game loop
+function gameLoop() {
+    camera.clear();
+    
+    // Draw your game elements here
+    // ...
+    
+    camera.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}
+gameLoop();</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Create a Directional Light</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+
+// Create a camera
+const canvas = document.querySelector("#gameCanvas");
+const camera = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600}
+});
+
+// Initialize the light engine
+const lightEngine = camera.initMaskLightEngine();
+
+// Add a directional light (spotlight effect)
+const spotlight = lightEngine.addLightEmitter(400, 300, 150, "#ffffff");
+
+// Configure as directional light
+spotlight.angleRange = 60; // 60 degree cone
+spotlight.lookAt = {x: 600, y: 300}; // Pointing to the right
+
+// In your game loop
+function gameLoop() {
+    camera.clear();
+    
+    // Draw your game elements here
+    // ...
+    
+    camera.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Create a Light with Gradient</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+
+// Create a camera
+const canvas = document.querySelector("#gameCanvas");
+const camera = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600}
+});
+
+// Initialize the light engine
+const lightEngine = camera.initMaskLightEngine();
+
+// Add a light emitter
+const light = lightEngine.addLightEmitter(400, 300, 200);
+
+// Create a radial gradient for the light
+light.createGradient(
+    0,          // Inner radius
+    200,       // Outer radius
+    [
+        [0, "#ffff00"],   // 0%: Yellow
+        [0.5, "#ff8800"], // 50%: Orange
+        [1, "#ff0000"]    // 100%: Red
+    ]
+);
+
+// In your game loop
+function gameLoop() {
+    camera.clear();
+    // ...
+    camera.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>📦 Constructor</h2>
+                    <p>The <code>LightEmitter</code> class accepts the following parameters:</p>
+                    <div class="constructor-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>x</code></td>
+                                    <td><code>number</code></td>
+                                    <td>-</td>
+                                    <td>X coordinate of the light source.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>y</code></td>
+                                    <td><code>number</code></td>
+                                    <td>-</td>
+                                    <td>Y coordinate of the light source.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>radius</code></td>
+                                    <td><code>number</code></td>
+                                    <td>-</td>
+                                    <td>Radius of the light source in pixels.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>color</code></td>
+                                    <td><code>string</code> or <code>CanvasGradient</code></td>
+                                    <td><code>null</code></td>
+                                    <td>Color of the light. Can be HEX, RGB, or a gradient created with <code>createGradient()</code>.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>angleRange</code></td>
+                                    <td><code>number</code></td>
+                                    <td><code>360</code></td>
+                                    <td>Angle range in degrees. 360 for omnidirectional, less for directional light.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>📊 Properties</h2>
+                    <p>All properties have getter and setter methods.</p>
+                    <div class="properties-grid">
+                        <div class="property-card">
+                            <h3><code>x</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> X coordinate of the light source.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>y</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> Y coordinate of the light source.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>radius</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> Radius of the light source in pixels.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>color</code></h3>
+                            <p><strong>Type:</strong> <code>string</code> or <code>CanvasGradient</code></p>
+                            <p><strong>Description:</strong> Color of the light. Can be HEX, RGB, or a gradient.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>angleRange</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Default:</strong> <code>360</code></p>
+                            <p><strong>Description:</strong> Angle range in degrees. 360 for omnidirectional, less for directional light.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>lookAt</code></h3>
+                            <p><strong>Type:</strong> <code>object</code></p>
+                            <p><strong>Default:</strong> <code>{x: 1, y: 0}</code></p>
+                            <p><strong>Description:</strong> Point that the light is looking at (absolute world coordinates). Used to determine the direction of a directional light.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>lineAngle</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> <strong>Read-only</strong>. The calculated angle in radians based on lookAt position.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>_cacheCanvas</code></h3>
+                            <p><strong>Type:</strong> <code>HTMLCanvasElement</code></p>
+                            <p><strong>Description:</strong> <strong>Read-only</strong>. Internal canvas used for light rendering. Dimensions are <code>radius*4 x radius*2</code>.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🔧 Public Methods</h2>
+                    <div class="methods-list">
+                        <div class="method-card">
+                            <h3><code>createGradient(r0, r1, stops)</code></h3>
+                            <p><strong>Parameters:</strong></p>
+                            <ul>
+                                <li><code>r0: number</code> - Inner radius of the gradient.</li>
+                                <li><code>r1: number</code> - Outer radius of the gradient.</li>
+                                <li><code>stops: Array</code> - Array of color stops in format <code>[[position, color], ...]</code> where position is 0-1 and color is a CSS color string.</li>
+                            </ul>
+                            <p><strong>Description:</strong> Creates a radial gradient for the light color. This allows for smooth color transitions from the center to the edge of the light.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
+                            <div class="info-box">
+                                <strong>ℹ️ Note:</strong> The stops parameter follows the same format as <code>CanvasRenderingContext2D.createRadialGradient()</code>. Each stop is an array of [position, color] where position is between 0 and 1.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🔒 Private Methods</h2>
+                    <p>The following methods are private (prefixed with <code>_</code> or <code>#</code>) and are used internally by the engine. <strong>Do not call these methods directly.</strong></p>
+                    <div class="methods-list">
+                        <div class="method-card private-method">
+                            <h3><code>#calculateLineAngle()</code></h3>
+                            <p><strong>Description:</strong> Calculates the angle based on the lookAt position. Only used when angleRange is not 360.</p>
+                        </div>
+                        <div class="method-card private-method">
+                            <h3><code>#updateCanvas()</code></h3>
+                            <p><strong>Description:</strong> Updates the internal cache canvas with the light shape and color.</p>
+                        </div>
+                    </div>
+                    <div class="warning-box">
+                        <strong>⚠️ Warning:</strong> 
+                        Methods starting with <code>_</code> or <code>#</code> are PRIVATE. 
+                        Incorrect usage can crash the engine. Only use the public methods documented above.
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🎯 Examples</h2>
+
+                    <h3>Example 1: Moving Light</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+
+// Create a camera
+const canvas = document.querySelector("#gameCanvas");
+const camera = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600}
+});
+
+// Initialize the light engine
+const lightEngine = camera.initMaskLightEngine();
+
+// Add a moving light
+const light = lightEngine.addLightEmitter(400, 300, 150, "#ffff00");
+
+// Animate the light
+let angle = 0;
+function gameLoop() {
+    camera.clear();
+    
+    // Move light in a circle
+    angle += 0.01;
+    light.x = 400 + Math.cos(angle) * 200;
+    light.y = 300 + Math.sin(angle) * 200;
+    
+    // Draw your game elements here
+    // ...
+    
+    camera.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}
+gameLoop();</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Example 2: Multiple Lights</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+
+// Create a camera
+const canvas = document.querySelector("#gameCanvas");
+const camera = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600}
+});
+
+// Initialize the light engine
+const lightEngine = camera.initMaskLightEngine();
+
+// Add multiple lights
+const redLight = lightEngine.addLightEmitter(200, 200, 100, "#ff0000");
+const greenLight = lightEngine.addLightEmitter(600, 200, 100, "#00ff00");
+const blueLight = lightEngine.addLightEmitter(400, 400, 100, "#0000ff");
+
+// Configure different light properties
+redLight.angleRange = 360;    // Omnidirectional
+greenLight.angleRange = 90;  // Directional
+blueLight.angleRange = 180;  // Wide cone
+
+// In game loop
+function gameLoop() {
+    camera.clear();
+    // ...
+    camera.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Example 3: Custom Mask Color</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+
+// Create a camera
+const canvas = document.querySelector("#gameCanvas");
+const camera = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600}
+});
+
+// Initialize the light engine
+const lightEngine = camera.initMaskLightEngine();
+
+// Customize the mask color for penumbra effects
+// The mask color determines how dark the shadows are
+lightEngine.mask = {color: "rgba(0,0,0,0.9)"}; // 90% opacity = lighter shadows
+
+// Add a light
+const light = lightEngine.addLightEmitter(400, 300, 200, "#ffffff");
+
+// In game loop
+function gameLoop() {
+    camera.clear();
+    // ...
+    camera.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Example 4: Adjusting Light zOrder</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+
+// Create a camera
+const canvas = document.querySelector("#gameCanvas");
+const camera = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600}
+});
+
+// Initialize the light engine
+const lightEngine = camera.initMaskLightEngine();
+
+// Set the light engine zOrder
+// Default is 999 (lights are drawn on top of everything)
+// Lower values will cause lights to be drawn behind other elements
+lightEngine.zOrder = 100; // Draw lights behind most game elements
+
+// Add a light
+const light = lightEngine.addLightEmitter(400, 300, 200, "#ffffff");
+
+// In game loop
+function gameLoop() {
+    camera.clear();
+    // ...
+    camera.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>💡 Tips and Best Practices</h2>
+                    <ul class="tips-list">
+                        <li>🎯 Use <code>angleRange = 360</code> for omnidirectional point lights.</li>
+                        <li>🎯 Use <code>angleRange < 360</code> with <code>lookAt</code> for directional spotlights.</li>
+                        <li>🎯 The <code>lookAt</code> parameter uses <strong>absolute world coordinates</strong>.</li>
+                        <li>🎯 Adjust the mask color opacity to control shadow darkness (e.g., <code>rgba(0,0,0,0.9)</code> for lighter shadows).</li>
+                        <li>🎯 Use <code>createGradient()</code> to create smooth color transitions in your lights.</li>
+                        <li>🎯 The <code>zOrder</code> property controls drawing order. Default is 999 (lights on top).</li>
+                        <li>🎯 Light masks move with the camera automatically.</li>
+                        <li>🎯 For best performance, minimize the number of active light emitters.</li>
+                        <li>🎯 Larger radius lights are more expensive to render.</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>📚 See Also</h2>
+                    <p>The LightEmitter class is used by:</p>
+                    <ul class="tips-list">
+                        <li>🎯 <a href="../pages/maskLightEngine.html">maskLightEngine</a> - Manages the light masking system</li>
+                        <li>🎯 <a href="../pages/camera.html">Camera</a> - Initializes the light engine via <code>initMaskLightEngine()</code></li>
+                    </ul>
+                </section>
+            </article>
+        </div>
+    </main>
+    <script src="../doc.js"></script>
+</body>
+</html>

@@ -27,30 +27,21 @@ function highlightCode() {
     codeBlocks.forEach(block => {
         // Get the raw text content
         const text = block.textContent;
-        let html = text;
-
+        
         const escapeHtml = value => value.replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#39;');
-        const highlighted = [];
-        const highlight = (regex, className) => {
-            html = html.replace(regex, match => {
-                const index = highlighted.length;
-                const token = String.fromCharCode(0xE000 + Math.floor(index / 0x1000)) +
-                    String.fromCharCode(0xE000 + (index % 0x1000));
-                highlighted.push(`<span class="${className}">${escapeHtml(match)}</span>`);
-                return `\uE000${token}\uE001`;
-            });
-        };
         
-        // JavaScript keywords
-        const keywords = [
-            'import', 'export', 'from', 'class', 'const', 'let', 'var', 'function',
-            'return', 'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break',
-            'default', 'try', 'catch', 'finally', 'throw', 'new', 'this', 'super',
-            'static', 'async', 'await', 'yield', 'null', 'true', 'false', 'undefined'
+        // Define patterns and their CSS classes
+        const patterns = [
+            { regex: /\/\*[\s\S]*?\*\//g, className: 'comment' },
+            { regex: /\/\/[^\n]*/g, className: 'comment' },
+            { regex: /"[^"]*"/g, className: 'string' },
+            { regex: /'(?:[^'\\]|\\.)*'/g, className: 'string' },
+            { regex: /\b\d+(\.\d+)?\b/g, className: 'number' },
+            { regex: /[+\-*/%=<>!&|^~?:.(){}[\]\\]/g, className: 'operator' }
         ];
         
         // JSGE types and classes
@@ -65,7 +56,21 @@ function highlightCode() {
             'create', 'load', 'update', 'draw', 'drawEntity', 'drawElement',
             'clear', 'moveCamera', 'flipBuffer', 'addColisionWithEntity',
             'onMouseEnter', 'onMouseLeave', 'onMouseOver', 'onClick', 'addTextGradient',
-            'updateText', 'zOrder', 'remove', 'assign', 'JSGE'
+            'updateText', 'zOrder', 'remove', 'assign', 'JSGE', 'ParticleEmitter',
+            'Particle', 'LightEmitter', 'maskLightEngine', 'childCamera', 'createChildCamera',
+            'lookAt', 'angleRange', 'color', 'radius', 'emissionRate', 'particleAcceleration',
+            'particleEmissionSpeed', 'particleSize', 'particleColorRange', 'particleColorChangeRate',
+            'particleLifetime', 'emissionDuration', 'particlesPerEmission', 'particleEmitterAngleRange',
+            'particleEmitterDirection', 'initMaskLightEngine', 'getLightEmitters', 'addLightEmitter',
+            'removeLightEmitter', 'getRenderCtx', 'mask', 'zIndex', 'createGradient'
+        ];
+        
+        // JavaScript keywords
+        const keywords = [
+            'import', 'export', 'from', 'class', 'const', 'let', 'var', 'function',
+            'return', 'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break',
+            'default', 'try', 'catch', 'finally', 'throw', 'new', 'this', 'super',
+            'static', 'async', 'await', 'yield', 'null', 'true', 'false', 'undefined'
         ];
         
         // Functions and methods
@@ -77,42 +82,36 @@ function highlightCode() {
             'stroke', 'fill', 'save', 'restore', 'translate', 'rotate', 'scale'
         ];
         
-        // Comments (multi-line first, then single-line)
-        highlight(/\/\*[\s\S]*?\*\//g, 'comment');
-        highlight(/\/\/[^\n]*/g, 'comment');
+        // First, apply all patterns
+        let html = text;
+        patterns.forEach(pattern => {
+            html = html.replace(pattern.regex, match => 
+                `<span class="${pattern.className}">${escapeHtml(match)}</span>`
+            );
+        });
         
-        // Strings
-        highlight(/"[^"]*"/g, 'string');
-        highlight(/'(?:[^'\\]|\\.)*'/g, 'string');
-        
-        // Numbers
-        highlight(/\b\d+(\.\d+)?\b/g, 'number');
-        
-        // Operators
-        highlight(/[+\-*/%=<>!&|^~?:.(){}\[\]]/g, 'operator');
-        
-        // JSGE Types (case-sensitive, word boundaries)
+        // Then apply JSGE types
         jsgeTypes.forEach(type => {
-            const regex = new RegExp('\\b(' + type.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')\\b', 'g');
-            highlight(regex, 'jsge-type');
+            const regex = new RegExp(`\\b(${type.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'g');
+            html = html.replace(regex, match => 
+                `<span class="jsge-type">${escapeHtml(match)}</span>`
+            );
         });
         
-        // JavaScript keywords
+        // Then apply keywords (but not inside jsge-type spans)
         keywords.forEach(keyword => {
-            const regex = new RegExp('\\b(' + keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')\\b', 'g');
-            highlight(regex, 'keyword');
+            const regex = new RegExp(`\\b(${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'g');
+            html = html.replace(regex, match => 
+                `<span class="keyword">${escapeHtml(match)}</span>`
+            );
         });
         
-        // Functions
+        // Then apply functions
         functions.forEach(func => {
-            const regex = new RegExp('\\b(' + func.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')\\b', 'g');
-            highlight(regex, 'function');
-        });
-
-        html = escapeHtml(html).replace(/\uE000([\uE000-\uEFFF]{2})\uE001/g, (_, token) => {
-            const index = (token.charCodeAt(0) - 0xE000) * 0x1000 +
-                token.charCodeAt(1) - 0xE000;
-            return highlighted[index];
+            const regex = new RegExp(`\\b(${func.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'g');
+            html = html.replace(regex, match => 
+                `<span class="function">${escapeHtml(match)}</span>`
+            );
         });
         
         block.innerHTML = html;
@@ -244,55 +243,30 @@ function initFullDemo() {
         ctx.fillStyle = '#222';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Draw a larger "world"
-        ctx.fillStyle = '#166088';
-        ctx.fillRect(-canvas.width, -canvas.height, canvas.width * 3, canvas.height * 3);
-        
-        // Move player
+        // Move camera
         const speed = 3;
-        if (keys.ArrowUp) playerY -= speed;
-        if (keys.ArrowDown) playerY += speed;
-        if (keys.ArrowLeft) playerX -= speed;
-        if (keys.ArrowRight) playerX += speed;
+        if (keys.ArrowRight) cameraX += speed;
+        if (keys.ArrowLeft) cameraX -= speed;
+        if (keys.ArrowDown) cameraY += speed;
+        if (keys.ArrowUp) cameraY -= speed;
         
-        // Keep player within bounds
-        playerX = Math.max(0, Math.min(canvas.width, playerX));
-        playerY = Math.max(0, Math.min(canvas.height, playerY));
+        // Draw world
+        ctx.fillStyle = '#4a6fa5';
+        ctx.fillRect(-canvas.width + cameraX, -canvas.height + cameraY, canvas.width * 3, canvas.height * 3);
         
-        // Move camera to follow player (centered)
-        cameraX = playerX - canvas.width / 2;
-        cameraY = playerY - canvas.height / 2;
-        
-        // Draw player (red square)
+        // Draw player
         ctx.fillStyle = '#e74c3c';
-        ctx.fillRect(
-            playerX - cameraX - 25,
-            playerY - cameraY - 25,
-            50, 50
-        );
+        ctx.fillRect(playerX - 20 + cameraX, playerY - 20 + cameraY, 40, 40);
         
         // Draw button
-        ctx.fillStyle = buttonHovered ? '#3498db' : '#2980b9';
-        ctx.fillRect(
-            button.x - cameraX,
-            button.y - cameraY,
-            button.width, button.height
-        );
+        ctx.fillStyle = buttonHovered ? '#4fc3f7' : '#3498db';
+        ctx.fillRect(button.x, button.y, button.width, button.height);
         
         ctx.fillStyle = '#fff';
         ctx.font = '16px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(
-            'JSGE Button',
-            button.x + button.width / 2 - cameraX,
-            button.y + button.height / 2 - cameraY
-        );
-        
-        // Draw camera border
-        ctx.strokeStyle = '#f1c40f';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(0, 0, canvas.width, canvas.height);
+        ctx.fillText('Click Me', button.x + button.width / 2, button.y + button.height / 2);
         
         // Draw information
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
@@ -300,9 +274,9 @@ function initFullDemo() {
         ctx.fillStyle = '#fff';
         ctx.font = '12px Arial';
         ctx.textAlign = 'left';
-        ctx.fillText(`Position: (${Math.round(playerX)}, ${Math.round(playerY)})`, 15, 25);
-        ctx.fillText(`Camera: (${Math.round(cameraX)}, ${Math.round(cameraY)})`, 15, 40);
-        ctx.fillText('Arrows: Move', 15, 55);
+        ctx.fillText(`Camera: (${cameraX}, ${cameraY})`, 15, 25);
+        ctx.fillText('Arrows: Move Camera', 15, 40);
+        ctx.fillText('Player: Red Square', 15, 55);
         
         requestAnimationFrame(gameLoop);
     }
@@ -318,42 +292,39 @@ function initCameraDemo() {
     let cameraX = 0;
     let cameraY = 0;
     
-    // JSGE camera simulation
+    // Keyboard controls
+    document.addEventListener('keydown', (e) => {
+        const speed = 5;
+        if (e.key === 'ArrowRight') cameraX += speed;
+        if (e.key === 'ArrowLeft') cameraX -= speed;
+        if (e.key === 'ArrowDown') cameraY += speed;
+        if (e.key === 'ArrowUp') cameraY -= speed;
+    });
+    
     function drawDemo() {
-        // Clear
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         // Draw background
         ctx.fillStyle = '#222';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Draw a world larger than the camera
+        // Draw a larger world
         ctx.fillStyle = '#4a6fa5';
-        ctx.fillRect(-canvas.width, -canvas.height, canvas.width * 3, canvas.height * 3);
-        
-        // Draw a red rectangle (entity simulation)
-        ctx.fillStyle = 'red';
-        ctx.fillRect(100 - cameraX, 100 - cameraY, 50, 50);
-        
-        // Draw a blue circle
-        ctx.fillStyle = 'blue';
-        ctx.beginPath();
-        ctx.arc(300 - cameraX, 200 - cameraY, 30, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.fillRect(-canvas.width + cameraX, -canvas.height + cameraY, canvas.width * 3, canvas.height * 3);
         
         // Draw camera border
         ctx.strokeStyle = 'yellow';
         ctx.lineWidth = 2;
         ctx.strokeRect(0, 0, canvas.width, canvas.height);
         
-        // Move camera with arrow keys
-        document.addEventListener('keydown', (e) => {
-            const speed = 5;
-            if (e.key === 'ArrowRight') cameraX += speed;
-            if (e.key === 'ArrowLeft') cameraX -= speed;
-            if (e.key === 'ArrowDown') cameraY += speed;
-            if (e.key === 'ArrowUp') cameraY -= speed;
-        });
+        // Draw information
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(10, 10, 200, 40);
+        ctx.fillStyle = '#fff';
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText(`Camera: (${cameraX}, ${cameraY})`, 15, 25);
+        ctx.fillText('Arrows: Move Camera', 15, 40);
         
         requestAnimationFrame(drawDemo);
     }
@@ -988,11 +959,9 @@ function initSceneDemo() {
         });
         
         // Draw camera border
-    if (ctx.strokeRect) {
         ctx.strokeStyle = 'yellow';
         ctx.lineWidth = 2;
         ctx.strokeRect(0, 0, canvas.width, canvas.height);
-    }
         
         // Draw information
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';

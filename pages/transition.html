@@ -21,6 +21,11 @@
             <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
             <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
             <li><a href="../pages/animation.html" class="nav-link">Animation</a></li>
+            <li class="nav-section">✨ Effects</li>
+            <li><a href="../pages/particleEmitter.html" class="nav-link">ParticleEmitter</a></li>
+            <li><a href="../pages/particle.html" class="nav-link">Particle</a></li>
+            <li><a href="../pages/lightEmitter.html" class="nav-link">LightEmitter</a></li>
+            <li><a href="../pages/maskLightEngine.html" class="nav-link">maskLightEngine</a></li>
             <li class="nav-section">🎭 Entities</li>
             <li><a href="../pages/entity.html" class="nav-link">Entity</a></li>
             <li><a href="../pages/element.html" class="nav-link">Element</a></li>
@@ -457,31 +462,19 @@ const transitionId = Transition.create([
                         <pre><code class="language-javascript">import { Transition } from "../classes/transition.js";
 
 // Example: Create a custom oscillation transition
-const button2 = /* your button */;
-const x = button2.position.x;
-
-Transition.create([
-    x,                    // Initial value
-    x + 5,               // Target value
-    (t, b, c, d) => {    // Custom timing function
+button2.onClick=()=>{
+    const x = button2.position.x
+    Transition.create([x,x+5,(t,b,c,d)=>{
         const normalizedTime = t / d;
         const amplitude = c * Math.pow(0.9, normalizedTime * d / 1000);
         const oscillation = Math.sin(2 * Math.PI * 10 * (t / 1000));
         return b + amplitude * oscillation;
-    },
-    (value) => {         // Callback: apply the computed value
-        button2.position.x = x + value;
-    },
-    2,                   // Duration: 2 seconds
-    0,                   // Delay: 0 seconds
-    () => {              // End callback
-        button2.position.x = x;
-    }
-]);</code></pre>
+    },(t)=>{button2.position.x = x + t},2,0,()=>button2.position.x = x]);
+}</code></pre>
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                     </div>
                     <div class="info-box">
-                        <strong>️ Note:</strong> When using a custom function, you have full control over the interpolation logic.
+                        <strong>ℹ️ Note:</strong> When using a custom function, you have full control over the interpolation logic.
                         This allows you to create complex effects like oscillations, custom bounces, or any mathematical
                         animation pattern you can imagine.
                     </div>

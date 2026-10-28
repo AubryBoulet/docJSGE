@@ -21,7 +21,12 @@
             <li><a href="../pages/camera.html" class="nav-link active">Camera</a></li>
             <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
             <li><a href="../pages/animation.html" class="nav-link">Animation</a></li>
-            <li class="nav-section">🎭 Scenes & Organization</li>
+                        <li class="nav-section">✨ Effects</li>
+            <li><a href="../pages/particleEmitter.html" class="nav-link">ParticleEmitter</a></li>
+            <li><a href="../pages/particle.html" class="nav-link">Particle</a></li>
+            <li><a href="../pages/lightEmitter.html" class="nav-link">LightEmitter</a></li>
+            <li><a href="../pages/maskLightEngine.html" class="nav-link">maskLightEngine</a></li>
+<li class="nav-section">🎭 Scenes & Organization</li>
             <li><a href="../pages/scene.html" class="nav-link">Scene</a></li>
             <li class="nav-section">🌲 Entities</li>
             <li><a href="../pages/entity.html" class="nav-link">Entity</a></li>
@@ -301,6 +306,65 @@ mainCam.flipBuffer();</code></pre>
                             </ul>
                             <p><strong>Description:</strong> ⚠️ <strong>PRIVATE METHOD:</strong> Internal method used by Scene class to register scenes for drawing. <strong>Not intended for direct use.</strong> Incorrect usage can cause engine crashes.</p>
                             <p><strong>Returns:</strong> <code>void</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>initMaskLightEngine()</code></h3>
+                            <p><strong>Description:</strong> Initializes and returns a mask light engine for this camera. This allows you to create lighting effects with shadows. The light engine is automatically integrated with the camera's rendering pipeline.</p>
+                            <p><strong>Returns:</strong> <code>maskLightEngine</code> - The initialized mask light engine instance.</p>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// Initialize the light engine
+const lightEngine = camera.initMaskLightEngine();
+
+// Add light emitters
+const light = lightEngine.addLightEmitter(400, 300, 200, "#ffff00");
+
+// Configure light properties
+light.angleRange = 60; // Directional light
+light.lookAt = {x: 600, y: 300};</code></pre>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>createChildCamera(position, dimensions, backgroundColor=null, backgroundImage=null)</code></h3>
+                            <p><strong>Parameters:</strong></p>
+                            <ul>
+                                <li><code>position: {x: number, y: number}</code> - Position of the child camera relative to the parent camera's position.</li>
+                                <li><code>dimensions: {width: number, height: number}</code> - Dimensions of the child camera.</li>
+                                <li><code>backgroundColor: string</code> - Optional background color for the child camera.</li>
+                                <li><code>backgroundImage: string</code> - Optional background image for the child camera.</li>
+                            </ul>
+                            <p><strong>Description:</strong> Creates a child camera that is contained within this parent camera. Child cameras have special properties: their content is NOT cleared each frame because they are always inside a parent camera. The parent camera's <code>clear()</code> and <code>flipBuffer()</code> will handle clearing and redrawing child camera content. This allows for effects like parallax or filters.</p>
+                            <p><strong>Returns:</strong> <code>Camera</code> - The created child camera instance.</p>
+                            <div class="warning-box">
+                                <strong>⚠️ Important:</strong>
+                                <ul>
+                                    <li>Child cameras must be <strong>entirely contained</strong> within the parent camera dimensions.</li>
+                                    <li>Child cameras <strong>do not clear</strong> their content automatically - the parent camera handles this.</li>
+                                    <li>Child camera content is cleared when the parent camera is cleared.</li>
+                                    <li>Child cameras can be <strong>nested</strong> (a child camera can have its own child cameras).</li>
+                                    <li>Child camera masks (for light engine) are positioned relative to the camera, not absolute. <strong>Be careful</strong> that the mask doesn't exceed camera dimensions.</li>
+                                </ul>
+                            </div>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// Create parent camera
+const parentCam = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600}
+});
+
+// Create child camera for parallax effect
+const childCam = Camera.createChildCamera(
+    parentCam,
+    {x: 0, y: 0},        // Position relative to parent
+    {width: 800, height: 600}, // Same size as parent
+    #000000            // Background color
+);
+
+// Child camera automatically moves with parent
+// When parent moves, child position is updated accordingly</code></pre>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
                         </div>
                     </div>
                 </section>

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Documentation for the maskLightEngine class in JSGE - Light masking system for creating lighting effects.">
+    <title>maskLightEngine - JSGE Documentation</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" />
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="logo">
+            <h1>JSGE</h1>
+            <p>Lightweight 2D Game Engine</p>
+        </div>
+        <ul class="nav-list">
+            <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+            <li class="nav-section">🎨 Rendering</li>
+            <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
+            <li class="nav-section">✨ Effects</li>
+            <li><a href="../pages/particleEmitter.html" class="nav-link">ParticleEmitter</a></li>
+            <li><a href="../pages/particle.html" class="nav-link">Particle</a></li>
+            <li><a href="../pages/lightEmitter.html" class="nav-link">LightEmitter</a></li>
+            <li><a href="../pages/maskLightEngine.html" class="nav-link">maskLightEngine</a></li>
+            <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
+            <li><a href="../pages/animation.html" class="nav-link">Animation</a></li>
+                        <li class="nav-section">✨ Effects</li>
+            <li><a href="../pages/particleEmitter.html" class="nav-link">ParticleEmitter</a></li>
+            <li><a href="../pages/particle.html" class="nav-link">Particle</a></li>
+            <li><a href="../pages/lightEmitter.html" class="nav-link">LightEmitter</a></li>
+            <li><a href="../pages/maskLightEngine.html" class="nav-link">maskLightEngine</a></li>
+<li class="nav-section">✨ Effects</li>
+            <li><a href="../pages/particleEmitter.html" class="nav-link">ParticleEmitter</a></li>
+            <li><a href="../pages/particle.html" class="nav-link">Particle</a></li>
+            <li><a href="../pages/lightEmitter.html" class="nav-link">LightEmitter</a></li>
+            <li><a href="../pages/maskLightEngine.html" class="nav-link active">maskLightEngine</a></li>
+            <li class="nav-section">🎭 Entities</li>
+            <li><a href="../pages/entity.html" class="nav-link">Entity</a></li>
+            <li><a href="../pages/element.html" class="nav-link">Element</a></li>
+            <li class="nav-section">🎨 UI</li>
+            <li><a href="../pages/gadget.html" class="nav-link">Gadget</a></li>
+            <li><a href="../pages/button.html" class="nav-link">Button</a></li>
+            <li><a href="../pages/text.html" class="nav-link">Text</a></li>
+            <li class="nav-section">🏗️ Scenes & Organization</li>
+            <li><a href="../pages/scene.html" class="nav-link">Scene</a></li>
+            <li><a href="../pages/jsge.html" class="nav-link">JSGE</a></li>
+            <li class="nav-section">🔄 Transitions</li>
+            <li><a href="../pages/transition.html" class="nav-link">Transition</a></li>
+            <li><a href="../pages/bezier.html" class="nav-link">Bezier</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p><small>v0.1</small></p>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <!-- Page Header -->
+            <header class="page-header">
+                <h1 id="page-title">maskLightEngine</h1>
+                <p id="page-description">Class for creating and managing light masking effects. Produces lighting with shadows by masking out areas not covered by light sources.</p>
+            </header>
+
+            <!-- Documentation Content -->
+            <article class="doc-content">
+                <section class="section">
+                    <h2>📝 Description</h2>
+                    <p>
+                        The <code>maskLightEngine</code> class manages a masking system that creates lighting effects with shadows.
+                        It works by first creating "holes" in a mask for all light sources, then applying the light colors.
+                        This allows light masks to overlap without being affected by the holes from other light sources.
+                    </p>
+                    <p>
+                        This class is typically initialized via <code>Camera.initMaskLightEngine()</code> and is automatically integrated with the camera's rendering pipeline.
+                    </p>
+                    <div class="warning-box">
+                        <strong>⚠️ Important:</strong> 
+                        <ul>
+                            <li>The mask canvas is initialized with the camera dimensions.</li>
+                            <li>The mask position (on the main canvas) is <strong>relative to the camera position</strong>.</li>
+                            <li>If you move the camera, the mask will follow.</li>
+                            <li>When modifying mask position or size, ensure it doesn't exceed camera dimensions.</li>
+                            <li>The default mask color is <code>rgba(0,0,0,1)</code> (fully opaque black).</li>
+                            <li>The default <code>zIndex</code> is 999, meaning lights are drawn on top of most elements.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🚀 Basic Usage</h2>
+
+                    <h3>Initialize the Light Engine</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+
+// Create a camera
+const canvas = document.querySelector("#gameCanvas");
+const camera = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600}
+});
+
+// Initialize the light engine
+// This returns the maskLightEngine instance
+const lightEngine = camera.initMaskLightEngine();
+
+// Add light emitters
+const light1 = lightEngine.addLightEmitter(400, 300, 200, "#ffff00");
+const light2 = lightEngine.addLightEmitter(200, 200, 150, "#ff00ff");
+
+// In your game loop
+function gameLoop() {
+    camera.clear();
+    
+    // Draw your game elements here
+    // ...
+    
+    camera.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}
+gameLoop();</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Customize Mask Properties</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+
+// Create a camera
+const canvas = document.querySelector("#gameCanvas");
+const camera = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600}
+});
+
+// Initialize the light engine
+const lightEngine = camera.initMaskLightEngine();
+
+// Customize the mask
+// Change mask color for penumbra effects (lighter shadows)
+lightEngine.mask = {
+    color: "rgba(0,0,0,0.9)" // 90% opacity = lighter shadows
+};
+
+// Change z-order (default is 999)
+lightEngine.zIndex = 100; // Draw lights behind game elements
+
+// Add a light
+const light = lightEngine.addLightEmitter(400, 300, 200, "#ffffff");
+
+// In game loop
+function gameLoop() {
+    camera.clear();
+    // ...
+    camera.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>📦 Constructor</h2>
+                    <p>The <code>maskLightEngine</code> constructor is typically not called directly. Instead, use <code>Camera.initMaskLightEngine()</code>.</p>
+                    <p>If you need to create a standalone instance, the constructor accepts:</p>
+                    <div class="constructor-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>mask</code></td>
+                                    <td><code>object</code></td>
+                                    <td>Mask configuration object with <code>x</code>, <code>y</code>, <code>width</code>, <code>height</code>, and <code>color</code> properties.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>📊 Properties</h2>
+                    <p>All properties have getter and setter methods.</p>
+                    <div class="properties-grid">
+                        <div class="property-card">
+                            <h3><code>mask</code></h3>
+                            <p><strong>Type:</strong> <code>object</code></p>
+                            <p><strong>Default:</strong> <code>{x: 0, y: 0, width: camera.width, height: camera.height, color: "rgba(0,0,0,1)"}</code></p>
+                            <p><strong>Description:</strong> Configuration of the mask. Contains <code>x</code>, <code>y</code>, <code>width</code>, <code>height</code>, and <code>color</code> properties.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>zIndex</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Default:</strong> <code>999</code></p>
+                            <p><strong>Description:</strong> Drawing order. Higher values are drawn on top. Default is 999 (lights on top of everything).</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🔧 Public Methods</h2>
+                    <div class="methods-list">
+                        <div class="method-card">
+                            <h3><code>addLightEmitter(x, y, radius, color=null)</code></h3>
+                            <p><strong>Parameters:</strong></p>
+                            <ul>
+                                <li><code>x: number</code> - X coordinate of the light emitter.</li>
+                                <li><code>y: number</code> - Y coordinate of the light emitter.</li>
+                                <li><code>radius: number</code> - Radius of the light emitter in pixels.</li>
+                                <li><code>color: string</code> - Optional color of the light (HEX or RGB format).</li>
+                            </ul>
+                            <p><strong>Description:</strong> Creates and adds a new light emitter to the engine. Returns the LightEmitter instance for further configuration.</p>
+                            <p><strong>Returns:</strong> <code>LightEmitter</code> - The created light emitter instance.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>removeLightEmitter(lightEmitterInstance)</code></h3>
+                            <p><strong>Parameters:</strong></p>
+                            <ul>
+                                <li><code>lightEmitterInstance: LightEmitter</code> - The light emitter instance to remove.</li>
+                            </ul>
+                            <p><strong>Description:</strong> Removes a light emitter from the engine.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>getLightEmitters()</code></h3>
+                            <p><strong>Description:</strong> Returns an array of all active light emitters.</p>
+                            <p><strong>Returns:</strong> <code>Array</code> - Array of LightEmitter instances.</p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>getRenderCtx()</code></h3>
+                            <p><strong>Description:</strong> Returns the rendering context of the internal render canvas. Useful for custom rendering.</p>
+                            <p><strong>Returns:</strong> <code>CanvasRenderingContext2D</code> - The 2D rendering context.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🔒 Private Methods</h2>
+                    <p>The following methods are private (prefixed with <code>_</code> or <code>#</code>) and are used internally by the engine. <strong>Do not call these methods directly.</strong></p>
+                    <div class="methods-list">
+                        <div class="method-card private-method">
+                            <h3><code>_drawLightEmitters(camera)</code></h3>
+                            <p><strong>Parameters:</strong></p>
+                            <ul>
+                                <li><code>camera: Camera</code> - The camera to draw lights on.</li>
+                            </ul>
+                            <p><strong>Description:</strong> Internal method for drawing all light emitters. Called automatically during camera flipBuffer().</p>
+                        </div>
+                        <div class="method-card private-method">
+                            <h3><code>#updateMaskCanvas()</code></h3>
+                            <p><strong>Description:</strong> Updates the mask canvas with the current mask configuration.</p>
+                        </div>
+                        <div class="method-card private-method">
+                            <h3><code>#updateRenderCanvas()</code></h3>
+                            <p><strong>Description:</strong> Updates the render canvas by:
+                                <ol>
+                                    <li>Drawing the mask</li>
+                                    <li>Using destination-out composite operation to "punch holes" for each light emitter</li>
+                                    <li>Using source-over composite operation to apply light colors</li>
+                                </ol>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="warning-box">
+                        <strong>⚠️ Warning:</strong> 
+                        Methods starting with <code>_</code> or <code>#</code> are PRIVATE. 
+                        Incorrect usage can crash the engine. Only use the public methods documented above.
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🎯 Examples</h2>
+
+                    <h3>Example 1: Basic Lighting Setup</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+import { Scene } from "../classes/scene.js";
+
+// Create a camera
+const canvas = document.querySelector("#gameCanvas");
+const camera = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600},
+    backgroundColor: "#000000" // Dark background for lighting effects
+});
+
+// Initialize the light engine
+const lightEngine = camera.initMaskLightEngine();
+
+// Add lights
+const playerLight = lightEngine.addLightEmitter(400, 300, 100, "#ffffff");
+const ambientLight1 = lightEngine.addLightEmitter(200, 200, 200, "#ffaa00");
+const ambientLight2 = lightEngine.addLightEmitter(600, 400, 150, "#00aaff");
+
+// Create a scene and add elements
+const scene = new Scene();
+// Add your game elements to the scene...
+
+// In game loop
+function gameLoop() {
+    camera.clear();
+    
+    // Draw scene
+    scene.draw(camera);
+    
+    camera.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}
+gameLoop();</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Example 2: Flashlight Effect</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+
+// Create a camera
+const canvas = document.querySelector("#gameCanvas");
+const camera = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600},
+    backgroundColor: "#000000"
+});
+
+// Initialize the light engine
+const lightEngine = camera.initMaskLightEngine();
+
+// Create a directional light (flashlight)
+const flashlight = lightEngine.addLightEmitter(400, 300, 150, "#ffffff");
+flashlight.angleRange = 45; // Narrow beam
+flashlight.lookAt = {x: 600, y: 300}; // Pointing right
+
+// Animate the flashlight
+let angle = 0;
+function gameLoop() {
+    camera.clear();
+    
+    // Rotate flashlight
+    angle += 0.01;
+    flashlight.lookAt = {
+        x: 400 + Math.cos(angle) * 300,
+        y: 300 + Math.sin(angle) * 200
+    };
+    
+    // Draw your game elements here
+    // ...
+    
+    camera.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}
+gameLoop();</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Example 3: Dynamic Light Mask</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+
+// Create a camera
+const canvas = document.querySelector("#gameCanvas");
+const camera = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600},
+    backgroundColor: "#000000"
+});
+
+// Initialize the light engine
+const lightEngine = camera.initMaskLightEngine();
+
+// Customize mask for penumbra (soft shadow) effect
+lightEngine.mask = {
+    x: 0,
+    y: 0,
+    width: 800,
+    height: 600,
+    color: "rgba(0,0,0,0.8)" // 80% opacity = soft shadows
+};
+
+// Add lights
+const light1 = lightEngine.addLightEmitter(200, 200, 150, "#ff0000");
+const light2 = lightEngine.addLightEmitter(600, 400, 200, "#00ff00");
+
+// In game loop
+function gameLoop() {
+    camera.clear();
+    // ...
+    camera.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Example 4: Lights with Different zOrder</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { Camera } from "../classes/camera.js";
+
+// Create a camera
+const canvas = document.querySelector("#gameCanvas");
+const camera = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600},
+    backgroundColor: "#000000"
+});
+
+// Initialize the light engine with lower zOrder
+const lightEngine = camera.initMaskLightEngine();
+lightEngine.zIndex = 0; // Draw lights behind everything
+
+// Add a light
+const backgroundLight = lightEngine.addLightEmitter(400, 300, 300, "#888888");
+
+// Create a scene for game elements
+const scene = new Scene();
+// Add elements to scene with zOrder > 0 to draw on top of the light
+
+// In game loop
+function gameLoop() {
+    camera.clear();
+    
+    // Draw scene (elements will be drawn on top of the light)
+    scene.draw(camera);
+    
+    camera.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>💡 Tips and Best Practices</h2>
+                    <ul class="tips-list">
+                        <li>🎯 Use <code>initMaskLightEngine()</code> on the camera to initialize the light engine.</li>
+                        <li>🎯 The mask canvas is automatically sized to match the camera dimensions.</li>
+                        <li>🎯 The mask position is relative to the camera position - it moves with the camera.</li>
+                        <li>🎯 Adjust the mask color opacity to control shadow darkness (e.g., <code>rgba(0,0,0,0.9)</code> for softer shadows).</li>
+                        <li>🎯 Use <code>zIndex</code> to control whether lights are drawn on top of or behind game elements.</li>
+                        <li>🎯 The default <code>zIndex</code> is 999, meaning lights are drawn on top of most elements.</li>
+                        <li>🎯 For performance, minimize the number of active light emitters.</li>
+                        <li>🎯 Larger radius lights are more expensive to render.</li>
+                        <li>🎯 Light masks can overlap without interfering with each other.</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>📚 See Also</h2>
+                    <p>The maskLightEngine class works with:</p>
+                    <ul class="tips-list">
+                        <li>🎯 <a href="../pages/lightEmitter.html">LightEmitter</a> - Individual light source class</li>
+                        <li>🎯 <a href="../pages/camera.html">Camera</a> - Initializes and manages the light engine</li>
+                    </ul>
+                </section>
+            </article>
+        </div>
+    </main>
+    <script src="../doc.js"></script>
+</body>
+</html>

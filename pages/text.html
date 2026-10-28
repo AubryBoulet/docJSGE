@@ -21,6 +21,11 @@
             <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
             <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
             <li><a href="../pages/animation.html" class="nav-link">Animation</a></li>
+            <li class="nav-section">✨ Effects</li>
+            <li><a href="../pages/particleEmitter.html" class="nav-link">ParticleEmitter</a></li>
+            <li><a href="../pages/particle.html" class="nav-link">Particle</a></li>
+            <li><a href="../pages/lightEmitter.html" class="nav-link">LightEmitter</a></li>
+            <li><a href="../pages/maskLightEngine.html" class="nav-link">maskLightEngine</a></li>
             <li class="nav-section">🎭 Entities</li>
             <li><a href="../pages/entity.html" class="nav-link">Entity</a></li>
             <li><a href="../pages/element.html" class="nav-link">Element</a></li>
@@ -90,7 +95,7 @@ myText._updateCanvas(); // Update text rendering</code></pre>
 
 // Create text with effects
 const animatedText = new Text(
-    "${wave(2,5,5) Text} ${blink(0,20) animated}",
+    "${wave(2,5,5) JSGE} ${shake(3,5,3) is} ${blink(0,20) awesome!}",
     300,
     60
 );
@@ -338,7 +343,7 @@ function updateTextContent() {
         "${wave(2,5,5) Waving}",
         "${shake(3,5,3) Shaking}",
         "${blink(0,20) Blinking}",
-        "${wave(1,10,2)${shake(2,8,4)}} Combination"
+        "${wave(1,10,2) ${shake(2,8,4) Combination}}"
     ];
     
     const randomEffect = effects[Math.floor(Math.random() * effects.length)];

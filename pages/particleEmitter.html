@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Documentation for the ParticleEmitter class in JSGE - Particle system for creating visual effects.">
+    <title>ParticleEmitter - JSGE Documentation</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" />
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="logo">
+            <h1>JSGE</h1>
+            <p>Lightweight 2D Game Engine</p>
+        </div>
+        <ul class="nav-list">
+            <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+            <li class="nav-section">🎨 Rendering</li>
+            <li><a href="../pages/camera.html" class="nav-link">Camera</a></li>
+            <li class="nav-section">✨ Effects</li>
+            <li><a href="../pages/particleEmitter.html" class="nav-link">ParticleEmitter</a></li>
+            <li><a href="../pages/particle.html" class="nav-link">Particle</a></li>
+            <li><a href="../pages/lightEmitter.html" class="nav-link">LightEmitter</a></li>
+            <li><a href="../pages/maskLightEngine.html" class="nav-link">maskLightEngine</a></li>
+            <li><a href="../pages/sprite.html" class="nav-link">Sprite</a></li>
+            <li><a href="../pages/animation.html" class="nav-link">Animation</a></li>
+                        <li class="nav-section">✨ Effects</li>
+            <li><a href="../pages/particleEmitter.html" class="nav-link">ParticleEmitter</a></li>
+            <li><a href="../pages/particle.html" class="nav-link">Particle</a></li>
+            <li><a href="../pages/lightEmitter.html" class="nav-link">LightEmitter</a></li>
+            <li><a href="../pages/maskLightEngine.html" class="nav-link">maskLightEngine</a></li>
+<li class="nav-section">✨ Effects</li>
+            <li><a href="../pages/particleEmitter.html" class="nav-link active">ParticleEmitter</a></li>
+            <li><a href="../pages/particle.html" class="nav-link">Particle</a></li>
+            <li><a href="../pages/lightEmitter.html" class="nav-link">LightEmitter</a></li>
+            <li><a href="../pages/maskLightEngine.html" class="nav-link">maskLightEngine</a></li>
+            <li class="nav-section">🎭 Entities</li>
+            <li><a href="../pages/entity.html" class="nav-link">Entity</a></li>
+            <li><a href="../pages/element.html" class="nav-link">Element</a></li>
+            <li class="nav-section">🎨 UI</li>
+            <li><a href="../pages/gadget.html" class="nav-link">Gadget</a></li>
+            <li><a href="../pages/button.html" class="nav-link">Button</a></li>
+            <li><a href="../pages/text.html" class="nav-link">Text</a></li>
+            <li class="nav-section">🏗️ Scenes & Organization</li>
+            <li><a href="../pages/scene.html" class="nav-link">Scene</a></li>
+            <li><a href="../pages/jsge.html" class="nav-link">JSGE</a></li>
+            <li class="nav-section">🔄 Transitions</li>
+            <li><a href="../pages/transition.html" class="nav-link">Transition</a></li>
+            <li><a href="../pages/bezier.html" class="nav-link">Bezier</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p><small>v0.1</small></p>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <!-- Page Header -->
+            <header class="page-header">
+                <h1 id="page-title">ParticleEmitter</h1>
+                <p id="page-description">Class for creating and managing particle systems for visual effects like explosions, fire, smoke, and more.</p>
+            </header>
+
+            <!-- Documentation Content -->
+            <article class="doc-content">
+                <section class="section">
+                    <h2>📝 Description</h2>
+                    <p>
+                        The <code>ParticleEmitter</code> class allows you to create complex particle systems for visual effects.
+                        Particles are automatically managed, emitted, updated, and drawn based on the emitter's configuration.
+                    </p>
+                    <p>
+                        ParticleEmitter works with the <code>Camera</code> class to render particles. 
+                        <strong>Particles are automatically removed when they go out of the camera view</strong> to optimize performance.
+                    </p>
+                    <div class="warning-box">
+                        <strong>⚠️ Important:</strong> 
+                        Particles are removed if they exit the camera boundaries. 
+                        The <code>particleColorChangeRate</code> property is applied to the ParticleEmitter, affecting <strong>all particles</strong> emitted from it.
+                        The <code>color</code> parameter accepts HEX format (<code>#RRGGBB</code>) or RGB format (<code>rgb(r, g, b)</code>).
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🚀 Basic Usage</h2>
+
+                    <h3>Create a Simple Particle Emitter</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { ParticleEmitter } from "../classes/particleEmitter.js";
+import { Camera } from "../classes/camera.js";
+
+// Create a camera
+const canvas = document.querySelector("#gameCanvas");
+const camera = new Camera({
+    canvas: canvas,
+    position: {x: 0, y: 0},
+    dimensions: {width: 800, height: 600}
+});
+
+// Create a particle emitter
+const emitter = new ParticleEmitter(400, 300);
+
+// Configure the emitter
+emitter.particleEmissionSpeed = {min: 2, max: 5};
+emitter.particleSize = {width: 4, height: 4};
+emitter.particleColorRange = {startColor: "#ff0000", endColor: "#ffff00"};
+emitter.emissionRate = 30;
+
+// Start emission
+emitter.startEmission(() => {
+    console.log("Emission complete!");
+});
+
+// In your game loop
+function gameLoop() {
+    camera.clear();
+    
+    // Draw the emitter (which will draw all particles)
+    emitter.draw(camera);
+    
+    camera.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}
+gameLoop();</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Create a Fire Effect</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { ParticleEmitter } from "../classes/particleEmitter.js";
+
+// Create fire emitter
+const fireEmitter = new ParticleEmitter(400, 500);
+
+// Configure for fire effect
+fireEmitter.particleEmissionSpeed = {min: 1, max: 3};
+fireEmitter.particleSize = {width: 6, height: 6};
+fireEmitter.particleColorRange = {startColor: "#ff4400", endColor: "#ffff00"};
+fireEmitter.particleColorChangeRate = {r: -1, g: 0, b: 0}; // Fade to red
+fireEmitter.particleLifetime = {min: 500, max: 1500};
+fireEmitter.particleAcceleration = {x: 0, y: -0.1}; // Particles go up
+fireEmitter.emissionRate = 20;
+fireEmitter.particleEmitterAngleRange = {rangeMin: 80, rangeMax: 100};
+fireEmitter.particleEmitterDirection = {x: 0, y: -1};
+
+// Start continuous emission
+fireEmitter.startEmission();
+
+// To stop later: fireEmitter.stopEmission();</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>📦 Constructor</h2>
+                    <p>The <code>ParticleEmitter</code> class accepts the following parameters:</p>
+                    <div class="constructor-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>x</code></td>
+                                    <td><code>number</code></td>
+                                    <td>-</td>
+                                    <td>X coordinate of the emitter position.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>y</code></td>
+                                    <td><code>number</code></td>
+                                    <td>-</td>
+                                    <td>Y coordinate of the emitter position.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>📊 Properties</h2>
+                    <p>All properties have getter and setter methods.</p>
+                    <div class="properties-grid">
+                        <div class="property-card">
+                            <h3><code>x</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> X coordinate of the emitter.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>y</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Description:</strong> Y coordinate of the emitter.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>particleAcceleration</code></h3>
+                            <p><strong>Type:</strong> <code>object</code></p>
+                            <p><strong>Default:</strong> <code>{x: 0, y: 0}</code></p>
+                            <p><strong>Description:</strong> Acceleration applied to all particles (in pixels per frame squared).</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>particleEmissionSpeed</code></h3>
+                            <p><strong>Type:</strong> <code>object</code></p>
+                            <p><strong>Default:</strong> <code>{min: 1, max: 3}</code></p>
+                            <p><strong>Description:</strong> Speed range for emitted particles. Each particle gets a random speed from this range.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>particleSize</code></h3>
+                            <p><strong>Type:</strong> <code>object</code></p>
+                            <p><strong>Default:</strong> <code>{width: 1, height: 1}</code></p>
+                            <p><strong>Description:</strong> Size of each particle in pixels.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>particleColorRange</code></h3>
+                            <p><strong>Type:</strong> <code>object</code></p>
+                            <p><strong>Default:</strong> <code>{startColor: "#ffffff", endColor: "#000000"}</code></p>
+                            <p><strong>Description:</strong> Color range for particles. Each particle gets a random color from this range. Accepts HEX or RGB format.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>particleColorChangeRate</code></h3>
+                            <p><strong>Type:</strong> <code>object</code></p>
+                            <p><strong>Default:</strong> <code>{r: 0, g: 0, b: 0}</code></p>
+                            <p><strong>Description:</strong> Rate at which particle colors change over time (per frame). Applied to all particles from this emitter. Use negative values to fade out.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>particleLifetime</code></h3>
+                            <p><strong>Type:</strong> <code>object</code></p>
+                            <p><strong>Default:</strong> <code>{min: 1000, max: 2000}</code></p>
+                            <p><strong>Description:</strong> Lifetime range for particles in milliseconds. Each particle gets a random lifetime from this range.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>emissionRate</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Default:</strong> <code>10</code></p>
+                            <p><strong>Description:</strong> Number of particles emitted per second.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>particlesPerEmission</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Default:</strong> <code>1</code></p>
+                            <p><strong>Description:</strong> Number of particles emitted per emission tick.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>emissionDuration</code></h3>
+                            <p><strong>Type:</strong> <code>number</code></p>
+                            <p><strong>Default:</strong> <code>1000</code></p>
+                            <p><strong>Description:</strong> Duration of the emission in milliseconds. Set to 0 for continuous emission.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>particleEmitterAngleRange</code></h3>
+                            <p><strong>Type:</strong> <code>object</code></p>
+                            <p><strong>Default:</strong> <code>{rangeMin: 45, rangeMax: 90}</code></p>
+                            <p><strong>Description:</strong> Angle range (in degrees) for particle emission. Particles are emitted at random angles within this range.</p>
+                        </div>
+                        <div class="property-card">
+                            <h3><code>particleEmitterDirection</code></h3>
+                            <p><strong>Type:</strong> <code>object</code></p>
+                            <p><strong>Default:</strong> <code>{x: 0, y: -1}</code></p>
+                            <p><strong>Description:</strong> Base direction vector for particle emission. Combined with angle range to determine final particle direction.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🔧 Public Methods</h2>
+                    <div class="methods-list">
+                        <div class="method-card">
+                            <h3><code>startEmission(endCallback)</code></h3>
+                            <p><strong>Parameters:</strong></p>
+                            <ul>
+                                <li><code>endCallback: function</code> - Callback function called when emission is finished (all particles have expired).</li>
+                            </ul>
+                            <p><strong>Description:</strong> Starts particle emission. Particles will be emitted according to the configured rate and duration.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>stopEmission()</code></h3>
+                            <p><strong>Description:</strong> Stops particle emission immediately. Existing particles will continue to exist until their lifetime expires.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>draw(camera, zOrder=0)</code></h3>
+                            <p><strong>Parameters:</strong></p>
+                            <ul>
+                                <li><code>camera: Camera</code> - The camera to draw particles on.</li>
+                                <li><code>zOrder: number</code> - Optional z-order for drawing priority.</li>
+                            </ul>
+                            <p><strong>Description:</strong> Draws all active particles. Must be called every frame. Particles are only drawn if the emitter is emitting or has active particles.</p>
+                            <p><strong>Returns:</strong> <code>void</code></p>
+                        </div>
+                        <div class="method-card">
+                            <h3><code>clone()</code></h3>
+                            <p><strong>Description:</strong> Creates a copy of this emitter with the same configuration.</p>
+                            <p><strong>Returns:</strong> <code>ParticleEmitter</code> - A new ParticleEmitter instance with the same properties.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🔒 Private Methods</h2>
+                    <p>The following methods are private (prefixed with <code>_</code> or <code>#</code>) and are used internally by the engine. <strong>Do not call these methods directly.</strong></p>
+                    <div class="methods-list">
+                        <div class="method-card private-method">
+                            <h3><code>_processDraw(camera)</code></h3>
+                            <p><strong>Description:</strong> Internal method for processing particle drawing. Updates particle positions, colors, lifetimes, and removes particles that are out of bounds or expired.</p>
+                        </div>
+                    </div>
+                    <div class="warning-box">
+                        <strong>⚠️ Warning:</strong> 
+                        Methods starting with <code>_</code> or <code>#</code> are PRIVATE. 
+                        Incorrect usage can crash the engine. Only use the public methods documented above.
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>🎯 Examples</h2>
+
+                    <h3>Example 1: Explosion Effect</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { ParticleEmitter } from "../classes/particleEmitter.js";
+import { Camera } from "../classes/camera.js";
+
+// Create explosion emitter
+function createExplosion(x, y) {
+    const emitter = new ParticleEmitter(x, y);
+    
+    // Configure for explosion
+    emitter.particleEmissionSpeed = {min: 2, max: 8};
+    emitter.particleSize = {width: 5, height: 5};
+    emitter.particleColorRange = {startColor: "#ff0000", endColor: "#ffff00"};
+    emitter.particleColorChangeRate = {r: -2, g: -1, b: 0};
+    emitter.particleLifetime = {min: 300, max: 800};
+    emitter.particleAcceleration = {x: 0, y: 0.2};
+    emitter.emissionRate = 100;
+    emitter.particlesPerEmission = 5;
+    emitter.emissionDuration = 200; // Short burst
+    emitter.particleEmitterAngleRange = {rangeMin: 0, rangeMax: 360};
+    emitter.particleEmitterDirection = {x: 0, y: 0};
+    
+    // Start and auto-cleanup
+    emitter.startEmission(() => {
+        // Explosion complete - emitter can be removed
+        console.log("Explosion complete!");
+    });
+    
+    return emitter;
+}
+
+// Usage
+const explosion = createExplosion(400, 300);
+
+// In game loop
+function gameLoop() {
+    camera.clear();
+    explosion.draw(camera);
+    camera.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Example 2: Continuous Smoke Effect</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { ParticleEmitter } from "../classes/particleEmitter.js";
+
+// Create smoke emitter
+const smokeEmitter = new ParticleEmitter(400, 400);
+
+// Configure for smoke
+smokeEmitter.particleEmissionSpeed = {min: 0.5, max: 1.5};
+smokeEmitter.particleSize = {width: 8, height: 8};
+smokeEmitter.particleColorRange = {startColor: "#666666", endColor: "#aaaaaa"};
+smokeEmitter.particleColorChangeRate = {r: 1, g: 1, b: 1};
+smokeEmitter.particleLifetime = {min: 2000, max: 4000};
+smokeEmitter.particleAcceleration = {x: 0.1, y: -0.1};
+smokeEmitter.emissionRate = 5;
+smokeEmitter.particleEmitterAngleRange = {rangeMin: 0, rangeMax: 180};
+smokeEmitter.particleEmitterDirection = {x: 1, y: 0};
+
+// Start continuous emission (duration = 0)
+smokeEmitter.emissionDuration = 0; // Continuous
+smokeEmitter.startEmission();
+
+// To stop later: smokeEmitter.stopEmission();</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Example 3: Multiple Emitters</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { ParticleEmitter } from "../classes/particleEmitter.js";
+
+// Create multiple emitters
+const emitters = [];
+
+// Fire emitter
+const fire = new ParticleEmitter(300, 500);
+fire.particleColorRange = {startColor: "#ff4400", endColor: "#ffff00"};
+fire.particleAcceleration = {x: 0, y: -0.2};
+fire.emissionRate = 15;
+fire.startEmission();
+emitters.push(fire);
+
+// Water emitter
+const water = new ParticleEmitter(500, 500);
+water.particleColorRange = {startColor: "#0088ff", endColor: "#00ffff"};
+water.particleAcceleration = {x: 0, y: 0.1};
+water.emissionRate = 10;
+water.startEmission();
+emitters.push(water);
+
+// In game loop
+function gameLoop() {
+    camera.clear();
+    emitters.forEach(emitter => emitter.draw(camera));
+    camera.flipBuffer();
+    requestAnimationFrame(gameLoop);
+}</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h3>Example 4: Directional Particle Stream</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { ParticleEmitter } from "../classes/particleEmitter.js";
+
+// Create directional stream (like a flame thrower)
+const streamEmitter = new ParticleEmitter(400, 300);
+
+// Narrow angle range for directional effect
+streamEmitter.particleEmitterAngleRange = {rangeMin: 0, rangeMax: 10};
+streamEmitter.particleEmitterDirection = {x: 1, y: 0}; // Pointing right
+
+streamEmitter.particleEmissionSpeed = {min: 5, max: 10};
+streamEmitter.particleSize = {width: 4, height: 2};
+streamEmitter.particleColorRange = {startColor: "#ff0000", endColor: "#ff8800"};
+streamEmitter.particleLifetime = {min: 500, max: 1000};
+streamEmitter.emissionRate = 50;
+
+// Start emission
+streamEmitter.startEmission();
+
+// You can change direction dynamically
+streamEmitter.particleEmitterDirection = {x: 0, y: -1}; // Now pointing up</code></pre>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>💡 Tips and Best Practices</h2>
+                    <ul class="tips-list">
+                        <li>🎯 Use <strong>higher emission rates</strong> for dense effects like fire or explosions.</li>
+                        <li>🎯 Use <strong>lower emission rates</strong> for subtle effects like smoke or sparkles.</li>
+                        <li>🎯 Set <code>emissionDuration</code> to <code>0</code> for continuous emission.</li>
+                        <li>🎯 Use <code>particleColorChangeRate</code> to create fading effects.</li>
+                        <li>🎯 Adjust <code>particleAcceleration</code> to simulate gravity or other forces.</li>
+                        <li>🎯 Use narrow <code>particleEmitterAngleRange</code> for directional effects.</li>
+                        <li>🎯 Use wide <code>particleEmitterAngleRange</code> (0-360) for spherical effects.</li>
+                        <li>🎯 Remember to call <code>draw(camera)</code> every frame for active emitters.</li>
+                        <li>🎯 Particles are <strong>automatically removed</strong> when they exit camera view or their lifetime expires.</li>
+                        <li>🎯 Use <code>clone()</code> to create multiple emitters with the same configuration.</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>📚 See Also</h2>
+                    <p>The ParticleEmitter class uses:</p>
+                    <ul class="tips-list">
+                        <li>🎯 <a href="../pages/particle.html">Particle</a> - Individual particle class</li>
+                        <li>🎯 <a href="../pages/camera.html">Camera</a> - Required for rendering particles</li>
+                    </ul>
+                </section>
+            </article>
+        </div>
+    </main>
+    <script src="../doc.js"></script>
+</body>
+</html>
