@@ -27,21 +27,30 @@ function highlightCode() {
     codeBlocks.forEach(block => {
         // Get the raw text content
         const text = block.textContent;
-        
+        let html = text;
+
         const escapeHtml = value => value.replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#39;');
+        const highlighted = [];
+        const highlight = (regex, className) => {
+            html = html.replace(regex, match => {
+                const index = highlighted.length;
+                const token = String.fromCharCode(0xE000 + Math.floor(index / 0x1000)) +
+                    String.fromCharCode(0xE000 + (index % 0x1000));
+                highlighted.push(`<span class="${className}">${escapeHtml(match)}</span>`);
+                return `\uE000${token}\uE001`;
+            });
+        };
         
-        // Define patterns and their CSS classes
-        const patterns = [
-            { regex: /\/\*[\s\S]*?\*\//g, className: 'comment' },
-            { regex: /\/\/[^\n]*/g, className: 'comment' },
-            { regex: /"[^"]*"/g, className: 'string' },
-            { regex: /'(?:[^'\\]|\\.)*'/g, className: 'string' },
-            { regex: /\b\d+(\.\d+)?\b/g, className: 'number' },
-            { regex: /[+\-*/%=<>!&|^~?:.(){}[\]\\]/g, className: 'operator' }
+        // JavaScript keywords
+        const keywords = [
+            'import', 'export', 'from', 'class', 'const', 'let', 'var', 'function',
+            'return', 'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break',
+            'default', 'try', 'catch', 'finally', 'throw', 'new', 'this', 'super',
+            'static', 'async', 'await', 'yield', 'null', 'true', 'false', 'undefined'
         ];
         
         // JSGE types and classes
@@ -56,21 +65,7 @@ function highlightCode() {
             'create', 'load', 'update', 'draw', 'drawEntity', 'drawElement',
             'clear', 'moveCamera', 'flipBuffer', 'addColisionWithEntity',
             'onMouseEnter', 'onMouseLeave', 'onMouseOver', 'onClick', 'addTextGradient',
-            'updateText', 'zOrder', 'remove', 'assign', 'JSGE', 'ParticleEmitter',
-            'Particle', 'LightEmitter', 'maskLightEngine', 'childCamera', 'createChildCamera',
-            'lookAt', 'angleRange', 'color', 'radius', 'emissionRate', 'particleAcceleration',
-            'particleEmissionSpeed', 'particleSize', 'particleColorRange', 'particleColorChangeRate',
-            'particleLifetime', 'emissionDuration', 'particlesPerEmission', 'particleEmitterAngleRange',
-            'particleEmitterDirection', 'initMaskLightEngine', 'getLightEmitters', 'addLightEmitter',
-            'removeLightEmitter', 'getRenderCtx', 'mask', 'zIndex', 'createGradient'
-        ];
-        
-        // JavaScript keywords
-        const keywords = [
-            'import', 'export', 'from', 'class', 'const', 'let', 'var', 'function',
-            'return', 'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break',
-            'default', 'try', 'catch', 'finally', 'throw', 'new', 'this', 'super',
-            'static', 'async', 'await', 'yield', 'null', 'true', 'false', 'undefined'
+            'updateText', 'zOrder', 'remove', 'assign', 'JSGE'
         ];
         
         // Functions and methods
@@ -82,36 +77,42 @@ function highlightCode() {
             'stroke', 'fill', 'save', 'restore', 'translate', 'rotate', 'scale'
         ];
         
-        // First, apply all patterns
-        let html = text;
-        patterns.forEach(pattern => {
-            html = html.replace(pattern.regex, match => 
-                `<span class="${pattern.className}">${escapeHtml(match)}</span>`
-            );
-        });
+        // Comments (multi-line first, then single-line)
+        highlight(/\/\*[\s\S]*?\*\//g, 'comment');
+        highlight(/\/\/[^\n]*/g, 'comment');
         
-        // Then apply JSGE types
+        // Strings
+        highlight(/"[^"]*"/g, 'string');
+        highlight(/'(?:[^'\\]|\\.)*'/g, 'string');
+        
+        // Numbers
+        highlight(/\b\d+(\.\d+)?\b/g, 'number');
+        
+        // Operators
+        highlight(/[+\-*/%=<>!&|^~?:.(){}\[\]]/g, 'operator');
+        
+        // JSGE Types (case-sensitive, word boundaries)
         jsgeTypes.forEach(type => {
-            const regex = new RegExp(`\\b(${type.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'g');
-            html = html.replace(regex, match => 
-                `<span class="jsge-type">${escapeHtml(match)}</span>`
-            );
+            const regex = new RegExp('\\b(' + type.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')\\b', 'g');
+            highlight(regex, 'jsge-type');
         });
         
-        // Then apply keywords (but not inside jsge-type spans)
+        // JavaScript keywords
         keywords.forEach(keyword => {
-            const regex = new RegExp(`\\b(${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'g');
-            html = html.replace(regex, match => 
-                `<span class="keyword">${escapeHtml(match)}</span>`
-            );
+            const regex = new RegExp('\\b(' + keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')\\b', 'g');
+            highlight(regex, 'keyword');
         });
         
-        // Then apply functions
+        // Functions
         functions.forEach(func => {
-            const regex = new RegExp(`\\b(${func.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'g');
-            html = html.replace(regex, match => 
-                `<span class="function">${escapeHtml(match)}</span>`
-            );
+            const regex = new RegExp('\\b(' + func.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')\\b', 'g');
+            highlight(regex, 'function');
+        });
+
+        html = escapeHtml(html).replace(/\uE000([\uE000-\uEFFF]{2})\uE001/g, (_, token) => {
+            const index = (token.charCodeAt(0) - 0xE000) * 0x1000 +
+                token.charCodeAt(1) - 0xE000;
+            return highlighted[index];
         });
         
         block.innerHTML = html;
